@@ -12,7 +12,7 @@
     <artifactId>darcs</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>hpi</packaging>
-    <name>Hudson Phing plugin</name>
+    <name>Hudson Darcs plugin</name>
     <description>This plugin Darcs SCM into Hudson.</description>
     <url>http://wiki.hudson-ci.org/display/HUDSON/Darcs</url>
 
