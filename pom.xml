@@ -13,8 +13,8 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>hpi</packaging>
     <name>Hudson Phing plugin</name>
-    <description>This plugin allows you to use phing to build PHP projects.</description>
-    <url>http://wiki.hudson-ci.org/display/HUDSON/Phing+Plugin</url>
+    <description>This plugin Darcs SCM into Hudson.</description>
+    <url>http://wiki.hudson-ci.org/display/HUDSON/Darcs</url>
 
     <developers>
         <developer>
