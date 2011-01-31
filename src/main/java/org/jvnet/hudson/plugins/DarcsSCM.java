@@ -2,11 +2,13 @@
 package org.jvnet.hudson.plugins;
 
 import hudson.FilePath;
+import hudson.FilePath.FileCallable;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
 import hudson.model.TaskListener;
+import hudson.remoting.VirtualChannel;
 import hudson.scm.ChangeLogParser;
 import hudson.scm.PollingResult;
 import hudson.scm.PollingResult.Change;
@@ -28,24 +30,55 @@ public class DarcsSCM extends SCM implements Serializable {
      * Source repository URL from which we pull.
      */
     private final String source;
+    private final boolean clean;
 
     @DataBoundConstructor
-    public DarcsSCM(String source) {
+    public DarcsSCM(String source, boolean clean) {
         this.source = source;
+        this.clean  = clean;
     }
 
     public String getSource() {
         return source;
     }
 
+    public boolean isClean() {
+        return clean;
+    }
+    
     @Override
-    public SCMRevisionState calcRevisionsFromBuild(AbstractBuild<?, ?> ab, Launcher lnchr, TaskListener tl) throws IOException, InterruptedException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public SCMRevisionState calcRevisionsFromBuild(AbstractBuild<?, ?> build, Launcher launcher, TaskListener listener) throws IOException, InterruptedException {
+        PrintStream output = listener.getLogger();
+        output.println("Getting local revision...");
+
+        return new DarcsRevisionState();
     }
 
     @Override
-    public boolean checkout(AbstractBuild<?, ?> ab, Launcher lnchr, FilePath fp, BuildListener bl, File file) throws IOException, InterruptedException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public boolean checkout(AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, BuildListener listener, File changelogFile) throws IOException, InterruptedException {
+        boolean canUpdate = workspace.act(new FileCallable<Boolean>() {
+
+            private static final long serialVersionUID = 1L;
+
+            public Boolean invoke(File ws, VirtualChannel channel) throws IOException {
+                File file = new File(ws, "_darcs");
+                return file.exists();
+            }
+        });
+
+        if (canUpdate && !isClean()) {
+            return pullRepo(build, launcher, workspace, listener, changelogFile);
+        } else {
+            return getRepo(build, launcher, workspace, listener, changelogFile);
+        }
+    }
+
+    private boolean pullRepo(AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, BuildListener listener, File changelogFile) throws InterruptedException, IOException {
+        return false;
+    }
+
+    private boolean getRepo(AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, BuildListener listener, File changelogFile) throws InterruptedException {
+        return false;
     }
 
     @Override
@@ -67,7 +100,6 @@ public class DarcsSCM extends SCM implements Serializable {
 
     @Override
     public ChangeLogParser createChangeLogParser() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new DarcsChangeLogParser();
     }
-
 }
