@@ -25,7 +25,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 /**
  *
  */
-public class DarcsSCM extends SCM implements Serializable {
+public class DarcsScm extends SCM implements Serializable {
     /**
      * Source repository URL from which we pull.
      */
@@ -33,7 +33,7 @@ public class DarcsSCM extends SCM implements Serializable {
     private final boolean clean;
 
     @DataBoundConstructor
-    public DarcsSCM(String source, boolean clean) {
+    public DarcsScm(String source, boolean clean) {
         this.source = source;
         this.clean  = clean;
     }
