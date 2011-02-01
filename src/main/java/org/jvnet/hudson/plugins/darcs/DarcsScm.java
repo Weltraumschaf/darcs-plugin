@@ -1,5 +1,5 @@
 
-package org.jvnet.hudson.plugins;
+package org.jvnet.hudson.plugins.darcs;
 
 import hudson.Extension;
 import hudson.FilePath;
@@ -98,8 +98,8 @@ public class DarcsScm extends SCM implements Serializable {
     }
 
     @Override
-    protected PollingResult compareRemoteRevisionWith(AbstractProject<?, ?> ap, Launcher lnchr, FilePath fp, TaskListener tl, SCMRevisionState scmrs) throws IOException, InterruptedException {
-        PrintStream output = tl.getLogger();
+    protected PollingResult compareRemoteRevisionWith(AbstractProject<?, ?> ap, Launcher lnchr, FilePath fp, TaskListener listener, SCMRevisionState scmrs) throws IOException, InterruptedException {
+        PrintStream output = listener.getLogger();
         output.printf("Getting current remote revision...");
 
         final DarcsRevisionState remote = new DarcsRevisionState();

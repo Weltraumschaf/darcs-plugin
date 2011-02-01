@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package org.jvnet.hudson.plugins;
+package org.jvnet.hudson.plugins.darcs;
 
 import hudson.scm.SCMRevisionState;
 

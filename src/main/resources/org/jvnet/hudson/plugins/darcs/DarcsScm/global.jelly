@@ -2,7 +2,7 @@
     <f:section title="Darcs">
         <f:entry title="darcs executable" help="/plugin/darcs/darcsexe.html">
             <f:textbox name="darcs.darcsExe" value="${descriptor.darcsExe}"
-        checkUrl="'${rootURL}/scm/DarcsScm/darcsExeCheck?value='+escape(this.value)" />
+                       checkUrl="'${rootURL}/scm/DarcsScm/darcsExeCheck?value='+escape(this.value)" />
         </f:entry>
     </f:section>
 </j:jelly>
