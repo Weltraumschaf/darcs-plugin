@@ -1,9 +1,12 @@
 
 package org.jvnet.hudson.plugins;
 
+import hudson.Extension;
 import hudson.FilePath;
 import hudson.FilePath.FileCallable;
 import hudson.Launcher;
+import hudson.Launcher.ProcStarter;
+import hudson.model.Hudson;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
@@ -14,18 +17,31 @@ import hudson.scm.PollingResult;
 import hudson.scm.PollingResult.Change;
 import hudson.scm.SCM;
 import hudson.scm.SCMRevisionState;
+import hudson.scm.SCMDescriptor;
+import hudson.util.FormValidation;
 
 import java.io.PrintStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.regex.Pattern;
+import java.util.logging.Logger;
+import javax.servlet.ServletException;
+
+import net.sf.json.JSONObject;
 
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.framework.io.ByteBuffer;
 
 /**
  *
  */
 public class DarcsScm extends SCM implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private static final Logger logger = Logger.getLogger(DarcsScm.class.getName());
+    
     /**
      * Source repository URL from which we pull.
      */
@@ -101,5 +117,72 @@ public class DarcsScm extends SCM implements Serializable {
     @Override
     public ChangeLogParser createChangeLogParser() {
         return new DarcsChangeLogParser();
+    }
+
+    public static final class DescriptorImpl extends SCMDescriptor<DarcsScm> {
+        @Extension
+        public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
+        private String darcsExe;
+        private transient String version;
+
+        private DescriptorImpl() {
+            super(DarcsScm.class, null);
+            load();
+        }
+
+        public String getDisplayName() {
+            return "Darcs";
+        }
+
+        public String getDarcsExe() {
+            return (null == darcsExe) ? "darcs" : darcsExe;
+        }
+
+        @Override
+        public SCM newInstance(StaplerRequest req, JSONObject formData) throws FormException {
+            DarcsScm scm = req.bindJSON(DarcsScm.class, formData);
+            
+            return scm;
+        }
+
+        @Override
+        public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
+            darcsExe = req.getParameter("darcs.darcsExe");
+            version  = null;
+            save();
+
+            return true;
+        }
+
+        public FormValidation doDarcsExeCheck(@QueryParameter final String value) throws IOException, ServletException {
+            return FormValidation.validateExecutable(value, new FormValidation.FileValidator() {
+                @Override public FormValidation validate(File exe) {
+                    try {
+                       ByteBuffer baos   = new ByteBuffer();
+                       Launcher launcher = Hudson.getInstance().createLauncher(TaskListener.NULL);
+                       ProcStarter proc  = launcher.launch()
+                                                   .cmds(getDarcsExe(), "--version")
+                                                   .stdout(baos);
+                       if (proc.join() == 0) {
+                          return FormValidation.ok();
+                       } else {
+                          return FormValidation.warning("Could not locate the executable in path");
+                       }
+                    } catch (IOException e) {
+                        // failed
+                    } catch (InterruptedException e) {
+                        // failed
+                    }
+
+                    return FormValidation.error("Unable to check darcs version");
+                }
+            });
+        }
+
+        /**
+         * UUID version string.
+         * This appears to be used for snapshot builds. See issue #1683
+         */
+        private static final Pattern UUID_VERSION_STRING = Pattern.compile("\\(version ([0-9a-f]+)");
     }
 }
