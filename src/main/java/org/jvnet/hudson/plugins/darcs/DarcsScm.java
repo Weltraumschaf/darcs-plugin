@@ -69,18 +69,18 @@ public class DarcsScm extends SCM implements Serializable {
         return clean;
     }
 
-    private void getLog(Launcher launcher, FilePath workspace, File changeLog) throws InterruptedException {
+    private void getLog(Launcher launcher, int numPatches, FilePath workspace, File changeLog) throws InterruptedException {
         try {
             int ret;
-            String version = "FOO:" ;
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ProcStarter proc = launcher.launch()
-                                       .cmds(getDescriptor().getDarcsExe(), "log", "-v", "-r", version, "--long", "--show-ids")
+                                       .cmds(getDescriptor().getDarcsExe(), "changes", "--last=" + numPatches)
                                        .envs(EnvVars.masterEnvVars)
                                        .stdout(baos)
                                        .pwd(workspace);
-            
-            if ((ret = proc.join()) != 0) {
+            ret = proc.join();
+
+            if (ret != 0) {
                 logger.log(Level.WARNING, "bzr log -v -r returned {0}", ret);
             } else {
                 FileOutputStream fos = new FileOutputStream(changeLog);
@@ -121,10 +121,23 @@ public class DarcsScm extends SCM implements Serializable {
         }
     }
 
+    private int countPatches(AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, BuildListener listener) throws InterruptedException, IOException {
+        ByteBuffer baos = new ByteBuffer();
+        launcher.launch()
+                .cmds(getDescriptor().getDarcsExe(), "changes", "--count", "--repodir=" + workspace)
+                .envs(build.getEnvironment(listener))
+                .stdout(baos);
+
+        return Integer.parseInt(baos.toString().trim());
+    }
+
     private boolean pullRepo(AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, BuildListener listener, File changelogFile) throws InterruptedException, IOException {
+        int preCnt = 0, postCnt = 0;
+
         try {
+            preCnt = countPatches(build, launcher, workspace, listener);
             ProcStarter proc = launcher.launch()
-                                       .cmds(getDescriptor().getDarcsExe(), "pull", source)
+                                       .cmds(getDescriptor().getDarcsExe(), "pull", source, "--repodir=" + workspace )
                                        .envs(build.getEnvironment(listener))
                                        .stdout(listener.getLogger())
                                        .pwd(workspace);
@@ -135,8 +148,8 @@ public class DarcsScm extends SCM implements Serializable {
                 return false;
             }
 
-            getLog(launcher, workspace, changelogFile);
-
+            postCnt = countPatches(build, launcher, workspace, listener);
+            getLog(launcher, postCnt - preCnt, workspace, changelogFile);
         } catch (IOException e) {
             listener.error("Failed to pull");
             
@@ -155,7 +168,7 @@ public class DarcsScm extends SCM implements Serializable {
         }
 
         ArgumentListBuilder args = new ArgumentListBuilder();
-        args.add(getDescriptor().getDarcsExe(), "branch");
+        args.add(getDescriptor().getDarcsExe(), "get");
         args.add(source, workspace.getRemote());
 
         try {
