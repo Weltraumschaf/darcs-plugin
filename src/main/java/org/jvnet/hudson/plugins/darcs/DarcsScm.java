@@ -1,6 +1,7 @@
 
 package org.jvnet.hudson.plugins.darcs;
 
+import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.FilePath.FileCallable;
@@ -18,13 +19,19 @@ import hudson.scm.PollingResult.Change;
 import hudson.scm.SCM;
 import hudson.scm.SCMRevisionState;
 import hudson.scm.SCMDescriptor;
+import hudson.util.ArgumentListBuilder;
 import hudson.util.FormValidation;
 
+import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Serializable;
+import java.io.StringWriter;
 import java.util.regex.Pattern;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
 
@@ -61,6 +68,31 @@ public class DarcsScm extends SCM implements Serializable {
     public boolean isClean() {
         return clean;
     }
+
+    private void getLog(Launcher launcher, FilePath workspace, File changeLog) throws InterruptedException {
+        try {
+            int ret;
+            String version = "FOO:" ;
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ProcStarter proc = launcher.launch()
+                                       .cmds(getDescriptor().getDarcsExe(), "log", "-v", "-r", version, "--long", "--show-ids")
+                                       .envs(EnvVars.masterEnvVars)
+                                       .stdout(baos)
+                                       .pwd(workspace);
+            
+            if ((ret = proc.join()) != 0) {
+                logger.log(Level.WARNING, "bzr log -v -r returned {0}", ret);
+            } else {
+                FileOutputStream fos = new FileOutputStream(changeLog);
+                fos.write(baos.toByteArray());
+                fos.close();
+            }
+        } catch (IOException e) {
+            StringWriter w = new StringWriter();
+            e.printStackTrace(new PrintWriter(w));
+            logger.log(Level.WARNING, "Failed to poll repository: ", e);
+        }
+    }
     
     @Override
     public SCMRevisionState calcRevisionsFromBuild(AbstractBuild<?, ?> build, Launcher launcher, TaskListener listener) throws IOException, InterruptedException {
@@ -90,11 +122,60 @@ public class DarcsScm extends SCM implements Serializable {
     }
 
     private boolean pullRepo(AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, BuildListener listener, File changelogFile) throws InterruptedException, IOException {
-        return false;
+        try {
+            ProcStarter proc = launcher.launch()
+                                       .cmds(getDescriptor().getDarcsExe(), "pull", source)
+                                       .envs(build.getEnvironment(listener))
+                                       .stdout(listener.getLogger())
+                                       .pwd(workspace);
+
+            if (proc.join() != 0) {
+                listener.error("Failed to pull");
+
+                return false;
+            }
+
+            getLog(launcher, workspace, changelogFile);
+
+        } catch (IOException e) {
+            listener.error("Failed to pull");
+            
+            return false;
+        }
+
+        return true;
     }
 
     private boolean getRepo(AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, BuildListener listener, File changelogFile) throws InterruptedException {
-        return false;
+        try {
+            workspace.deleteRecursive();
+        } catch (IOException e) {
+            e.printStackTrace(listener.error("Failed to clean the workspace"));
+            return false;
+        }
+
+        ArgumentListBuilder args = new ArgumentListBuilder();
+        args.add(getDescriptor().getDarcsExe(), "branch");
+        args.add(source, workspace.getRemote());
+
+        try {
+            ProcStarter proc = launcher.launch()
+                                       .cmds(args)
+                                       .envs(build.getEnvironment(listener))
+                                       .stdout(listener.getLogger());
+            
+            if (proc.join() != 0) {
+                listener.error("Failed to get " + source);
+
+                return false;
+            }
+        } catch (IOException e) {
+            e.printStackTrace(listener.error("Failed to get " + source));
+            
+            return false;
+        }
+
+        return createEmptyChangeLog(changelogFile, listener, "changelog");
     }
 
     @Override
@@ -119,6 +200,11 @@ public class DarcsScm extends SCM implements Serializable {
         return new DarcsChangeLogParser();
     }
 
+    @Override
+    public DescriptorImpl getDescriptor() {
+        return DescriptorImpl.DESCRIPTOR;
+    }
+    
     public static final class DescriptorImpl extends SCMDescriptor<DarcsScm> {
         @Extension
         public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
@@ -170,11 +256,13 @@ public class DarcsScm extends SCM implements Serializable {
                        }
                     } catch (IOException e) {
                         // failed
+                        return FormValidation.error(e.toString());
                     } catch (InterruptedException e) {
                         // failed
+                        return FormValidation.error(e.toString());
                     }
 
-                    return FormValidation.error("Unable to check darcs version");
+                    //return FormValidation.error("Unable to check darcs version");
                 }
             });
         }
