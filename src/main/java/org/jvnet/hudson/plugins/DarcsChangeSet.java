@@ -87,7 +87,6 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
         this.name = name;
     }
 
-
     @Override
     public Collection<String> getAffectedPaths() {
         return null;
@@ -96,5 +95,10 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
     @Override
     public String getMsg() {
         return getName();
+    }
+
+    @Override
+    protected void setParent(ChangeLogSet parent) {
+        super.setParent(parent);
     }
 }

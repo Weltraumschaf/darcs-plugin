@@ -6,6 +6,7 @@
 package org.jvnet.hudson.plugins;
 
 import hudson.scm.ChangeLogSet;
+import hudson.model.AbstractBuild;
 
 import java.util.List;
 import java.util.Collections;
@@ -17,6 +18,15 @@ import java.util.Iterator;
  */
 public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
     private final List<DarcsChangeSet> changeSets;
+
+    public DarcsChangeSetList(AbstractBuild build, List<DarcsChangeSet> logs) {
+        super(build);
+        this.changeSets = Collections.unmodifiableList(logs);
+
+        for (DarcsChangeSet log : logs) {
+            log.setParent(this);
+        }
+    }
 
     @Override
     public boolean isEmptySet() {
