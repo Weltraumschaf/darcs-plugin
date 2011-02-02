@@ -157,11 +157,15 @@ public class DarcsScm extends SCM implements Serializable {
      */
     private int countPatches(AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, BuildListener listener) throws InterruptedException, IOException {
         ByteBuffer baos = new ByteBuffer();
-        launcher.launch()
-                .cmds(getDescriptor().getDarcsExe(), "changes", "--count", "--repodir=" + workspace)
-                .envs(build.getEnvironment(listener))
-                .stdout(baos);
-
+        ProcStarter proc = launcher.launch()
+                                   .cmds(getDescriptor().getDarcsExe(), "changes", "--count", "--repodir=" + workspace)
+                                   .envs(build.getEnvironment(listener))
+                                   .stdout(baos);
+        if (proc.join() != 0) {
+            listener.error("Failed to count patches in workspace repo!");
+            return 0;
+        }
+        
         return Integer.parseInt(baos.toString().trim());
     }
 
