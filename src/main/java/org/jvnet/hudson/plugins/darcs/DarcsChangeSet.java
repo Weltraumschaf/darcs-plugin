@@ -13,7 +13,7 @@ import org.kohsuke.stapler.export.Exported;
 
 /**
  *
- * @author sxs
+ * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsChangeSet extends ChangeLogSet.Entry {
     private String author;

@@ -14,7 +14,7 @@ import java.util.Iterator;
 
 /**
  *
- * @author sxs
+ * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
     private final List<DarcsChangeSet> changeSets;

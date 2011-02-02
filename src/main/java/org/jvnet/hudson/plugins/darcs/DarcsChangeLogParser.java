@@ -17,7 +17,7 @@ import org.xml.sax.SAXException;
 
 /**
  *
- * @author sxs
+ * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsChangeLogParser  extends ChangeLogParser {
 

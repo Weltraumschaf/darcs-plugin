@@ -43,7 +43,11 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.framework.io.ByteBuffer;
 
 /**
+ * Darcs is a patch based distributed version controll system.
  *
+ * @see http://darcs.net/
+ * 
+ * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsScm extends SCM implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -53,6 +57,9 @@ public class DarcsScm extends SCM implements Serializable {
      * Source repository URL from which we pull.
      */
     private final String source;
+    /**
+     * Whether to wipe the checked out repo.
+     */
     private final boolean clean;
 
     @DataBoundConstructor
@@ -69,6 +76,15 @@ public class DarcsScm extends SCM implements Serializable {
         return clean;
     }
 
+    /**
+     * Writes the cahngelog of the last numPatches to the changeLog file.
+     * 
+     * @param launcher
+     * @param numPatches
+     * @param workspace
+     * @param changeLog
+     * @throws InterruptedException
+     */
     private void getLog(Launcher launcher, int numPatches, FilePath workspace, File changeLog) throws InterruptedException {
         try {
             int ret;
@@ -81,7 +97,7 @@ public class DarcsScm extends SCM implements Serializable {
             ret = proc.join();
 
             if (ret != 0) {
-                logger.log(Level.WARNING, "bzr log -v -r returned {0}", ret);
+                logger.log(Level.WARNING, "darcs changes  --last=" + numPatches + " returned {0}", ret);
             } else {
                 FileOutputStream fos = new FileOutputStream(changeLog);
                 fos.write(baos.toByteArray());
@@ -121,6 +137,17 @@ public class DarcsScm extends SCM implements Serializable {
         }
     }
 
+    /**
+     * Counts the patches in an repo.
+     * 
+     * @param build
+     * @param launcher
+     * @param workspace
+     * @param listener
+     * @return int
+     * @throws InterruptedException
+     * @throws IOException
+     */
     private int countPatches(AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, BuildListener listener) throws InterruptedException, IOException {
         ByteBuffer baos = new ByteBuffer();
         launcher.launch()
@@ -131,6 +158,18 @@ public class DarcsScm extends SCM implements Serializable {
         return Integer.parseInt(baos.toString().trim());
     }
 
+    /**
+     * Pulls all patches from a remote repo in the workspace repo.
+     *
+     * @param build
+     * @param launcher
+     * @param workspace
+     * @param listener
+     * @param changelogFile
+     * @return boolean
+     * @throws InterruptedException
+     * @throws IOException
+     */
     private boolean pullRepo(AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, BuildListener listener, File changelogFile) throws InterruptedException, IOException {
         int preCnt = 0, postCnt = 0;
 
@@ -159,6 +198,17 @@ public class DarcsScm extends SCM implements Serializable {
         return true;
     }
 
+    /**
+     * Gets a fresh copy of a remote repo.
+     *
+     * @param build
+     * @param launcher
+     * @param workspace
+     * @param listener
+     * @param changelogFile
+     * @return boolean
+     * @throws InterruptedException
+     */
     private boolean getRepo(AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, BuildListener listener, File changelogFile) throws InterruptedException {
         try {
             workspace.deleteRecursive();
@@ -217,7 +267,10 @@ public class DarcsScm extends SCM implements Serializable {
     public DescriptorImpl getDescriptor() {
         return DescriptorImpl.DESCRIPTOR;
     }
-    
+
+    /**
+     * Inner class of the SCM descitopr.
+     */
     public static final class DescriptorImpl extends SCMDescriptor<DarcsScm> {
         @Extension
         public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
@@ -279,11 +332,5 @@ public class DarcsScm extends SCM implements Serializable {
                 }
             });
         }
-
-        /**
-         * UUID version string.
-         * This appears to be used for snapshot builds. See issue #1683
-         */
-        private static final Pattern UUID_VERSION_STRING = Pattern.compile("\\(version ([0-9a-f]+)");
     }
 }

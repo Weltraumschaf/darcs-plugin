@@ -9,7 +9,7 @@ import hudson.scm.SCMRevisionState;
 
 /**
  *
- * @author sxs
+ * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsRevisionState extends SCMRevisionState {
     @Override
