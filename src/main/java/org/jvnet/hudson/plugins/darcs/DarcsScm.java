@@ -45,6 +45,8 @@ import org.kohsuke.stapler.framework.io.ByteBuffer;
 /**
  * Darcs is a patch based distributed version controll system.
  *
+ * Contains the job configuration options as fields.
+ * 
  * @see http://darcs.net/
  * 
  * @author Sven Strittmatter <ich@weltraumschaf.de>
@@ -109,7 +111,7 @@ public class DarcsScm extends SCM implements Serializable {
             logger.log(Level.WARNING, "Failed to poll repository: ", e);
         }
     }
-    
+
     @Override
     public SCMRevisionState calcRevisionsFromBuild(AbstractBuild<?, ?> build, Launcher launcher, TaskListener listener) throws IOException, InterruptedException {
         PrintStream output = listener.getLogger();
@@ -242,11 +244,11 @@ public class DarcsScm extends SCM implements Serializable {
     }
 
     @Override
-    protected PollingResult compareRemoteRevisionWith(AbstractProject<?, ?> ap, Launcher lnchr, FilePath fp, TaskListener listener, SCMRevisionState scmrs) throws IOException, InterruptedException {
+    protected PollingResult compareRemoteRevisionWith(AbstractProject<?, ?> ap, Launcher launcher, FilePath fp, TaskListener listener, SCMRevisionState localRevisionState) throws IOException, InterruptedException {
         PrintStream output = listener.getLogger();
         output.printf("Getting current remote revision...");
 
-        final DarcsRevisionState remote = new DarcsRevisionState();
+        final DarcsRevisionState remoteRevisionState = new DarcsRevisionState();
         final Change change;
         
         if (true) { // is changed?
@@ -255,7 +257,7 @@ public class DarcsScm extends SCM implements Serializable {
             change = Change.NONE;
         }
 
-        return new PollingResult(scmrs, remote, change);
+        return new PollingResult(localRevisionState, remoteRevisionState, change);
     }
 
     @Override
@@ -270,6 +272,8 @@ public class DarcsScm extends SCM implements Serializable {
 
     /**
      * Inner class of the SCM descitopr.
+     *
+     * Contains the global configuration options as fields.
      */
     public static final class DescriptorImpl extends SCMDescriptor<DarcsScm> {
         @Extension
