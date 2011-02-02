@@ -7,22 +7,71 @@ package org.jvnet.hudson.plugins.darcs;
 
 import hudson.model.User;
 import hudson.scm.ChangeLogSet;
+import hudson.scm.EditType;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.kohsuke.stapler.export.Exported;
 
 /**
+ * Represents a change set (aka. a patch in darcs).
+ *
+ * <p>
+ * The object should be treated like an immutable object.
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsChangeSet extends ChangeLogSet.Entry {
+    /**
+     * The patch author
+     */
     private String author;
+    /**
+     * The patch date in UTC
+     */
     private String date;
+    /**
+     * Localized patch date.
+     */
     private String localDate;
+    /**
+     * Whether it is an inversion of an other patch.
+     */
     private boolean inverted;
+    /**
+     * The patches unique has.
+     */
     private String hash;
+    /**
+     * The patch name.
+     */
     private String name;
+    /**
+     * The patch long comment.
+     */
     private String comment;
+
+    /**
+     * Filles added by this patch.
+     */
+    private List<String> added    = new ArrayList<String>();
+    /**
+     * Filles deleted by this patch.
+     */
+    private List<String> deleted  = new ArrayList<String>();
+    /**
+     * Filles modified by this patch.
+     */
+    private List<String> modified = new ArrayList<String>();
+    
+    /**
+     * Filepaths affected by the patch.
+     * Lazily computed.
+     */
+    private volatile List<String> affectedPaths;
 
     @Exported
     public User getAuthor() {
@@ -59,6 +108,11 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
         return name;
     }
 
+    @Override
+    public String getMsg() {
+        return getName();
+    }
+
     public void setAuthor(String author) {
         this.author = author;
     }
@@ -89,12 +143,64 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
 
     @Override
     public Collection<String> getAffectedPaths() {
+        if (affectedPaths == null) {
+            List<String> r = new ArrayList<String>(added.size() + modified.size() + deleted.size());
+            r.addAll(added);
+            r.addAll(modified);
+            r.addAll(deleted);
+            affectedPaths = r;
+        }
+        
+        return affectedPaths;
+    }
+
+    /**
+     * Gets all the files that were added.
+     */
+    @Exported
+    public List<String> getAddedPaths() {
+        return added;
+    }
+
+    /**
+     * Gets all the files that were deleted.
+     */
+    @Exported
+    public List<String> getDeletedPaths() {
+        return deleted;
+    }
+
+    /**
+     * Gets all the files that were modified.
+     */
+    @Exported
+    public List<String> getModifiedPaths() {
+        return modified;
+    }
+
+    public List<String> getPaths(EditType kind) {
+        if (kind == EditType.ADD) {
+            return getAddedPaths();
+        }
+
+        if (kind == EditType.EDIT) {
+            return getModifiedPaths();
+        }
+
+        if (kind == EditType.DELETE) {
+            return getDeletedPaths();
+        }
+
         return null;
     }
 
-    @Override
-    public String getMsg() {
-        return getName();
+    /**
+     * Returns all three variations of {@link EditType}.
+     * Placed here to simplify access from views.
+     */
+    public List<EditType> getEditTypes() {
+        // return EditType.ALL;
+        return Arrays.asList(EditType.ADD, EditType.EDIT, EditType.DELETE);
     }
 
     @Override

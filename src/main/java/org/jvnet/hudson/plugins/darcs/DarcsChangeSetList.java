@@ -13,7 +13,8 @@ import java.util.Collections;
 import java.util.Iterator;
 
 /**
- *
+ * List of changeset that went into a particular build.
+ * 
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
