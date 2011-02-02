@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
-import java.util.regex.Pattern;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -128,7 +127,7 @@ public class DarcsScm extends SCM implements Serializable {
 
     @Override
     public boolean checkout(AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, BuildListener listener, File changelogFile) throws IOException, InterruptedException {
-        boolean canUpdate = workspace.act(new FileCallable<Boolean>() {
+        boolean existsRepoinWorkspace = workspace.act(new FileCallable<Boolean>() {
 
             private static final long serialVersionUID = 1L;
 
@@ -138,7 +137,7 @@ public class DarcsScm extends SCM implements Serializable {
             }
         });
 
-        if (canUpdate && !isClean()) {
+        if (existsRepoinWorkspace && !isClean()) {
             return pullRepo(build, launcher, workspace, listener, changelogFile);
         } else {
             return getRepo(build, launcher, workspace, listener, changelogFile);
@@ -179,6 +178,7 @@ public class DarcsScm extends SCM implements Serializable {
      * @throws IOException
      */
     private boolean pullRepo(AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, BuildListener listener, File changelogFile) throws InterruptedException, IOException {
+        logger.log(Level.INFO, "Pulling repo from: {0}", source);
         int preCnt = 0, postCnt = 0;
 
         try {
@@ -218,6 +218,8 @@ public class DarcsScm extends SCM implements Serializable {
      * @throws InterruptedException
      */
     private boolean getRepo(AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, BuildListener listener, File changelogFile) throws InterruptedException {
+        logger.log(Level.INFO, "Getting repo from: {0}", source);
+        
         try {
             workspace.deleteRecursive();
         } catch (IOException e) {
