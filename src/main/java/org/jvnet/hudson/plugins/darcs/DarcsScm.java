@@ -113,6 +113,12 @@ public class DarcsScm extends SCM implements Serializable {
     }
 
     @Override
+    public boolean supportsPolling() {
+        return false; // polling is not implemented yet
+    }
+
+
+    @Override
     public SCMRevisionState calcRevisionsFromBuild(AbstractBuild<?, ?> build, Launcher launcher, TaskListener listener) throws IOException, InterruptedException {
         PrintStream output = listener.getLogger();
         output.println("Getting local revision...");
