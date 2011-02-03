@@ -42,8 +42,6 @@
     </scm>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
         <!-- http://docs.codehaus.org/display/MAVENUSER/POM+Element+for+Source+File+Encoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <compileTarget>1.6</compileTarget>
@@ -115,7 +113,7 @@
     <distributionManagement>
         <site>
             <id>github-project-site</id>
-            <url>gitsite:git@github.com:weltraumschaf/hudson-darcs.git</url>
+            <url>gitsite:git@github.com/weltraumschaf/hudson-darcs.git</url>
         </site>
     </distributionManagement>
 
