@@ -15,7 +15,7 @@
           <a name="detail${loop.index}"></a>
           <div class="changeset-message">
             <b>
-              Changeset revno ${cs.patch} by ${cs.author} (Revision id: ${cs.hash}):
+              Changeset ptach ${cs.name} by ${cs.author} (hash: ${cs.hash}):
             </b><br/>
             ${cs.msgAnnotated}
           </div>

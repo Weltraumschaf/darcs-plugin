@@ -5,6 +5,8 @@
 
 package org.jvnet.hudson.plugins.darcs;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,19 +35,21 @@ public class DarcsSaxHandler extends DefaultHandler {
     }
 
     private DarcsChangelogTag currentTag;
+    private DarcsChangeSet currentChangeset;
     private boolean ready;
+    private List<DarcsChangeSet> changeSets;
 
     public DarcsSaxHandler() {
         super();
-        ready = false;
+        ready      = false;
+        changeSets = new ArrayList<DarcsChangeSet>();
     }
 
     public boolean isReady() { return ready; }
 
-//    @Override
-//    public void startDocument () {
-//	logger.log(Level.INFO, "Start XML document");
-//    }
+    public List<DarcsChangeSet> getChangeSets() {
+        return changeSets;
+    }
 
     @Override
     public void endDocument () {
@@ -79,42 +83,74 @@ public class DarcsSaxHandler extends DefaultHandler {
     @Override
     public void startElement(String uri, String name, String qName, Attributes atts) {
 	recognizeTag(qName);
-	logger.log(Level.INFO, "found tag: {0}", currentTag);
-	
+//	logger.log(Level.INFO, "found tag: {0}", currentTag);
+
+        if (DarcsChangelogTag.PATCH == currentTag) {
+//            logger.log(Level.INFO, "Create new changeset.");
+            currentChangeset = new DarcsChangeSet();
+            currentChangeset.setAuthor(atts.getValue("author"));
+            currentChangeset.setDate(atts.getValue("date"));
+            currentChangeset.setLocalDate(atts.getValue("local_date"));
+            currentChangeset.setHash(atts.getValue("hash"));
+
+            if (atts.getValue("inverted").equals("True")) {
+                currentChangeset.setInverted(true);
+            } else if (atts.getValue("inverted").equals("False")) {
+                currentChangeset.setInverted(false);
+            }
+        }
     }
 
     @Override
     public void endElement(String uri, String name, String qName) {
-	logger.log(Level.INFO, "End element: {0}",  qName);
+        recognizeTag(qName);
+
+        if (DarcsChangelogTag.PATCH == currentTag) {
+//            logger.log(Level.INFO, "Add changeset to changeset list.");
+            changeSets.add(currentChangeset);
+        }
+    }
+
+    private boolean isWhiteSpace(char c) {
+        if ('\n' == c) {
+            return true;
+        }
+
+        if ('\r' == c) {
+            return true;
+        }
+
+        if ('\t' == c) {
+            return true;
+        }
+
+        if (' ' == c) {
+            return true;
+        }
+        
+        return false;
     }
     
     @Override
     public void characters(char ch[], int start, int length) {
-	System.out.print("Characters:    \"");
+        String literal = "";
 
-	for (int i = start; i < start + length; i++) {
-	    switch (ch[i]) {
-                case '\\':
-//                    System.out.print("\\\\");
-                    break;
-                case '"':
-                    System.out.print("\\\"");
-                    break;
-                case '\n':
-//                    System.out.print("\\n");
-                    break;
-                case '\r':
-//                    System.out.print("\\r");
-                    break;
-                case '\t':
-//                    System.out.print("\\t");
-                    break;
-                default:
-                    System.out.print(ch[i]);
-                    break;
-                }
+        for (int i = start; i < start + length; i++) {
+            if (isWhiteSpace(ch[i])) {
+                continue;
+            }
+
+            literal += ch[i];
 	}
 
-        System.out.print("\"\n");
+        if (literal.equals("")) {
+            return;
+        }
+
+        if (DarcsChangelogTag.NAME == currentTag) {
+            currentChangeset.setName(literal);
+        } else if (DarcsChangelogTag.COMMENT == currentTag) {
+            currentChangeset.setComment(literal);
+        }
     }
 }

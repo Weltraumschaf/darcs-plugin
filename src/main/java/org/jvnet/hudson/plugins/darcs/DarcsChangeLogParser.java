@@ -35,7 +35,6 @@ public class DarcsChangeLogParser  extends ChangeLogParser {
     
     @Override
     public ChangeLogSet<? extends Entry> parse(AbstractBuild build, File changelogFile) throws IOException, SAXException {
-        List<DarcsChangeSet> entries = new ArrayList<DarcsChangeSet>();
         XMLReader       xr      = XMLReaderFactory.createXMLReader();
         DarcsSaxHandler handler = new DarcsSaxHandler();
         FileReader      r       = new FileReader(changelogFile);
@@ -44,7 +43,7 @@ public class DarcsChangeLogParser  extends ChangeLogParser {
 	xr.setErrorHandler(handler); 
         xr.parse(new InputSource(r));
 
-        return new DarcsChangeSetList(build, entries);
+        return new DarcsChangeSetList(build, handler.getChangeSets());
     }
 
 }

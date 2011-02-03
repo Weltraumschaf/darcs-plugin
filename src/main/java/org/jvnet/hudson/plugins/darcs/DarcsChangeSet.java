@@ -110,7 +110,7 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
 
     @Override
     public String getMsg() {
-        return getName();
+        return getComment();
     }
 
     public void setAuthor(String author) {
