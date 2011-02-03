@@ -32,14 +32,13 @@
 
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/weltraumschaf/hudson-darcs/issues</url>
+        <url>https://github.com/Weltraumschaf/hudson-darcs/issues</url>
     </issueManagement>
 
     <scm>
-        <connection>scm:git:git://github.com/weltraumschaf/hudson-darcs.git</connection>
-        <developerConnection>scm:git:git@github.com:weltraumschaf/hudson-darcs.git</developerConnection>
-        <!--<tag>HEAD</tag>
-        <url>https://github.com/Weltraumschaf/hudson-darcs/</url>-->
+        <connection>scm:git:git://github.com/Weltraumschaf/hudson-darcs.git</connection>
+        <developerConnection>scm:git:git@github.com:Weltraumschaf/hudson-darcs.git</developerConnection>
+        <url>https://github.com/Weltraumschaf/hudson-darcs/</url>
     </scm>
 
     <properties>
@@ -114,7 +113,7 @@
     <distributionManagement>
         <site>
             <id>github-project-site</id>
-			<url>gitsite:git@github.com/weltraumschaf/hudson-darcs</url>
+			<url>gitsite:git@github.com/Weltraumschaf/hudson-darcs</url>
         </site>
     </distributionManagement>
 
