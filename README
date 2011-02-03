@@ -1,1 +1,8 @@
-TBD
+Darcs Plugin for Hudson CI
+==========================
+
+TODO
+----
+- Add added, removed and modified paths to changeset
+- Implement DarcsRevisionState for polling
+- use org.jenkinsci.plugins
