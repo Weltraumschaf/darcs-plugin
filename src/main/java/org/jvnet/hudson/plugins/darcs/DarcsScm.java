@@ -91,7 +91,7 @@ public class DarcsScm extends SCM implements Serializable {
             int ret;
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ProcStarter proc = launcher.launch()
-                                       .cmds(getDescriptor().getDarcsExe(), "changes", "--xml-output", "--last=" + numPatches)
+                                       .cmds(getDescriptor().getDarcsExe(), "changes", "--xml-output", "--last=" + numPatches, "--summary")
                                        .envs(EnvVars.masterEnvVars)
                                        .stdout(baos)
                                        .pwd(workspace);
