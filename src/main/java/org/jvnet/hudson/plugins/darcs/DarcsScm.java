@@ -91,7 +91,7 @@ public class DarcsScm extends SCM implements Serializable {
             int ret;
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ProcStarter proc = launcher.launch()
-                                       .cmds(getDescriptor().getDarcsExe(), "changes", "--last=" + numPatches)
+                                       .cmds(getDescriptor().getDarcsExe(), "changes", "--xml-output", "--last=" + numPatches)
                                        .envs(EnvVars.masterEnvVars)
                                        .stdout(baos)
                                        .pwd(workspace);
@@ -187,8 +187,9 @@ public class DarcsScm extends SCM implements Serializable {
 
         try {
             preCnt = countPatches(build, launcher, workspace, listener);
+            logger.log(Level.INFO, "Count of patches pre pulling is {0}", preCnt);
             ProcStarter proc = launcher.launch()
-                                       .cmds(getDescriptor().getDarcsExe(), "pull", source, "--repodir=" + workspace )
+                                       .cmds(getDescriptor().getDarcsExe(), "pull", source, "--all", "--repodir=" + workspace )
                                        .envs(build.getEnvironment(listener))
                                        .stdout(listener.getLogger())
                                        .pwd(workspace);
@@ -200,6 +201,7 @@ public class DarcsScm extends SCM implements Serializable {
             }
 
             postCnt = countPatches(build, launcher, workspace, listener);
+            logger.log(Level.INFO, "Count of patches post pulling is {0}", preCnt);
             getLog(launcher, postCnt - preCnt, workspace, changelogFile);
         } catch (IOException e) {
             listener.error("Failed to pull");
