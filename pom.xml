@@ -14,7 +14,7 @@
     <packaging>hpi</packaging>
     <name>Hudson Darcs plugin</name>
     <description>This plugin Darcs SCM into Hudson.</description>
-    <url>http://wiki.hudson-ci.org/display/HUDSON/Darcs</url>
+    <url>https://weltraumschaf.github.com/hudson-darcs</url>
 
     <developers>
         <developer>
@@ -34,12 +34,12 @@
         <url>https://github.com/weltraumschaf/hudson-darcs/issues</url>
     </issueManagement>
 
-	<scm>
-		<connection>scm:git:git://github.com/Weltraumschaf/hudson-darcs.git</connection>
-		<developerConnection>scm:git:git@github.com:Weltraumschaf/hudson-darcs.git</developerConnection>
-		<!--<tag>HEAD</tag>
-		<url>https://github.com/Weltraumschaf/hudson-darcs/</url>-->
-	</scm>
+    <scm>
+        <connection>scm:git:git://github.com/weltraumschaf/hudson-darcs.git</connection>
+        <developerConnection>scm:git:git@github.com:weltraumschaf/hudson-darcs.git</developerConnection>
+        <!--<tag>HEAD</tag>
+        <url>https://github.com/Weltraumschaf/hudson-darcs/</url>-->
+    </scm>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -115,7 +115,7 @@
     <distributionManagement>
         <site>
             <id>github-project-site</id>
-            <url>gitsite:git@github.com/weltraumschaf/hudson-darcs</url>
+            <url>gitsite:git@github.com:weltraumschaf/hudson-darcs.git</url>
         </site>
     </distributionManagement>
 
