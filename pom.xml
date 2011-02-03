@@ -36,9 +36,9 @@
 
 	<scm>
 		<connection>scm:git:git://github.com/Weltraumschaf/hudson-darcs.git</connection>
-		<developerConnection>scm:git:git://github.com/Weltraumschaf/hudson-darcs.git</developerConnection>
-		<tag>HEAD</tag>
-		<url>https://github.com/Weltraumschaf/hudson-darcs/</url>
+		<developerConnection>scm:git:git@github.com:Weltraumschaf/hudson-darcs.git</developerConnection>
+		<!--<tag>HEAD</tag>
+		<url>https://github.com/Weltraumschaf/hudson-darcs/</url>-->
 	</scm>
 
     <properties>
