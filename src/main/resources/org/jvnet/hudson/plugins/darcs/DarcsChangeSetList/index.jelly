@@ -5,7 +5,7 @@
   <h2>Summary</h2>
   <ol>
     <j:forEach var="cs" items="${it.logs}">
-      <li><st:out value="${cs.msg}"/></li>
+      <li><st:out value="${cs.name}"/></li>
     </j:forEach>
   </ol>
   <table class="pane" style="border:none">
