@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.xml.sax.Attributes;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
@@ -83,10 +84,8 @@ public class DarcsSaxHandler extends DefaultHandler {
     @Override
     public void startElement(String uri, String name, String qName, Attributes atts) {
 	recognizeTag(qName);
-//	logger.log(Level.INFO, "found tag: {0}", currentTag);
 
         if (DarcsChangelogTag.PATCH == currentTag) {
-//            logger.log(Level.INFO, "Create new changeset.");
             currentChangeset = new DarcsChangeSet();
             currentChangeset.setAuthor(atts.getValue("author"));
             currentChangeset.setDate(atts.getValue("date"));
@@ -98,6 +97,8 @@ public class DarcsSaxHandler extends DefaultHandler {
             } else if (atts.getValue("inverted").equals("False")) {
                 currentChangeset.setInverted(false);
             }
+        } else {
+            logger.log(Level.INFO, "found tag: {0}", currentTag);
         }
     }
 
@@ -106,29 +107,21 @@ public class DarcsSaxHandler extends DefaultHandler {
         recognizeTag(qName);
 
         if (DarcsChangelogTag.PATCH == currentTag) {
-//            logger.log(Level.INFO, "Add changeset to changeset list.");
             changeSets.add(currentChangeset);
+            currentTag = null;
         }
     }
 
     private boolean isWhiteSpace(char c) {
-        if ('\n' == c) {
-            return true;
+        switch (c) {
+            case '\n':
+            case '\r':
+            case '\t':
+            case ' ':
+                return true;
+            default:
+                return false;
         }
-
-        if ('\r' == c) {
-            return true;
-        }
-
-        if ('\t' == c) {
-            return true;
-        }
-
-        if (' ' == c) {
-            return true;
-        }
-        
-        return false;
     }
     
     @Override
@@ -147,16 +140,27 @@ public class DarcsSaxHandler extends DefaultHandler {
             return;
         }
 
-        if (DarcsChangelogTag.NAME == currentTag) {
-            currentChangeset.setName(literal);
-        } else if (DarcsChangelogTag.COMMENT == currentTag) {
-            currentChangeset.setComment(literal);
-        } else if (DarcsChangelogTag.MODIFY_FILE == currentTag) {
-            currentChangeset.getModifiedPaths().add(literal);
-        } else if (DarcsChangelogTag.REMOVED_LINES == currentTag) {
-            currentChangeset.getDeletedPaths().add(literal);
-        } else if (DarcsChangelogTag.ADDED_LINES == currentTag) {
-            currentChangeset.getAddedPaths().add(literal);
+        switch (currentTag) {
+            case NAME:
+                currentChangeset.setName(literal);
+                break;
+            case COMMENT:
+                currentChangeset.setComment(literal);
+                break;
+            case ADD_FILE:
+                currentChangeset.getAddedPaths().add(literal);
+                break;
+            case REMOVE_FILE:
+                currentChangeset.getDeletedPaths().add(literal);
+                break;
+            case MODIFY_FILE:
+                currentChangeset.getModifiedPaths().add(literal);
+                break;
         }
+    }
+
+    @Override
+    public void error(SAXParseException saxpe) {
+        logger.log(Level.WARNING, saxpe.toString());
     }
 }
