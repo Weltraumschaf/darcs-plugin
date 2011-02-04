@@ -151,6 +151,12 @@ public class DarcsSaxHandler extends DefaultHandler {
             currentChangeset.setName(literal);
         } else if (DarcsChangelogTag.COMMENT == currentTag) {
             currentChangeset.setComment(literal);
+        } else if (DarcsChangelogTag.MODIFY_FILE == currentTag) {
+            currentChangeset.getModifiedPaths().add(literal);
+        } else if (DarcsChangelogTag.REMOVED_LINES == currentTag) {
+            currentChangeset.getDeletedPaths().add(literal);
+        } else if (DarcsChangelogTag.ADDED_LINES == currentTag) {
+            currentChangeset.getAddedPaths().add(literal);
         }
     }
 }

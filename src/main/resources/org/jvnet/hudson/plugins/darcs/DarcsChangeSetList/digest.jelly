@@ -14,10 +14,8 @@
       Changes
       <ol>
         <j:forEach var="cs" items="${it.logs}" varStatus="loop">
-          <li>Patch: ${cs.name}
-            ${cs.author}
-            (<a href="changes#detail${loop.index}">detail</a>
-            <j:text>)</j:text>
+          <li>Patch: ${cs.name} by ${cs.author}
+            (<a href="changes#detail${loop.index}">detail</a>)
           </li>
         </j:forEach>
       </ol>
