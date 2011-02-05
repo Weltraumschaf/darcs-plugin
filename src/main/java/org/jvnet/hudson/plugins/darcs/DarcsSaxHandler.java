@@ -102,8 +102,6 @@ public class DarcsSaxHandler extends DefaultHandler {
             } else if (atts.getValue("inverted").equals("False")) {
                 currentChangeset.setInverted(false);
             }
-        } else {
-            logger.log(Level.INFO, "found tag: {0}", currentTag);
         }
     }
 
