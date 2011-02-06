@@ -6,6 +6,7 @@
 package org.jvnet.hudson.plugins.darcs.browser;
 
 import org.jvnet.hudson.plugins.darcs.DarcsChangeSet;
+import org.jvnet.hudson.plugins.darcs.DarcsChangeSet.Path;
 
 import java.io.IOException;
 import java.net.URL;
@@ -69,8 +70,8 @@ public class DarcsWeb extends RepositoryBrowser<DarcsChangeSet> {
         if (path.getEditType().equals(EditType.DELETE)) {
             return getDiffLinkRegardlessOfEditType(path);
         } else {
-            final String spec = "blob/" + path.getChangeSet().getId() + "/" + path.getPath();
-            return new URL(url, url.getPath() + spec);
+//            final String spec = "blob/" + path.getChangeSet().getId() + "/" + path.getPath();
+            return new URL(url, url.getPath() /*+ spec*/);
         }
     }
 
@@ -89,8 +90,6 @@ public class DarcsWeb extends RepositoryBrowser<DarcsChangeSet> {
         if (path.getSrc() == null) { return null; }
 
         if (path.getDst() == null) { return null; }
-
-        if (path.getChangeSet().getParentCommit() == null) { return null; }
 
         return getDiffLinkRegardlessOfEditType(path);
     }
