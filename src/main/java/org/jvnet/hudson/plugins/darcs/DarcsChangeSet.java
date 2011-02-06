@@ -12,6 +12,7 @@ package org.jvnet.hudson.plugins.darcs;
 
 import hudson.model.User;
 import hudson.scm.ChangeLogSet;
+import hudson.scm.ChangeLogSet.AffectedFile;
 import hudson.scm.EditType;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
 
 /**
  * Represents a change set (aka. a patch in darcs).
@@ -211,5 +213,52 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
     @Override
     protected void setParent(ChangeLogSet parent) {
         super.setParent(parent);
+    }
+
+    @ExportedBean(defaultVisibility=999)
+    public static class Path implements AffectedFile {
+
+        private String src;
+        private String dst;
+        private char action;
+        private String path;
+        private DarcsChangeSet changeSet;
+
+        private Path(String source, String destination, char action, String filePath, DarcsChangeSet changeSet) {
+            this.src       = source;
+            this.dst       = destination;
+            this.action    = action;
+            this.path      = filePath;
+            this.changeSet = changeSet;
+        }
+
+        public String getSrc() {
+            return src;
+        }
+
+        public String getDst() {
+            return dst;
+        }
+
+        @Exported(name="file")
+        public String getPath() {
+            return path;
+        }
+
+        public DarcsChangeSet getChangeSet() {
+            return changeSet;
+        }
+
+        @Exported
+        public EditType getEditType() {
+            switch (action) {
+                case 'A':
+                    return EditType.ADD;
+                case 'R':
+                    return EditType.DELETE;
+                default:
+                    return EditType.EDIT;
+            }
+        }
     }
 }
