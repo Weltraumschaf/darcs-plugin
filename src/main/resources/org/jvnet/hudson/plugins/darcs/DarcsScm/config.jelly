@@ -19,5 +19,5 @@
         </f:entry>
     </f:advanced>
 
-    <t:listScmBrowsers name="git.browser"/>
+    <t:listScmBrowsers name="darcs.browser"/>
 </j:jelly>
