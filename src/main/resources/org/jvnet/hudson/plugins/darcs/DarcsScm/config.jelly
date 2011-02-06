@@ -15,7 +15,9 @@
     
     <f:advanced>
         <f:entry title="${%Clean Build}" help="/plugin/darcs/clean.html">
-            <f:checkbox name="darcs.clean" checked="${instance.clean}" />
+            <f:checkbox name="darcs.clean" checked="${instance.clean}"/>
         </f:entry>
     </f:advanced>
+
+    <t:listScmBrowsers name="git.browser"/>
 </j:jelly>
