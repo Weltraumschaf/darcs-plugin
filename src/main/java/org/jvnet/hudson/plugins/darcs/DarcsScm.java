@@ -10,6 +10,8 @@
 
 package org.jvnet.hudson.plugins.darcs;
 
+import org.jvnet.hudson.plugins.darcs.browser.DarcsRepositoryBrowser;
+
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
@@ -71,11 +73,17 @@ public class DarcsScm extends SCM implements Serializable {
      * Whether to wipe the checked out repo.
      */
     private final boolean clean;
+    private DarcsRepositoryBrowser browser;
+
+    public DarcsScm(String source) {
+        this(source, false, null);
+    }
 
     @DataBoundConstructor
-    public DarcsScm(String source, boolean clean) {
-        this.source = source;
-        this.clean  = clean;
+    public DarcsScm(String source, boolean clean, DarcsRepositoryBrowser browser) {
+        this.source  = source;
+        this.clean   = clean;
+        this.browser = browser;
     }
 
     public String getSource() {
@@ -120,6 +128,11 @@ public class DarcsScm extends SCM implements Serializable {
         }
     }
 
+    @Override
+    public DarcsRepositoryBrowser getBrowser() {
+        return browser;
+    }
+    
     @Override
     public boolean supportsPolling() {
         return false; // polling is not implemented yet
