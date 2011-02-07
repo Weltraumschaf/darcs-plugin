@@ -130,10 +130,10 @@ public class DarcsScm extends SCM implements Serializable {
         }
     }
 
-    @Override
-    public DarcsRepositoryBrowser getBrowser() {
-        return browser;
-    }
+//    @Override
+//    public DarcsRepositoryBrowser getBrowser() {
+//        return browser;
+//    }
     
     @Override
     public boolean supportsPolling() {
