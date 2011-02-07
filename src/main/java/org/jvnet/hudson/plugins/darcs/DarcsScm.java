@@ -27,6 +27,7 @@ import hudson.remoting.VirtualChannel;
 import hudson.scm.ChangeLogParser;
 import hudson.scm.PollingResult;
 import hudson.scm.PollingResult.Change;
+import hudson.scm.RepositoryBrowsers;
 import hudson.scm.SCM;
 import hudson.scm.SCMRevisionState;
 import hudson.scm.SCMDescriptor;
@@ -333,6 +334,10 @@ public class DarcsScm extends SCM implements Serializable {
         @Override
         public SCM newInstance(StaplerRequest req, JSONObject formData) throws FormException {
             DarcsScm scm = req.bindJSON(DarcsScm.class, formData);
+            scm.browser  = RepositoryBrowsers.createInstance(DarcsRepositoryBrowser.class,
+                                                             req,
+                                                             formData,
+                                                             "browser");
             
             return scm;
         }

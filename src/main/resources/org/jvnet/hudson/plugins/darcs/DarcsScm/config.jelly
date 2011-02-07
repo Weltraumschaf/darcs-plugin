@@ -18,6 +18,6 @@
             <f:checkbox name="darcs.clean" checked="${instance.clean}"/>
         </f:entry>
     </f:advanced>
-
+    
     <t:listScmBrowsers name="darcs.browser"/>
 </j:jelly>

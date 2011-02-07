@@ -35,16 +35,33 @@ import org.kohsuke.stapler.StaplerRequest;
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsWeb extends DarcsRepositoryBrowser {
+    public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
+    
     private static final long serialVersionUID = 1L;
     private final URL url;
+    private final String repo;
 
     @DataBoundConstructor
-    public DarcsWeb(String url) throws MalformedURLException {
-        this.url = new URL(url);
+    public DarcsWeb(URL url, String repo) throws MalformedURLException {
+        this.url  = normalizeToEndWithSlash(url);
+        this.repo = repo;
+    }
+    
+    public DarcsWeb(String url, String repo) throws MalformedURLException {
+        this(new URL(url), repo);
+    }
+
+    @Override
+    public Descriptor<RepositoryBrowser<?>> getDescriptor() {
+        return DESCRIPTOR;
     }
 
     public URL getUrl() {
         return url;
+    }
+
+    public String getRepo() {
+        return repo;
     }
 
     @Override
@@ -118,7 +135,8 @@ public class DarcsWeb extends DarcsRepositoryBrowser {
     }
 
     @Extension
-    public static class DarcsWebDescriptor extends Descriptor<RepositoryBrowser<?>> {
+    public static class DescriptorImpl extends Descriptor<RepositoryBrowser<?>> {
+        @Override
         public String getDisplayName() {
             return "darcsweb";
         }

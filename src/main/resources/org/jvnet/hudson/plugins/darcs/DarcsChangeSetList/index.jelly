@@ -11,8 +11,11 @@
 <!--
   Displays Darcs change log.
 -->
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+         xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+    <j:set var="browser" value="${darcs.build.parent.scm.effectiveBrowser}"/>
     <h2>Summary</h2>
+
     <ol>
         <j:forEach var="cs" items="${it.logs}">
             <li>
@@ -20,13 +23,23 @@
             </li>
         </j:forEach>
     </ol>
+
     <table class="pane" style="border:none">
         <j:forEach var="cs" items="${it.logs}" varStatus="loop">
             <tr class="pane">
                 <td colspan="2" class="changeset">
                     <a name="detail${loop.index}"></a>
                     <div class="changeset-message">
-                        <strong>Patch ${cs.name} by ${cs.author} (hash: ${cs.hash}):</strong>
+                        <j:set var="cslink" value="${browser.getChangeSetLink(cs)}"/>
+                        <strong>Patch
+                        <j:if test="${cslink!=null}">
+                            <a href="${cslink}">${cs.name}</a>
+                        </j:if>
+                        <j:if test="${cslink==null}">
+                            ${cs.name}
+                        </j:if> 
+                        by <a href="${rootURL}/${cs.author.url}/">${cs.author}</a>
+                        (hash: ${cs.hash}):</strong>
                         <p>${cs.msgAnnotated}</p>
                     </div>
                 </td>
