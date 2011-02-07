@@ -25,7 +25,17 @@
             Changes
             <ol>
                 <j:forEach var="cs" items="${it.logs}" varStatus="loop">
-                    <li>Patch: ${cs.name} by ${cs.author} (<a href="changes#detail${loop.index}">detail</a>)</li>
+                    <j:set var="cslink" value="${browser.getChangeSetLink(cs)}"/>
+                    <li>Patch:
+                        <j:if test="${cslink!=null}">
+                            <a href="${cslink}">${cs.name}</a>
+                        </j:if>
+                        <j:if test="${cslink==null}">
+                            ${cs.name}
+                        </j:if>
+                        by <a href="${rootURL}/${cs.author.url}/">${cs.author}</a>
+                        (<a href="changes#detail${loop.index}">detail</a>)
+                    </li>
                 </j:forEach>
             </ol>
         </j:otherwise>

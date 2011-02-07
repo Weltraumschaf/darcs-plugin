@@ -8,5 +8,5 @@
     you can buy me a beer in return.
 -->
 <div>
-  This plugin integrates the <a href="http://darcs.net/">Darcs</a> SCM into hudson.
+    This plugin integrates the <a href="http://darcs.net/">Darcs</a> SCM into hudson.
 </div>

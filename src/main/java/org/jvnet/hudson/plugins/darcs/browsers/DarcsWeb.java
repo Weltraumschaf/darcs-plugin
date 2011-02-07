@@ -16,8 +16,8 @@ import org.jvnet.hudson.plugins.darcs.DarcsChangeSet.Path;
 import java.io.IOException;
 import java.net.URL;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Collections;
+//import java.util.ArrayList;
+//import java.util.Collections;
 
 import hudson.scm.EditType;
 import hudson.scm.RepositoryBrowser;
@@ -78,7 +78,8 @@ public class DarcsWeb extends DarcsRepositoryBrowser {
             return getDiffLinkRegardlessOfEditType(path);
         } else {
 //            final String spec = "blob/" + path.getChangeSet().getId() + "/" + path.getPath();
-            return new URL(url, url.getPath() /*+ spec*/);
+//            return new URL(url, url.getPath() /*+ spec*/);
+            return new URL("");
         }
     }
 
@@ -109,18 +110,19 @@ public class DarcsWeb extends DarcsRepositoryBrowser {
      * @throws IOException
      */
     private URL getDiffLinkRegardlessOfEditType(Path path) throws IOException {
-        final DarcsChangeSet changeSet = path.getChangeSet();
-        final ArrayList<String> affectedPaths = new ArrayList<String>(changeSet.getAffectedPaths());
-        // Github seems to sort the output alphabetically by the path.
-        Collections.sort(affectedPaths);
-        final String pathAsString = path.getPath();
-        final int i = Collections.binarySearch(affectedPaths, pathAsString);
-        assert i >= 0;
-        return new URL(getChangeSetLink(changeSet), "#diff-" + String.valueOf(i));
+//        final DarcsChangeSet changeSet = path.getChangeSet();
+//        final ArrayList<String> affectedPaths = new ArrayList<String>(changeSet.getAffectedPaths());
+//        // Github seems to sort the output alphabetically by the path.
+//        Collections.sort(affectedPaths);
+//        final String pathAsString = path.getPath();
+//        final int i = Collections.binarySearch(affectedPaths, pathAsString);
+//        assert i >= 0;
+//        return new URL(getChangeSetLink(changeSet), "#diff-" + String.valueOf(i));
+        return new URL("");
     }
 
     @Extension
-    public static class DescriptorImpl extends Descriptor<RepositoryBrowser<?>> {
+    public static final class DescriptorImpl extends Descriptor<RepositoryBrowser<?>> {
         public DescriptorImpl() {
             super(DarcsWeb.class);
         }

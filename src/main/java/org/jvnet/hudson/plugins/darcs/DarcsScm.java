@@ -18,6 +18,7 @@ import hudson.FilePath;
 import hudson.FilePath.FileCallable;
 import hudson.Launcher;
 import hudson.Launcher.ProcStarter;
+import hudson.Util;
 import hudson.model.Hudson;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
@@ -316,7 +317,6 @@ public class DarcsScm extends SCM implements Serializable {
         @Extension
         public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
         private String darcsExe;
-        private transient String version;
 
         private DescriptorImpl() {
             super(DarcsScm.class, null);
@@ -344,8 +344,7 @@ public class DarcsScm extends SCM implements Serializable {
 
         @Override
         public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
-            darcsExe = req.getParameter("darcs.darcsExe");
-            version  = null;
+            darcsExe = Util.fixEmpty(req.getParameter("darcs.darcsExe").trim());
             save();
 
             return true;
