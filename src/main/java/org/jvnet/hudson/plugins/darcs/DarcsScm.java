@@ -10,7 +10,7 @@
 
 package org.jvnet.hudson.plugins.darcs;
 
-import org.jvnet.hudson.plugins.darcs.browser.DarcsRepositoryBrowser;
+import org.jvnet.hudson.plugins.darcs.browsers.DarcsRepositoryBrowser;
 
 import hudson.EnvVars;
 import hudson.Extension;

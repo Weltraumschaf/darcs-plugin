@@ -8,7 +8,7 @@
  * you can buy me a beer in return.
  */
 
-package org.jvnet.hudson.plugins.darcs.browser;
+package org.jvnet.hudson.plugins.darcs.browsers;
 
 import org.jvnet.hudson.plugins.darcs.DarcsChangeSet;
 import org.jvnet.hudson.plugins.darcs.DarcsChangeSet.Path;
@@ -19,23 +19,18 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import net.sf.json.JSONObject;
-
 import hudson.scm.EditType;
 import hudson.scm.RepositoryBrowser;
-import hudson.scm.browsers.QueryBuilder;
 import hudson.Extension;
 import hudson.model.Descriptor;
 
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.StaplerRequest;
 
 /**
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsWeb extends DarcsRepositoryBrowser {
-    public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
     
     private static final long serialVersionUID = 1L;
     private final URL url;
@@ -51,11 +46,6 @@ public class DarcsWeb extends DarcsRepositoryBrowser {
         this(new URL(url), repo);
     }
 
-    @Override
-    public Descriptor<RepositoryBrowser<?>> getDescriptor() {
-        return DESCRIPTOR;
-    }
-
     public URL getUrl() {
         return url;
     }
@@ -64,21 +54,16 @@ public class DarcsWeb extends DarcsRepositoryBrowser {
         return repo;
     }
 
-    @Override
-    public URL getChangeSetLink(DarcsChangeSet changeSet) throws IOException {
-        String urlPart = param().add("a=annotate_shade;")
-                                .add("r=REPONAME")
-                                .add("h=" + changeSet.getHash())
-                                .add("f=FILENAMS")
-                                .toString();
-        
-        return new URL(url, url.getPath() + urlPart);
+    private String getBaseUrlString() {
+        return String.format("%scgi-bin/darcsweb.cgi", this.url);
     }
 
-    private QueryBuilder param() {
-        return new QueryBuilder(url.getQuery());
+    @Override
+    public URL getChangeSetLink(DarcsChangeSet changeSet) throws IOException {
+        return new URL(String.format("%s?r=%s;a=annotate_shade;h=%",
+                                     getBaseUrlString(), this.repo, changeSet.getHash()));
     }
-    
+
     /**
      * Determines the link to the diff between the version
      * in the specified revision of {@link GitChangeSet.Path} to its previous version.
@@ -136,14 +121,13 @@ public class DarcsWeb extends DarcsRepositoryBrowser {
 
     @Extension
     public static class DescriptorImpl extends Descriptor<RepositoryBrowser<?>> {
+        public DescriptorImpl() {
+            super(DarcsWeb.class);
+        }
+        
         @Override
         public String getDisplayName() {
             return "darcsweb";
         }
-
-        @Override
-	public DarcsWeb newInstance(StaplerRequest req, JSONObject jsonObject) throws FormException {
-		return req.bindParameters(DarcsWeb.class, "darcsweb.");
-	}
     }
 }

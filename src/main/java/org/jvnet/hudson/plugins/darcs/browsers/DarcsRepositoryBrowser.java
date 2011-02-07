@@ -8,7 +8,7 @@
  * you can buy me a beer in return.
  */
 
-package org.jvnet.hudson.plugins.darcs.browser;
+package org.jvnet.hudson.plugins.darcs.browsers;
 
 import org.jvnet.hudson.plugins.darcs.DarcsChangeSet;
 
@@ -19,5 +19,5 @@ import hudson.scm.RepositoryBrowser;
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public abstract class DarcsRepositoryBrowser extends RepositoryBrowser<DarcsChangeSet> {
-
+    private static final long serialVersionUID = 1L;
 }
