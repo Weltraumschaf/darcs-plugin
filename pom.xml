@@ -14,9 +14,14 @@
     <version>0.2.1</version>
     <packaging>hpi</packaging>
     <name>Hudson Darcs plugin</name>
-    <description>This plugin Darcs SCM into Hudson.</description>
+    <description>This plugin integrates the Darcs SCM into Hudson.</description>
     <url>https://weltraumschaf.github.com/hudson-darcs</url>
 
+    <organization>
+        <name>weltraumschaf.de</name>
+        <url>http://www.weltraumschaf.de</url>
+    </organization>
+    
     <developers>
         <developer>
             <id>Weltraumschaf</id>
@@ -25,11 +30,21 @@
         </developer>
     </developers>
 
-    <organization>
-        <name>weltraumschaf.de</name>
-        <url>http://www.weltraumschaf.de</url>
-    </organization>
-
+    <licenses>
+        <license>
+            <name>The Beer Ware License (Revision 42)</name>
+            <url>http://www.weltraumschaf.de/the-beer-ware-license.txt</url>
+            <distribution>repo</distribution>
+            <comments>
+                "THE BEER-WARE LICENSE" (Revision 42):
+                "Sven Strittmatter" &gt;ich(at)weltraumschaf(dot)de&lt; wrote this file.
+                As long as you retain this notice you can do whatever you want with
+                this stuff. If we meet some day, and you think this stuff is worth it,
+                you can buy me a beer in return.
+            </comments>
+        </license>
+    </licenses>
+    
     <issueManagement>
         <system>GitHub</system>
         <url>https://github.com/Weltraumschaf/hudson-darcs/issues</url>
