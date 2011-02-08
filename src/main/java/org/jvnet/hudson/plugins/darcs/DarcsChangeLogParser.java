@@ -20,10 +20,6 @@ import java.io.File;
 import java.io.FileReader;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -36,7 +32,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsChangeLogParser  extends ChangeLogParser {
-    private static final Logger logger = Logger.getLogger(DarcsChangeLogParser.class.getName());
     
     @Override
     public ChangeLogSet<? extends Entry> parse(AbstractBuild build, File changelogFile) throws IOException, SAXException {

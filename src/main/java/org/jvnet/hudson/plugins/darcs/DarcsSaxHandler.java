@@ -36,6 +36,7 @@ public class DarcsSaxHandler extends DefaultHandler {
         MODIFY_FILE,
         ADD_FILE,
         REMOVE_FILE,
+        MOVE_FILE,
         ADDED_LINES,
         REMOVED_LINES;
     }
@@ -79,6 +80,8 @@ public class DarcsSaxHandler extends DefaultHandler {
             currentTag = DarcsChangelogTag.ADD_FILE;
         } else if ("remove_file".equals(tagName)) {
             currentTag = DarcsChangelogTag.REMOVE_FILE;
+        } else if ("move".equals(tagName)) {
+            currentTag = DarcsChangelogTag.MOVE_FILE;
         } else if ("added_lines".equals(tagName)) {
             currentTag = DarcsChangelogTag.ADDED_LINES;
         } else if ("removed_lines".equals(tagName)) {
@@ -102,6 +105,9 @@ public class DarcsSaxHandler extends DefaultHandler {
             } else if (atts.getValue("inverted").equals("False")) {
                 currentChangeset.setInverted(false);
             }
+        } else if (DarcsChangelogTag.MOVE_FILE == currentTag) {
+            currentChangeset.getDeletedPaths().add(atts.getValue("from"));
+            currentChangeset.getAddedPaths().add(atts.getValue("to"));
         }
     }
 
