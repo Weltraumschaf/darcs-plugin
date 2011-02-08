@@ -3,6 +3,7 @@ Darcs Plugin for Hudson CI
 
 TODO
 ----
-- Implement DarcsRevisionState for polling
+- write unittests
+- implement DarcsRevisionState for polling
 - use org.jenkinsci.plugins
 - implement darcs web as code browser. url format http://darcs.web.de/cgi-bin/darcsweb.cgi?r=REPONAME;a=annotate_shade;h=HASH;f=FILE
