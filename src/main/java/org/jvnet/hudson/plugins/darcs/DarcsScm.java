@@ -75,7 +75,7 @@ public class DarcsScm extends SCM implements Serializable {
      * Whether to wipe the checked out repo.
      */
     private final boolean clean;
-    private DarcsRepositoryBrowser browser;
+    DarcsRepositoryBrowser browser;
 
     public DarcsScm(String source) {
         this(source, false, null);
@@ -94,6 +94,11 @@ public class DarcsScm extends SCM implements Serializable {
 
     public boolean isClean() {
         return clean;
+    }
+
+    @Override
+    public DarcsRepositoryBrowser getBrowser() {
+       return browser;
     }
 
     /**

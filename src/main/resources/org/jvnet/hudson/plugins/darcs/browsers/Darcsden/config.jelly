@@ -9,8 +9,8 @@
 -->
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
          xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-    <f:entry title="URL" help="/plugin/darcs/help/browsers/darcsweb/url.html">
-        <f:textbox name="darcsweb.darcs.url" value="${browser.url}"
-                   checkUrl="'${rootURL}/repositoryBrowser/DarcsWeb/check?value='+escape(this.value)"/>
+    <f:entry title="URL" help="/plugin/darcs/help/browsers/darcsden/url.html">
+        <f:textbox name="darcsden.darcs.url" value="${browser.url}"
+                   checkUrl="'${rootURL}/repositoryBrowser/Darcsden/check?value='+escape(this.value)"/>
     </f:entry>
 </j:jelly>
