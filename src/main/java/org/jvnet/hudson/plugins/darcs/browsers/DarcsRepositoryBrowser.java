@@ -11,7 +11,8 @@
 package org.jvnet.hudson.plugins.darcs.browsers;
 
 import org.jvnet.hudson.plugins.darcs.DarcsChangeSet;
-
+import java.io.IOException;
+import java.net.URL;
 import hudson.scm.RepositoryBrowser;
 
 /**
@@ -19,5 +20,14 @@ import hudson.scm.RepositoryBrowser;
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public abstract class DarcsRepositoryBrowser extends RepositoryBrowser<DarcsChangeSet> {
+    /**
+     * Determines the link to a single file under Perforce.
+     * This page should display all the past revisions of this file, etc.
+     *
+     * @return
+     *      null if the browser doesn't have any suitable URL.
+     */
+    public abstract URL getFileLink(DarcsChangeSet.Path file) throws IOException;
+    
     private static final long serialVersionUID = 1L;
 }

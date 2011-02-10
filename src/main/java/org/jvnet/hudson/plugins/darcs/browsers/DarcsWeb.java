@@ -67,10 +67,13 @@ public class DarcsWeb extends DarcsRepositoryBrowser {
 //        return String.format("%scgi-bin/darcsweb.cgi", this.url);
 //    }
 
-    @Override
     public URL getChangeSetLink(DarcsChangeSet changeSet) throws IOException {
 //        return new URL(String.format("%s?r=%s;a=annotate_shade;h=%",
 //                                     getBaseUrlString(), this.repo, changeSet.getHash()));
+        return new URL("");
+    }
+
+    public URL getFileLink(DarcsChangeSet.Path file) throws IOException {
         return new URL("");
     }
 

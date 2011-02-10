@@ -41,11 +41,14 @@ public class Darcsden extends DarcsRepositoryBrowser {
         this.url = normalizeToEndWithSlash(url);
     }
     
-    @Override
     public URL getChangeSetLink(DarcsChangeSet e) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public URL getFileLink(DarcsChangeSet.Path file) throws IOException {
+        return new URL("");
+    }
+    
     @Extension
     public static class DescriptorImpl extends Descriptor<RepositoryBrowser<?>> {
 
@@ -58,27 +61,27 @@ public class Darcsden extends DarcsRepositoryBrowser {
             return new FormValidation.URLCheck() {
                 @Override
                 protected FormValidation check() throws IOException, ServletException {
-                    String url = Util.fixEmpty(value);
-
-                    if (url == null) {
-                        return FormValidation.ok();
-                    }
-
-                    if (!url.endsWith("/")) {
-                        url += '/';
-                    }
-
-                    if (!URL_PATTERN.matcher(url).matches()) {
-                        return FormValidation.errorWithMarkup("The URL should end like <tt>.../browse/foobar/</tt>");
-                    }
-
-                    try {
-                        if (!findText(open(new URL(url)), "FishEye")) {
-                            return FormValidation.error("This is a valid URL but it doesn't look like FishEye");
-                        }
-                    } catch (IOException e) {
-                        handleIOException(url, e);
-                    }
+//                    String url = Util.fixEmpty(value);
+//
+//                    if (url == null) {
+//                        return FormValidation.ok();
+//                    }
+//
+//                    if (!url.endsWith("/")) {
+//                        url += '/';
+//                    }
+//
+//                    if (!URL_PATTERN.matcher(url).matches()) {
+//                        return FormValidation.errorWithMarkup("The URL should end like <tt>.../browse/foobar/</tt>");
+//                    }
+//
+//                    try {
+//                        if (!findText(open(new URL(url)), "FishEye")) {
+//                            return FormValidation.error("This is a valid URL but it doesn't look like FishEye");
+//                        }
+//                    } catch (IOException e) {
+//                        handleIOException(url, e);
+//                    }
 
                     return FormValidation.ok();
                 }
