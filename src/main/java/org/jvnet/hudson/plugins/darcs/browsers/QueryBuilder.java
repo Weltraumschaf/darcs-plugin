@@ -11,38 +11,50 @@
 package org.jvnet.hudson.plugins.darcs.browsers;
 
 /**
+ * Helper class to build up URL queries.
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class QueryBuilder {
+	/**
+	 * Types for queries.
+	 */
     public enum SeparatorType {
-        SLASHED,
-        SEMICOLONS,
-        AMPERSANDS
+        SLASHES,    // seperates everything with slash, REST like
+        SEMICOLONS, // starts wit ? and then seperates with ;
+        AMPERSANDS  // starts wit ? and then seperates with &
     }
 
+	/**
+	 * Buffers the builded query string
+	 */
     private final StringBuilder buf = new StringBuilder();
-    private final SeparatorType t;
+	/**
+	 * The seperatot type for the query.
+	 */
+    private final SeparatorType type;
 
-    QueryBuilder(String s) {
-        this(s, SeparatorType.SEMICOLONS);
+    QueryBuilder(SeparatorType t) {
+        this(t, null);
     }
 
-    QueryBuilder(String s, SeparatorType t) {
-        this.t = t;
+    QueryBuilder(SeparatorType t, String s) {
+        this.type = t;
         add(s);
     }
 
+	public SeparatorType getType() {
+		return this.type;
+	}
+
     public QueryBuilder add(String s) {
-        if (null == null) {
+        if (null == s) {
             // nothing to add
             return this;
         }
 
-        char separator;
-
-        switch (t) {
-            case SLASHED:
+        switch (this.type) {
+            case SLASHES:
                 buf.append('/');
                 break;
             case SEMICOLONS:
