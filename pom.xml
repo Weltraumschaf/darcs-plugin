@@ -11,7 +11,7 @@
 
     <groupId>org.jvnet.hudson.plugins</groupId>
     <artifactId>darcs</artifactId>
-    <version>0.2.2</version>
+    <version>0.3.0</version>
     <packaging>hpi</packaging>
     <name>Hudson Darcs plugin</name>
     <description>This plugin integrates the Darcs SCM into Hudson.</description>
