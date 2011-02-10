@@ -27,13 +27,13 @@ import org.kohsuke.stapler.DataBoundConstructor;
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsWeb extends DarcsRepositoryBrowser {
+
     @Extension
     public static class DescriptorImpl extends Descriptor<RepositoryBrowser<?>> {
         public String getDisplayName() {
             return "Darcsweb";
         }
     }
-
 
     private static final long serialVersionUID = 1L;
 
@@ -47,7 +47,6 @@ public class DarcsWeb extends DarcsRepositoryBrowser {
     public URL getChangeSetLink(DarcsChangeSet changeSet) throws IOException {
         return new URL("");
     }
-
 
     public URL getFileLink(DarcsChangeSet.Path path) throws IOException {
 		return new URL("");
