@@ -324,7 +324,7 @@ public class DarcsScm extends SCM implements Serializable {
         private String darcsExe;
 
         private DescriptorImpl() {
-            super(DarcsScm.class, null);
+            super(DarcsScm.class, DarcsRepositoryBrowser.class);
             load();
         }
 
