@@ -65,14 +65,17 @@ public class DarcsWeb extends DarcsRepositoryBrowser {
 
     @DataBoundConstructor
     public DarcsWeb(URL url, String repo) throws MalformedURLException {
-        this.url  = normalizeToEndWithSlash(url);
+        this.url  = url;
         this.repo = repo;
     }
 
     public URL getChangeSetLink(DarcsChangeSet changeSet) throws IOException {
-//        return new URL(String.format("%s?r=%s;a=annotate_shade;h=%",
-//                                     getBaseUrlString(), this.repo, changeSet.getHash()));
-        return new URL("changesetlink");
+        QueryBuilder query = new QueryBuilder(QueryBuilder.SeparatorType.SEMICOLONS);
+        query.add("r=" + repo)
+             .add("a=commit")
+             .add("h=" + changeSet.getHash());
+
+        return new URL(url + query.toString());
     }
 
     public URL getFileLink(DarcsChangeSet.Path path) throws IOException {
