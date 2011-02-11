@@ -10,7 +10,6 @@
 
 package org.jvnet.hudson.plugins.darcs.browsers;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.junit.Ignore;
 
