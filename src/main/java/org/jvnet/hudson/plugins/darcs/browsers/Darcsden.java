@@ -38,14 +38,22 @@ public final class Darcsden extends DarcsRepositoryBrowser {
     private static final long serialVersionUID = 1L;
 
     public final URL url;
+    public final String repo;
+    public final String username;
 
-	@DataBoundConstructor
-    public Darcsden(URL url) throws MalformedURLException {
-        this.url = normalizeToEndWithSlash(url);
+    @DataBoundConstructor
+    public Darcsden(URL url, String repo, String username) throws MalformedURLException {
+        this.url      = normalizeToEndWithSlash(url);
+        this.repo     = repo;
+        this.username = username;
     }
 
     public URL getChangeSetLink(DarcsChangeSet changeSet) throws IOException {
-        return new URL("");
+        QueryBuilder query = new QueryBuilder(QueryBuilder.SeparatorType.SEMICOLONS);
+        query.add(repo)
+             .add(username);
+
+        return new URL(url + query.toString());
     }
 
 
