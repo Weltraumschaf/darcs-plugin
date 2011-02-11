@@ -1,9 +1,31 @@
 Darcs Plugin for Hudson CI
 ==========================
 
-TODO
+Todo
 ----
 - write unittests
 - implement DarcsRevisionState for polling
 - use org.jenkinsci.plugins
-- implement darcs web as code browser. url format http://darcs.web.de/cgi-bin/darcsweb.cgi?r=REPONAME;a=annotate_shade;h=HASH;f=FILE
+- integrate Darcsden
+- integrate Darcsweb
+
+Instalation
+-----------
+In the GitHub download section are compiled Jenkins plugins (.hpi) for each version available. 
+Download one and upload it to your Jenkins.
+
+Developers
+----------
+As prerequisite you need Maven2 installed.
+
+In your ~/.m2/settings.xml you need:
+
+ <settings>
+     <pluginGroups>
+         <pluginGroup>org.jvnet.hudson.tools</pluginGroup>
+     </pluginGroups>
+ <settings>
+
+Clone this repo with: git clone git://github.com/Weltraumschaf/hudson-darcs.git
+
+Change into the repo and run mvn install. After that you can open the pom.xml e.g. in Netbeans and start coding.
