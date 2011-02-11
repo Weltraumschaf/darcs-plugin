@@ -1,0 +1,19 @@
+Changelog
+=========
+
+0.2.0
+-----
+- Main SCM functionality implemented.
+
+0.2.1
+-----
+- Sax parser handles file moves in changeset.
+
+0.2.2
+-----
+- Bugfixes.
+
+0.3.0
+-----
+- Implementation of SCM browsers.
+- Integration of Darcsweb.
