@@ -11,20 +11,53 @@
 package org.jvnet.hudson.plugins.darcs.browsers;
 
 import junit.framework.TestCase;
-import org.junit.Ignore;
+import java.net.URL;
+import java.net.MalformedURLException;
+
 
 /**
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsWebTest extends TestCase {
+    public class ExposingDarcsWeb extends DarcsWeb {
+        public ExposingDarcsWeb() throws MalformedURLException {
+            super(new URL("http://www.foobar.com/"), "arepo");
+        }
+
+        public QueryBuilder exposedCreateDefaultQuery() {
+            return createDefaultQuery();
+        }
+
+        public QueryBuilder exposedCreateDefaultQuery(String action) {
+            return createDefaultQuery(action);
+        }
+    }
+
     public DarcsWebTest(String testName) {
         super(testName);
     }
 
-    @Ignore("not ready yet")
-    public void testImplementSome() {
+    public void testCreateDefaultQuery() {
+        try {
+            ExposingDarcsWeb sut = new ExposingDarcsWeb();
+            assertEquals("Query", 
+                         "?r=" + sut.repo,
+                         sut.exposedCreateDefaultQuery().toString());
+        } catch (MalformedURLException e) {
+            fail("Can not create SUT!");
+        }
+    }
 
+    public void testCreateDefaultQueryWithAction() {
+        try {
+            ExposingDarcsWeb sut = new ExposingDarcsWeb();
+            assertEquals("Query",
+                         "?r=" + sut.repo + ";a=foobar",
+                         sut.exposedCreateDefaultQuery("foobar").toString());
+        } catch (MalformedURLException e) {
+            fail("Can not create SUT!");
+        }
     }
 
 }

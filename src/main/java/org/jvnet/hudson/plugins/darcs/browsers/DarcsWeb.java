@@ -69,13 +69,13 @@ public class DarcsWeb extends DarcsRepositoryBrowser {
         this.repo = repo;
     }
 
-    private QueryBuilder createDefaultQuery() {
+    protected QueryBuilder createDefaultQuery() {
         QueryBuilder query = new QueryBuilder(QueryBuilder.SeparatorType.SEMICOLONS);
 
         return query.add("r=" + repo);
     }
 
-    private QueryBuilder createDefaultQuery(String action) {
+    protected QueryBuilder createDefaultQuery(String action) {
         QueryBuilder query = createDefaultQuery();
 
         return query.add("a=" + action);
