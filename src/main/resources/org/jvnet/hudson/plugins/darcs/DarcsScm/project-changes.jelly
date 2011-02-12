@@ -39,7 +39,7 @@
 
                     <ol>
                         <j:forEach var="cs" items="${b.changeSet.iterator()}" varStatus="loop">
-                            <li value="${loop.index + 1}">Patch ${c.name} &#8212;
+                            <li value="${loop.index + 1}">Patch <strong>${cs.name}</strong> &#8212;
                                 <a href="${rootURL}/${cs.author.url}/">${cs.author}</a> /
                                 <a href="${b.number}/changes#detail${loop.index}">${%detail}</a> / 
                                 <j:set var="cslink" value="${browser.getChangeSetLink(cs)}"/>

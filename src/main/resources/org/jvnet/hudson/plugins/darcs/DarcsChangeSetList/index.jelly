@@ -33,7 +33,7 @@
                     <a name="detail${loop.index}"></a>
                     <div class="changeset-message">
                         <h3>
-                            Patch ${cs.name} by <a href="${rootURL}/${cs.author.url}/">${cs.author}</a> - Hash: ${cs.hash}
+                            Patch ${cs.name} by <a href="${rootURL}/${cs.author.url}/">${cs.author}</a> &#8212; Hash: ${cs.hash}
 
                             <j:set var="cslink" value="${browser.getChangeSetLink(cs)}"/>
                             <j:choose>

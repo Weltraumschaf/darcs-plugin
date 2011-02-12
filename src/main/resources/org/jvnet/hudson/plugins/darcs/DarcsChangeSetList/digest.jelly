@@ -19,22 +19,24 @@
     
     <j:choose>
         <j:when test="${it.emptySet}">
-            No changes.(digest)
+            No changes.
         </j:when>
         <j:otherwise>
-            Changes(digest)
+            Changes
             <ol>
-                <j:forEach var="c" items="${it.logs}" varStatus="loop">
-                    <j:set var="cslink" value="${browser.getChangeSetLink(c)}"/>
-                    <li>Patch:
-                        <j:if test="${cslink!=null}">
-                            <a href="${cslink}">${c.name}</a>
-                        </j:if>
-                        <j:if test="${cslink==null}">
-                            ${cs.name}
-                        </j:if>
-                        by <a href="${rootURL}/${c.author.url}/">${c.author}</a>
-                        (<a href="changes#detail${loop.index}">detail</a>)
+                <j:forEach var="cs" items="${it.logs}" varStatus="loop">
+                    <j:set var="cslink" value="${browser.getChangeSetLink(cs)}"/>
+                    <j:set var="b" value="${builds}"/> <!-- fix it -->
+                    <li value="${loop.index + 1}">Patch <strong>${cs.name}</strong> &#8212;
+                        <a href="${rootURL}/${cs.author.url}/">${cs.author}</a> /
+                        <!-- fix the job name and build number! -->
+                        <a href="/job/Test/${b.number}/changes#detail${loop.index}">${%detail}</a> /
+                        <j:set var="cslink" value="${browser.getChangeSetLink(cs)}"/>
+                        <j:choose>
+                            <j:when test="${cslink!=null}">
+                                <a href="${cslink}">${browser.descriptor.displayName}</a>
+                            </j:when>
+                        </j:choose>
                     </li>
                 </j:forEach>
             </ol>
