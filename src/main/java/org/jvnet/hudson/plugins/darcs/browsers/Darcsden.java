@@ -57,7 +57,7 @@ public final class Darcsden extends DarcsRepositoryBrowser {
     }
 
 
-    public URL getFileLink(DarcsChangeSet.Path path) throws IOException {
-		return new URL("");
-    }
+//    public URL getFileLink(DarcsChangeSet.Path path) throws IOException {
+//		return new URL("");
+//    }
 }
