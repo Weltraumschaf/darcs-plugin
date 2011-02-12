@@ -31,16 +31,18 @@
                 <j:if test="${b.changeSet.iterator().hasNext()}">
                     <j:set var="hadChanges" value="${true}"/>
                     
-                    <h2><a href="${b.number}/changes">${b.displayName} (
-                    <i:formatDate value="${b.timestamp.time}" type="both"
-                                  dateStyle="medium" timeStyle="medium"/>)</a></h2>
+                    <h2>
+                        <a href="${b.number}/changes">${b.displayName} (
+                            <i:formatDate value="${b.timestamp.time}" type="both"
+                                          dateStyle="medium" timeStyle="medium"/>)</a>
+                    </h2>
 
                     <ol>
-                        <j:forEach var="c" items="${b.changeSet.iterator()}" varStatus="loop">
+                        <j:forEach var="cs" items="${b.changeSet.iterator()}" varStatus="loop">
                             <li value="${loop.index + 1}">Patch ${c.name} &#8212;
-                                <a href="${rootURL}/${c.author.url}/">${c.author}</a> /
+                                <a href="${rootURL}/${cs.author.url}/">${cs.author}</a> /
                                 <a href="${b.number}/changes#detail${loop.index}">${%detail}</a> / 
-                                <j:set var="cslink" value="${browser.getChangeSetLink(c)}"/>
+                                <j:set var="cslink" value="${browser.getChangeSetLink(cs)}"/>
                                 <j:choose>
                                     <j:when test="${cslink!=null}">
                                         <a href="${cslink}">${browser.descriptor.displayName}</a>

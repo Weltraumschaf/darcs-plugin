@@ -13,13 +13,14 @@
 -->
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
          xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+
     <j:set var="browser" value="${darcs.build.parent.scm.effectiveBrowser}"/>
-    <h2>Summary</h2>
+    <h2>Summary (index)</h2>
 
     <ol>
-        <j:forEach var="cs" items="${it.logs}">
+        <j:forEach var="cs" items="${it.logs}" varStatus="loop">
             <li>
-                Patch: <st:out value="${cs.name}"/>
+                Patch: <a href="changes#detail${loop.index}"><st:out value="${cs.name}"/></a>
             </li>
         </j:forEach>
     </ol>
@@ -31,15 +32,18 @@
                     <a name="detail${loop.index}"></a>
                     <div class="changeset-message">
                         <j:set var="cslink" value="${browser.getChangeSetLink(cs)}"/>
+
                         <strong>Patch
-                        <j:if test="${cslink!=null}">
-                            <a href="${cslink}">${cs.name}</a>
-                        </j:if>
-                        <j:if test="${cslink==null}">
-                            ${cs.name}
-                        </j:if> 
-                        by <a href="${rootURL}/${cs.author.url}/">${cs.author}</a>
-                        (hash: ${cs.hash}):</strong>
+                            <j:if test="${cslink!=null}">
+                                <a href="${cslink}">${cs.name}</a>
+                            </j:if>
+                            <j:if test="${cslink==null}">
+                                ${cs.name}
+                            </j:if>
+                            by <a href="${rootURL}/${cs.author.url}/">${cs.author}</a>
+                            (hash: ${cs.hash}):
+                        </strong>
+
                         <p>${cs.msgAnnotated}</p>
                     </div>
                 </td>
