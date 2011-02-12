@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+
+ XML Schema for darcs XML outputs for following commands
+
+   - changes / log
+   - changes / log with summary
+   - annotate directory
+   - annotate file
+
+ Defined within default namespace.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <!-- 
+
+   darcs changes / log with(out) summary
+   
+   Root element: changelog
+
+  -->
+  <xs:element name="changelog">
+    <xs:complexType>
+      <xs:sequence>
+          <xs:element maxOccurs="unbounded" name="patch">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="name"/>
+                <xs:element minOccurs="0" ref="comment"/>
+                <xs:element minOccurs="0" ref="summary"/>
+              </xs:sequence>
+              <xs:attribute name="author" use="required"/>
+              <xs:attribute name="date" use="required"/>
+              <xs:attribute name="hash" use="required"/>
+              <xs:attribute name="inverted" use="required" type="xs:NCName"/>
+              <xs:attribute name="local_date" use="required"/>
+            </xs:complexType>
+          </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="summary">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="add_directory"/>
+        <xs:element ref="add_file"/>
+        <xs:element ref="modify_file"/>
+        <xs:element ref="move"/>
+        <xs:element ref="remove_directory"/>
+        <xs:element ref="remove_file"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="add_directory" type="xs:string"/>
+  <xs:element name="add_file">
+    <xs:complexType mixed="true">
+      <xs:attribute name="conflict" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="modify_file">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="added_lines"/>
+        <xs:element ref="removed_lines"/>
+        <xs:element ref="replaced_tokens"/>
+      </xs:choice>
+      <xs:attribute name="conflict" type="xs:boolean"/>
+      <xs:attribute name="duplicate" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="added_lines">
+    <xs:complexType>
+      <xs:attribute name="num" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="removed_lines">
+    <xs:complexType>
+      <xs:attribute name="num" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="replaced_tokens">
+    <xs:complexType>
+      <xs:attribute name="num" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="move">
+    <xs:complexType>
+      <xs:attribute name="from" use="required"/>
+      <xs:attribute name="to" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="remove_directory">
+    <xs:complexType mixed="true">
+      <xs:attribute name="conflict" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="remove_file">
+    <xs:complexType mixed="true">
+      <xs:attribute name="conflict" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- 
+
+    darcs annotate file
+
+    Root element: file
+
+  -->
+  <xs:element name="file">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="created_as"/>
+        <xs:element ref="modified"/>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element ref="added_line"/>
+          <xs:element ref="normal_line"/>
+          <xs:element ref="removed_line"/>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="added_line" type="xs:string"/>
+  <xs:element name="normal_line">
+    <xs:complexType mixed="true">
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="added_by"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="removed_line">
+    <xs:complexType mixed="true">
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="added_by"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- 
+
+    darcs annotate directory
+
+    Root element: directory
+
+  -->
+
+  <xs:element name="directory">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element ref="created_as"/>
+          <xs:element ref="directory"/>
+          <xs:element ref="modified"/>
+        </xs:choice>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="file"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="created_as">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="patch"/>
+      </xs:sequence>
+      <xs:attribute name="original_name" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="modified">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="modified_how"/>
+        <xs:element ref="patch"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="modified_how" type="xs:string"/>
+  <xs:element name="added_by">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="patch"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="patch">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="name"/>
+        <xs:element minOccurs="0" ref="comment"/>
+      </xs:sequence>
+      <xs:attribute name="author" use="required"/>
+      <xs:attribute name="date" use="required"/>
+      <xs:attribute name="hash" use="required"/>
+      <xs:attribute name="inverted" use="required" type="xs:NCName"/>
+      <xs:attribute name="local_date" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- 
+
+     Shared by annotate and changes 
+
+  -->
+  <xs:element name="name" type="xs:string"/>
+  <xs:element name="comment" type="xs:string"/>
+</xs:schema>
