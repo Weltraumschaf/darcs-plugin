@@ -69,16 +69,26 @@ public class DarcsWeb extends DarcsRepositoryBrowser {
         this.repo = repo;
     }
 
-    public URL getChangeSetLink(DarcsChangeSet changeSet) throws IOException {
+    private QueryBuilder createDefaultQuery() {
         QueryBuilder query = new QueryBuilder(QueryBuilder.SeparatorType.SEMICOLONS);
-        query.add("r=" + repo)
-             .add("a=commit")
-             .add("h=" + changeSet.getHash());
+
+        return query.add("r=" + repo);
+    }
+
+    private QueryBuilder createDefaultQuery(String action) {
+        QueryBuilder query = createDefaultQuery();
+
+        return query.add("a=" + action);
+    }
+
+    public URL getChangeSetLink(DarcsChangeSet changeSet) throws IOException {
+        QueryBuilder query = createDefaultQuery("commit");
+        query.add("h=" + changeSet.getHash());
 
         return new URL(url + query.toString());
     }
 
-    public URL getFileLink(DarcsChangeSet.Path path) throws IOException {
-        return new URL("filelink");
-    }
+//    public URL getFileLink(DarcsChangeSet.Path path) throws IOException {
+//        return new URL("filelink");
+//    }
 }
