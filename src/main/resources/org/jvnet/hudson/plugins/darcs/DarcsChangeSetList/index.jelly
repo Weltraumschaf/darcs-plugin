@@ -39,7 +39,8 @@
                             <j:set var="cslink" value="${browser.getChangeSetLink(cs)}"/>
                             <j:choose>
                                 <j:when test="${cslink!=null}">
-                                    (<a href="${cslink}">${browser.descriptor.displayName}</a>)
+                                    (<a title="View changes summary in code browser."
+                                        href="${cslink}">${browser.descriptor.displayName}</a>)
                                 </j:when>
                             </j:choose>
                         </h3>
@@ -60,7 +61,8 @@
                             ${p}
                             <j:choose>
                                 <j:when test="${filedifflink!=null}">
-                                    (<a href="${filedifflink}">${browser.descriptor.displayName}</a>)
+                                    (<a title="View file diff in code browser."
+                                        href="${filedifflink}">${browser.descriptor.displayName}</a>)
                                 </j:when>
                             </j:choose>
                         </td>
