@@ -10,8 +10,12 @@
 
 package org.jvnet.hudson.plugins.darcs.browsers;
 
+import org.jvnet.hudson.plugins.darcs.DarcsChangeSet;
+
 import junit.framework.TestCase;
 import org.junit.Ignore;
+
+import java.io.IOException;
 import java.net.URL;
 import java.net.MalformedURLException;
 
@@ -21,9 +25,12 @@ import java.net.MalformedURLException;
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsWebTest extends TestCase {
+    private static final String URL  = "http://www.foobar.com/";
+    private static final String REPO = "arepo";
+
     public class ExposingDarcsWeb extends DarcsWeb {
         public ExposingDarcsWeb() throws MalformedURLException {
-            super(new URL("http://www.foobar.com/"), "arepo");
+            super(new URL(URL), REPO);
         }
 
         public QueryBuilder exposedCreateDefaultQuery() {
@@ -63,9 +70,38 @@ public class DarcsWebTest extends TestCase {
 
     @Ignore("not ready yet")
     public void testGetChangeSetLink() {
+        try {
+            String         hash = "1234-the-commit-hash.gz";
+            DarcsChangeSet cs   = new DarcsChangeSet();
+            DarcsWeb       sut  = new DarcsWeb(new URL(URL), REPO);
+            
+            cs.setHash(hash);
+            assertEquals("",
+                         URL + "?r=" + REPO + ";a=commit;h=" + hash,
+                         sut.getChangeSetLink(cs).toString());
+        } catch (MalformedURLException e) {
+            fail("Can not create SUT!");
+        } catch (IOException e) {
+            fail("Can not create URI!");
+        }
     }
 
     @Ignore("not ready yet")
     public void testGetFileDiffLink() {
+        try {
+            String         hash = "1234-the-commit-hash.gz";
+            String         file = "a/file/name";
+            DarcsChangeSet cs   = new DarcsChangeSet();
+            DarcsWeb       sut  = new DarcsWeb(new URL(URL), REPO);
+
+            cs.setHash(hash);
+            assertEquals("",
+                         URL + "?r=" + REPO + ";a=filediff;h=" + hash + ";f=" + file,
+                         sut.getFileDiffLink(cs, file).toString());
+        } catch (MalformedURLException e) {
+            fail("Can not create SUT!");
+        } catch (IOException e) {
+            fail("Can not create URI!");
+        }
     }
 }
