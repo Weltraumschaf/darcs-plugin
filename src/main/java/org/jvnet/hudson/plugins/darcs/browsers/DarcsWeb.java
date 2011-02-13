@@ -81,6 +81,13 @@ public class DarcsWeb extends DarcsRepositoryBrowser {
         return query.add("a=" + action);
     }
 
+    /**
+     * http://localhost/cgi-bin/darcsweb.cgi?r=REPO;a=commit;h=HASH
+     *
+     * @param changeSet
+     * @return
+     * @throws IOException
+     */
     public URL getChangeSetLink(DarcsChangeSet changeSet) throws IOException {
         QueryBuilder query = createDefaultQuery("commit");
         query.add("h=" + changeSet.getHash());
@@ -88,7 +95,19 @@ public class DarcsWeb extends DarcsRepositoryBrowser {
         return new URL(url + query.toString());
     }
 
-//    public URL getFileLink(DarcsChangeSet.Path path) throws IOException {
-//        return new URL("filelink");
-//    }
+    /**
+     * http://localhost/cgi-bin/darcsweb.cgi?r=REPO;a=filediff;h=HASH;f=FILE
+     * 
+     * @param changeSet
+     * @param file
+     * @return
+     * @throws IOException
+     */
+    public URL getFileDiffLink(DarcsChangeSet changeSet, String file) throws IOException {
+        QueryBuilder query = createDefaultQuery("filediff");
+        query.add("h=" + changeSet.getHash());
+        query.add("f=" + file);
+
+        return new URL(url + query.toString());
+    }
 }
