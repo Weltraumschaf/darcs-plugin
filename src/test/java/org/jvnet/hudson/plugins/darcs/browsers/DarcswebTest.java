@@ -11,6 +11,7 @@
 package org.jvnet.hudson.plugins.darcs.browsers;
 
 import junit.framework.TestCase;
+import org.junit.Ignore;
 import java.net.URL;
 import java.net.MalformedURLException;
 
@@ -60,4 +61,11 @@ public class DarcsWebTest extends TestCase {
         }
     }
 
+    @Ignore("not ready yet")
+    public void testGetChangeSetLink() {
+    }
+
+    @Ignore("not ready yet")
+    public void testGetFileDiffLink() {
+    }
 }

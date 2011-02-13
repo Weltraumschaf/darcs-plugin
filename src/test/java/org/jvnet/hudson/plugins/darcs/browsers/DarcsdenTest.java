@@ -23,4 +23,11 @@ public class DarcsdenTest extends TestCase {
 
     }
 
+    @Ignore("not ready yet")
+    public void testGetChangeSetLink() {
+    }
+
+    @Ignore("not ready yet")
+    public void testGetFileDiffLink() {
+    }
 }
