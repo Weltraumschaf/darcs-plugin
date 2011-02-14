@@ -50,12 +50,12 @@
                 </td>
             </tr>
 
-            <j:forEach var="k" items="${cs.editTypes}">
-                <j:forEach var="p" items="${cs.getPaths(k)}">
-                    <j:set var="filedifflink" value="${browser.getFileDiffLink(cs, p)}"/>
+            <j:forEach var="editType" items="${cs.editTypes}">
+                <j:forEach var="path" items="${cs.getPaths(editType)}">
+                    <j:set var="filedifflink" value="${browser.getFileDiffLink(cs, path)}"/>
                     <tr>
                         <td width="20">
-                            <t:editTypeIcon type="${k}" />
+                            <t:editTypeIcon type="${editType}"/>
                         </td>
                         <td>
                             ${p}
