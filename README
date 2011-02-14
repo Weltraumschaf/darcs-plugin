@@ -3,11 +3,11 @@ Darcs Plugin for Hudson CI
 
 Todo
 ----
-- write unittests
-- implement DarcsRevisionState for polling
+- write more unittests
+- implement DarcsRevisionState for polling support
 - use org.jenkinsci.plugins
-- integrate Darcsden
-- integrate Darcsweb
+- javadoc
+- ipmroving the changeset index view
 
 Instalation
 -----------
