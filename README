@@ -4,6 +4,8 @@ Darcs Plugin for Hudson CI
 Todo
 ----
 - write more unittests
+    SaxHandler test/Changelog parser test
+
 - implement DarcsRevisionState for polling support
 - use org.jenkinsci.plugins
 - javadoc
