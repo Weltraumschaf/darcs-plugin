@@ -20,13 +20,13 @@
 
     <j:choose>
         <j:when test="${it.emptySet}">
-                    No changes from last build.
+            No changes from last build.
         </j:when>
         <j:otherwise>
             <ol>
                 <j:forEach var="cs" items="${it.logs}" varStatus="loop">
                     <li>
-                                            Patch:
+                        Patch:
                         <a href="changes#detail${loop.index}">
                             <st:out value="${cs.name}"/>
                         </a>
@@ -41,18 +41,16 @@
                             <a name="detail${loop.index}"></a>
                             <div class="changeset-message">
                                 <h3>
-                                                                    Patch ${cs.name} by
+                                    Patch ${cs.name} by
                                     <a href="${rootURL}/${cs.author.url}/">
-                                                                    ${cs.author}
+                                        ${cs.author}
                                     </a> &#8212; Hash: ${cs.hash}
 
                                     <j:set var="cslink" value="${browser.getChangeSetLink(cs)}"/>
                                     <j:choose>
                                         <j:when test="${cslink!=null}">
-                                                                                    (
-                                            <a title="View changes summary in code browser."
-                                                                                            href="${cslink}">${browser.descriptor.displayName}
-                                            </a>)
+                                            (<a title="View changes summary in code browser."
+                                                href="${cslink}">${browser.descriptor.displayName}</a>)
                                         </j:when>
                                     </j:choose>
                                 </h3>
@@ -70,12 +68,11 @@
                                     <t:editTypeIcon type="${editType}"/>
                                 </td>
                                 <td>
-                                                                    ${p}
+                                    ${path}
                                     <j:choose>
                                         <j:when test="${filedifflink!=null}">
-                                                                                    (
-                                            <a title="View file diff in code browser."
-                                                                                            href="${filedifflink}">${browser.descriptor.displayName}
+                                            (<a title="View file diff in code browser." href="${filedifflink}">
+                                                ${browser.descriptor.displayName}
                                             </a>)
                                         </j:when>
                                     </j:choose>
