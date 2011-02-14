@@ -62,12 +62,16 @@ public final class Darcsden extends DarcsRepositoryBrowser {
     
     @DataBoundConstructor
     public Darcsden(URL url) throws MalformedURLException {
-        this.url      = normalizeToEndWithSlash(url);
+        this.url = normalizeToEndWithSlash(url);
     }
 
     public URL getChangeSetLink(DarcsChangeSet changeSet) throws IOException {
-        QueryBuilder query = new QueryBuilder(QueryBuilder.SeparatorType.SEMICOLONS);
-        
+        String hash = changeSet.getHash();
+        String shortHash = hash.substring(0, hash.lastIndexOf('-'));
+        QueryBuilder query = new QueryBuilder(QueryBuilder.SeparatorType.SLASHES);
+        query.add("patch")
+             .add(shortHash);
+
         return new URL(url + query.toString());
     }
 
