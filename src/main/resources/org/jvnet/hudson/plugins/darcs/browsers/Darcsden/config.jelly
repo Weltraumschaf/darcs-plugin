@@ -13,12 +13,4 @@
         <f:textbox name="darcsden.darcs.url" value="${browser.url}"
                    checkUrl="'${rootURL}/repositoryBrowser/Darcsden/check?value='+escape(this.value)"/>
     </f:entry>
-
-    <f:entry title="Repo" help="/plugin/darcs/help/browsers/darcsden/repo.html">
-        <f:textbox name="darcsden.darcs.repo" value="${browser.repo}"/>
-    </f:entry>
-
-    <f:entry title="Username" help="/plugin/darcs/help/browsers/darcsden/username.html">
-        <f:textbox name="darcsden.darcs.username" value="${browser.username}"/>
-    </f:entry>
 </j:jelly>

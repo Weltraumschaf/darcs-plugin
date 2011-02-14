@@ -15,12 +15,18 @@ import org.jvnet.hudson.plugins.darcs.DarcsChangeSet;
 import java.io.IOException;
 import java.net.URL;
 import java.net.MalformedURLException;
+import javax.servlet.ServletException;
 
 import hudson.Extension;
 import hudson.model.Descriptor;
 import hudson.scm.RepositoryBrowser;
+import hudson.util.FormValidation;
+
+import net.sf.json.JSONObject;
 
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.StaplerRequest;
 
 /**
  *
@@ -32,27 +38,36 @@ public final class Darcsden extends DarcsRepositoryBrowser {
         public String getDisplayName() {
             return "Darcsden";
         }
+
+        public FormValidation doCheck(@QueryParameter final String value) throws IOException, ServletException {
+            return new FormValidation.URLCheck() {
+                @Override
+                protected FormValidation check() throws IOException, ServletException {
+
+                    return FormValidation.ok();
+                }
+            }.check();
+        }
+
+        @Override
+        public DarcsWeb newInstance(StaplerRequest req, JSONObject formData) throws FormException {
+            return req.bindParameters(DarcsWeb.class, "darcsden.darcs.");
+        }
     }
 
 
     private static final long serialVersionUID = 1L;
 
     public final URL url;
-    public final String repo;
-    public final String username;
-
+    
     @DataBoundConstructor
-    public Darcsden(URL url, String repo, String username) throws MalformedURLException {
+    public Darcsden(URL url) throws MalformedURLException {
         this.url      = normalizeToEndWithSlash(url);
-        this.repo     = repo;
-        this.username = username;
     }
 
     public URL getChangeSetLink(DarcsChangeSet changeSet) throws IOException {
         QueryBuilder query = new QueryBuilder(QueryBuilder.SeparatorType.SEMICOLONS);
-        query.add(repo)
-             .add(username);
-
+        
         return new URL(url + query.toString());
     }
 
