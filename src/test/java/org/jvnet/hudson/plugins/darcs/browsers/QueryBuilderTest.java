@@ -33,7 +33,7 @@ public class QueryBuilderTest extends TestCase {
 		sut.add("foo")
 		   .add("bar")
 		   .add("baz");
-		assertEquals("Test a slashed query.", "/foo/bar/baz", sut.toString());
+		assertEquals("Test a slashed query.", "foo/bar/baz", sut.toString());
 	}
 
 	public void testAddToSemicolonedQuery() {

@@ -55,7 +55,10 @@ public class QueryBuilder {
 
         switch (this.type) {
             case SLASHES:
-                buf.append('/');
+                if(buf.length() > 0) {
+                    buf.append('/');
+                }
+
                 break;
             case SEMICOLONS:
                 if(buf.length() == 0) {
