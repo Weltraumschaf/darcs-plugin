@@ -15,65 +15,76 @@
          xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 
     <j:set var="browser" value="${it.build.parent.scm.effectiveBrowser}"/>
-    
+
     <h2>Summary</h2>
 
-	<j:when test="${it.emptySet}">
-		No changes from last build.
-    </j:when>
-	<j:otherwise>
-		<ol>
-			<j:forEach var="cs" items="${it.logs}" varStatus="loop">
-				<li>
-					Patch: <a href="changes#detail${loop.index}"><st:out value="${cs.name}"/></a>
-				</li>
-			</j:forEach>
-		</ol>
+    <j:choose>
+        <j:when test="${it.emptySet}">
+                    No changes from last build.
+        </j:when>
+        <j:otherwise>
+            <ol>
+                <j:forEach var="cs" items="${it.logs}" varStatus="loop">
+                    <li>
+                                            Patch:
+                        <a href="changes#detail${loop.index}">
+                            <st:out value="${cs.name}"/>
+                        </a>
+                    </li>
+                </j:forEach>
+            </ol>
 
-		<table class="pane" style="border:none">
-			<j:forEach var="cs" items="${it.logs}" varStatus="loop">
-				<tr class="pane">
-					<td colspan="2" class="changeset">
-						<a name="detail${loop.index}"></a>
-						<div class="changeset-message">
-							<h3>
-								Patch ${cs.name} by <a href="${rootURL}/${cs.author.url}/">
-								${cs.author}</a> &#8212; Hash: ${cs.hash}
+            <table class="pane" style="border:none">
+                <j:forEach var="cs" items="${it.logs}" varStatus="loop">
+                    <tr class="pane">
+                        <td colspan="2" class="changeset">
+                            <a name="detail${loop.index}"></a>
+                            <div class="changeset-message">
+                                <h3>
+                                                                    Patch ${cs.name} by
+                                    <a href="${rootURL}/${cs.author.url}/">
+                                                                    ${cs.author}
+                                    </a> &#8212; Hash: ${cs.hash}
 
-								<j:set var="cslink" value="${browser.getChangeSetLink(cs)}"/>
-								<j:choose>
-									<j:when test="${cslink!=null}">
-										(<a title="View changes summary in code browser."
-											href="${cslink}">${browser.descriptor.displayName}</a>)
-									</j:when>
-								</j:choose>
-							</h3>
+                                    <j:set var="cslink" value="${browser.getChangeSetLink(cs)}"/>
+                                    <j:choose>
+                                        <j:when test="${cslink!=null}">
+                                                                                    (
+                                            <a title="View changes summary in code browser."
+                                                                                            href="${cslink}">${browser.descriptor.displayName}
+                                            </a>)
+                                        </j:when>
+                                    </j:choose>
+                                </h3>
 
-							<p>${cs.msgAnnotated}</p>
-						</div>
-					</td>
-				</tr>
+                                <p>${cs.msgAnnotated}</p>
+                            </div>
+                        </td>
+                    </tr>
 
-				<j:forEach var="editType" items="${cs.editTypes}">
-					<j:forEach var="path" items="${cs.getPaths(editType)}">
-						<j:set var="filedifflink" value="${browser.getFileDiffLink(cs, path)}"/>
-						<tr>
-							<td width="20">
-								<t:editTypeIcon type="${editType}"/>
-							</td>
-							<td>
-								${p}
-								<j:choose>
-									<j:when test="${filedifflink!=null}">
-										(<a title="View file diff in code browser."
-											href="${filedifflink}">${browser.descriptor.displayName}</a>)
-									</j:when>
-								</j:choose>
-							</td>
-						</tr>
-					</j:forEach>
-				</j:forEach>
-			</j:forEach>
-		</table>
-	</j:otherwise>
+                    <j:forEach var="editType" items="${cs.editTypes}">
+                        <j:forEach var="path" items="${cs.getPaths(editType)}">
+                            <j:set var="filedifflink" value="${browser.getFileDiffLink(cs, path)}"/>
+                            <tr>
+                                <td width="20">
+                                    <t:editTypeIcon type="${editType}"/>
+                                </td>
+                                <td>
+                                                                    ${p}
+                                    <j:choose>
+                                        <j:when test="${filedifflink!=null}">
+                                                                                    (
+                                            <a title="View file diff in code browser."
+                                                                                            href="${filedifflink}">${browser.descriptor.displayName}
+                                            </a>)
+                                        </j:when>
+                                    </j:choose>
+                                </td>
+                            </tr>
+                        </j:forEach>
+                    </j:forEach>
+                </j:forEach>
+            </table>
+        </j:otherwise>
+    </j:choose>
 </j:jelly>
