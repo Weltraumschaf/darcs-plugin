@@ -101,6 +101,11 @@ public class DarcsScm extends SCM implements Serializable {
        return browser;
     }
 
+	@Override
+    public boolean supportsPolling() {
+        return false; // polling is not implemented yet
+    }
+	
     /**
      * Writes the cahngelog of the last numPatches to the changeLog file.
      * 
@@ -134,18 +139,7 @@ public class DarcsScm extends SCM implements Serializable {
             logger.log(Level.WARNING, "Failed to poll repository: ", e);
         }
     }
-
-//    @Override
-//    public DarcsRepositoryBrowser getBrowser() {
-//        return browser;
-//    }
     
-    @Override
-    public boolean supportsPolling() {
-        return false; // polling is not implemented yet
-    }
-
-
     @Override
     public SCMRevisionState calcRevisionsFromBuild(AbstractBuild<?, ?> build, Launcher launcher, TaskListener listener) throws IOException, InterruptedException {
         PrintStream output = listener.getLogger();
