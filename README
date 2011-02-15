@@ -4,11 +4,12 @@ Darcs Plugin for Hudson CI
 Todo
 ----
 - write more unittests
-    SaxHandler test/Changelog parser test
-- Check nputs for Browsers: URL
-- implement DarcsRevisionState for polling support
-- use org.jenkinsci.plugins
-- javadoc
+    - DarcsSaxHandler/DarcsChangelogParser tests
+    - BrowserChooser
+- iput validation for code browsers URL
+- implement polling support
+- use org.jenkinsci.plugins as namespace
+- write more javadoc
 - ipmroving the changeset index view
 
 Instalation
