@@ -8,7 +8,13 @@ Todo
     - BrowserChooser
 - iput validation for code browsers URL
 - implement polling support
-- use org.jenkinsci.plugins as namespace
+- use right namespace
+  "org.jenkins-ci.plugins is the correct maven groupId for your pom.xml.
+  For java package name I suggest org.jenkinsci.plugins.darcs.. 
+  could also be org.jenkins_ci but I prefer to remove the hyphen rather 
+  than change to underscore.. hyphen not valid as java pkg.."
+  (Alan from jenkinsci-dev@googlegroups.com)
+
 - write more javadoc
 - ipmroving the changeset index view
 
