@@ -5,7 +5,7 @@ Todo
 ----
 - write more unittests
     SaxHandler test/Changelog parser test
-
+- Check nputs for Browsers: URL
 - implement DarcsRevisionState for polling support
 - use org.jenkinsci.plugins
 - javadoc
