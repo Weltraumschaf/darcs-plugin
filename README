@@ -17,6 +17,13 @@ Todo
 
 - write more javadoc
 - ipmroving the changeset index view
+- update pom to:
+ <parent>
+    <groupId>org.jenkins-ci.plugins</groupId>
+    <artifactId>plugin</artifactId>
+    <version>1.396</version>
+ </parent>
+              
 
 Instalation
 -----------
