@@ -7,9 +7,9 @@
  * this stuff. If we meet some day, and you think this stuff is worth it,
  * you can buy me a beer in return.
  */
-package org.jvnet.hudson.plugins.darcs;
+package org.jenkinsci.plugins.darcs;
 
-import org.jvnet.hudson.plugins.darcs.browsers.DarcsRepositoryBrowser;
+import org.jenkinsci.plugins.darcs.browsers.DarcsRepositoryBrowser;
 
 import hudson.EnvVars;
 import hudson.Extension;

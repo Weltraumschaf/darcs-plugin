@@ -3,9 +3,10 @@
  * and open the template in the editor.
  */
 
-package org.jvnet.hudson.plugins.darcs.browsers;
+package org.jenkinsci.plugins.darcs.browsers;
 
-import org.jvnet.hudson.plugins.darcs.DarcsChangeSet;
+import org.jenkinsci.plugins.darcs.browsers.Darcsden;
+import org.jenkinsci.plugins.darcs.DarcsChangeSet;
 
 import junit.framework.TestCase;
 import org.junit.Ignore;

@@ -8,9 +8,9 @@
  * you can buy me a beer in return.
  */
 
-package org.jvnet.hudson.plugins.darcs.browsers;
+package org.jenkinsci.plugins.darcs.browsers;
 
-import org.jvnet.hudson.plugins.darcs.DarcsChangeSet;
+import org.jenkinsci.plugins.darcs.DarcsChangeSet;
 
 import junit.framework.TestCase;
 import org.junit.Ignore;

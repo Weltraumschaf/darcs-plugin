@@ -8,7 +8,7 @@
  * you can buy me a beer in return.
  */
 
-package org.jvnet.hudson.plugins.darcs.browsers;
+package org.jenkinsci.plugins.darcs.browsers;
 
 /**
  * Helper class to build up URL queries.

@@ -7,9 +7,9 @@
  * this stuff. If we meet some day, and you think this stuff is worth it,
  * you can buy me a beer in return.
  */
-package org.jvnet.hudson.plugins.darcs.browsers;
+package org.jenkinsci.plugins.darcs.browsers;
 
-import org.jvnet.hudson.plugins.darcs.DarcsChangeSet;
+import org.jenkinsci.plugins.darcs.DarcsChangeSet;
 
 import java.io.IOException;
 import java.net.URL;

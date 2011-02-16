@@ -8,7 +8,7 @@
  * you can buy me a beer in return.
  */
 
-package org.jvnet.hudson.plugins.darcs;
+package org.jenkinsci.plugins.darcs;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;

@@ -8,23 +8,17 @@
  * you can buy me a beer in return.
  */
 
-package org.jvnet.hudson.plugins.darcs;
+package org.jenkinsci.plugins.darcs;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-import org.junit.Ignore;
+import hudson.scm.SCMRevisionState;
 
 /**
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
-public class DarcsChangeSetTest extends TestCase {
-    public DarcsChangeSetTest(String testName) {
-        super(testName);
-    }
-
-    @Ignore("not ready yet")
-    public void testImplementSome() {
-
+public class DarcsRevisionState extends SCMRevisionState {
+    @Override
+    public String toString() {
+        return "foobar";
     }
 }

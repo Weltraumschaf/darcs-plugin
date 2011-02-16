@@ -8,8 +8,9 @@
  * you can buy me a beer in return.
  */
 
-package org.jvnet.hudson.plugins.darcs.browsers;
+package org.jenkinsci.plugins.darcs.browsers;
 
+import org.jenkinsci.plugins.darcs.browsers.QueryBuilder;
 import junit.framework.TestCase;
 
 /**
