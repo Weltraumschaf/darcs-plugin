@@ -102,13 +102,12 @@ public class DarcsScm extends SCM implements Serializable {
 
     @Override
     public boolean supportsPolling() {
-        return false; // polling is not implemented yet
-//        return true;
+        return true;
     }
 
     @Override
     public boolean requiresWorkspaceForPolling() {
-        return true;
+        return false;
     }
 
     /**
@@ -122,32 +121,57 @@ public class DarcsScm extends SCM implements Serializable {
      * @throws InterruptedException
      */
     @Override
-    public SCMRevisionState calcRevisionsFromBuild(AbstractBuild<?, ?> build, Launcher launcher, TaskListener listener) throws IOException, InterruptedException {
-//        PrintStream output = listener.getLogger();
-//        output.println("Getting local revision...");
-//
-//        return new DarcsRevisionState();
-        return null;
+    public DarcsRevisionState calcRevisionsFromBuild(AbstractBuild<?, ?> build, Launcher launcher, TaskListener listener) throws IOException, InterruptedException {
+        PrintStream output = listener.getLogger();
+        output.println("Getting local revision...");
+        DarcsRevisionState local = getRevisionState(launcher, 
+                                                    listener,
+                                                    build.getWorkspace().getRemote());
+        output.println(local);
+        
+        return local;
     }
 
     @Override
     protected PollingResult compareRemoteRevisionWith(AbstractProject<?, ?> ap, Launcher launcher, FilePath fp, TaskListener listener, SCMRevisionState localRevisionState) throws IOException, InterruptedException {
-//        PrintStream output = listener.getLogger();
-//        output.printf("Getting current remote revision...");
-//
-//        final DarcsRevisionState remoteRevisionState = new DarcsRevisionState();
-//        final Change change;
-//
-//        if (true) { // is changed?
-//            change = Change.SIGNIFICANT;
-//        } else {
-//            change = Change.NONE;
-//        }
-//
-//        return new PollingResult(localRevisionState, remoteRevisionState, change);
-        return null;
+        PrintStream output = listener.getLogger();
+        final Change change;
+        final DarcsRevisionState remote = getRevisionState(launcher, listener, source);
+        
+        output.printf("Getting current remote revision...");
+        output.println(remote);
+        output.printf("Baseline is %s.\n", localRevisionState);
+
+        if ((localRevisionState == SCMRevisionState.NONE)
+            // appears that other instances of None occur - its not a singleton.
+            // so do a (fugly) class check.
+            || (localRevisionState.getClass() != DarcsRevisionState.class)
+            || (!remote.equals(localRevisionState))) {
+            change = Change.SIGNIFICANT;
+        } else {
+            change = Change.NONE;
+        }
+
+        return new PollingResult(localRevisionState, remote, change);
     }
 
+    /**
+     * Calculates the revision state of a repository.
+     *
+     * @todo implement.
+     * 
+     * @param launcher
+     * @param listener
+     * @param root
+     * @return
+     * @throws InterruptedException
+     */
+    private DarcsRevisionState getRevisionState(Launcher launcher, TaskListener listener, String root) throws InterruptedException {
+        DarcsRevisionState rev = null;
+
+        return rev;
+    }
+    
     /**
      * Writes the cahngelog of the last numPatches to the changeLog file.
      * 
