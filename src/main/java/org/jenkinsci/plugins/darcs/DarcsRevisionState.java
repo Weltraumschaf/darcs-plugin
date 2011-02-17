@@ -11,15 +11,24 @@
 package org.jenkinsci.plugins.darcs;
 
 import hudson.scm.SCMRevisionState;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsRevisionState extends SCMRevisionState {
+	private List<String> hashes;
+
+	public DarcsRevisionState(ArrayList<String> hashes) {
+		super();
+		this.hashes = hashes;
+	}
+	
     @Override
     public String toString() {
-        return "RevisionState xxx";
+        return "RevisionState " + hashCode();
     }
     
     @Override
@@ -27,7 +36,8 @@ public class DarcsRevisionState extends SCMRevisionState {
         boolean result = false;
         
         if (other instanceof DarcsRevisionState) {
-            
+            DarcsRevisionState that = (DarcsRevisionState) other;
+            result = hashCode() == that.hashCode();
         }
 
         return result;
@@ -35,6 +45,6 @@ public class DarcsRevisionState extends SCMRevisionState {
 
     @Override
     public int hashCode() {
-        return 1;
+        return hashes.hashCode();
     }
 }
