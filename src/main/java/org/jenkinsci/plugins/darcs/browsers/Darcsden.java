@@ -39,6 +39,16 @@ public final class Darcsden extends DarcsRepositoryBrowser {
             return "Darcsden";
         }
 
+        /**
+         * Validates the URL given in the config formular.
+         *
+         * @todo implement check.
+         * 
+         * @param value
+         * @return
+         * @throws IOException
+         * @throws ServletException
+         */
         public FormValidation doCheck(@QueryParameter final String value) throws IOException, ServletException {
             return new FormValidation.URLCheck() {
                 @Override
@@ -68,13 +78,12 @@ public final class Darcsden extends DarcsRepositoryBrowser {
     public URL getChangeSetLink(DarcsChangeSet changeSet) throws IOException {
         String hash = changeSet.getHash();
         String shortHash = hash.substring(0, hash.lastIndexOf('-'));
-        QueryBuilder query = new QueryBuilder(QueryBuilder.SeparatorType.SLASHES);
+        DarcsQueryBuilder query = new DarcsQueryBuilder(DarcsQueryBuilder.SeparatorType.SLASHES);
         query.add("patch")
              .add(shortHash);
 
         return new URL(url + query.toString());
     }
-
 
     public URL getFileDiffLink(DarcsChangeSet changeSet, String file) throws IOException {
         return null;

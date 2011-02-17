@@ -15,7 +15,6 @@ import hudson.scm.ChangeLogParser;
 import hudson.scm.ChangeLogSet;
 import hudson.scm.ChangeLogSet.Entry;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 

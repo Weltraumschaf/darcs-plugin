@@ -25,7 +25,7 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class DarcsSaxHandler extends DefaultHandler {
     
-    private static final Logger logger = Logger.getLogger(DarcsSaxHandler.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(DarcsSaxHandler.class.getName());
 
     public enum DarcsChangelogTag {
         CHANGELOG,
@@ -52,7 +52,9 @@ public class DarcsSaxHandler extends DefaultHandler {
         changeSets = new ArrayList<DarcsChangeSet>();
     }
 
-    public boolean isReady() { return ready; }
+    public boolean isReady() { 
+        return ready;
+    }
 
     public List<DarcsChangeSet> getChangeSets() {
         return changeSets;
@@ -170,6 +172,6 @@ public class DarcsSaxHandler extends DefaultHandler {
 
     @Override
     public void error(SAXParseException saxpe) {
-        logger.log(Level.WARNING, saxpe.toString());
+        LOGGER.log(Level.WARNING, saxpe.toString());
     }
 }

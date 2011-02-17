@@ -33,11 +33,11 @@ public class DarcsWebTest extends TestCase {
             super(new URL(URL), REPO);
         }
 
-        public QueryBuilder exposedCreateDefaultQuery() {
+        public DarcsQueryBuilder exposedCreateDefaultQuery() {
             return createDefaultQuery();
         }
 
-        public QueryBuilder exposedCreateDefaultQuery(String action) {
+        public DarcsQueryBuilder exposedCreateDefaultQuery(String action) {
             return createDefaultQuery(action);
         }
     }
