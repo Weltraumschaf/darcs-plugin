@@ -14,7 +14,10 @@ Todo
 Installation
 -----------
 In the GitHub download section are compiled Jenkins plugins (.hpi) for each version available. 
-Download one and upload it to your Jenkins.
+You can find the darcs.hpi file in side the tar/zip archive. The plugin itself is archived, because
+of naming issues: The hpi itsel must be named 'darcs.hpi' without version numbers in the filename.
+But to seperate different precompiled plugins they are archived with versioned names.
+Download an apropriate archive, unpack it and and upload the resulting darcs.hpi to your Jenkins.
 
 Developers
 ----------
