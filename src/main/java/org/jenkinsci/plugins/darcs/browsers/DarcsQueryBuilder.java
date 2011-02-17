@@ -55,9 +55,7 @@ public class DarcsQueryBuilder {
 
         switch (this.type) {
             case SLASHES:
-                if (buf.length() > 0) {
-                    buf.append('/');
-                }
+                buf.append('/');
 
                 break;
             case SEMICOLONS:

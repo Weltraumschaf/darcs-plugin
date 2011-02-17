@@ -31,7 +31,7 @@ public class DarcsQueryBuilderTest extends TestCase {
         DarcsQueryBuilder sut = new DarcsQueryBuilder(DarcsQueryBuilder.SeparatorType.SLASHES);
         assertEquals("Test the seperator type", DarcsQueryBuilder.SeparatorType.SLASHES, sut.getType());
         sut.add("foo").add("bar").add("baz");
-        assertEquals("Test a slashed query.", "foo/bar/baz", sut.toString());
+        assertEquals("Test a slashed query.", "/foo/bar/baz", sut.toString());
     }
 
     public void testAddToSemicolonedQuery() {

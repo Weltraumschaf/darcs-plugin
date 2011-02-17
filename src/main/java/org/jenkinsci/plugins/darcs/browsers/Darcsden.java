@@ -18,6 +18,7 @@ import java.net.MalformedURLException;
 import javax.servlet.ServletException;
 
 import hudson.Extension;
+import hudson.Util;
 import hudson.model.Descriptor;
 import hudson.scm.RepositoryBrowser;
 import hudson.util.FormValidation;
@@ -72,7 +73,7 @@ public final class Darcsden extends DarcsRepositoryBrowser {
     
     @DataBoundConstructor
     public Darcsden(URL url) throws MalformedURLException {
-        this.url = normalizeToEndWithSlash(url);
+        this.url = new URL(Util.removeTrailingSlash(url.toString()));
     }
 
     public URL getChangeSetLink(DarcsChangeSet changeSet) throws IOException {
