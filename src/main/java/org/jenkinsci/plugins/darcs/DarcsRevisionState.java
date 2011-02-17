@@ -19,6 +19,22 @@ import hudson.scm.SCMRevisionState;
 public class DarcsRevisionState extends SCMRevisionState {
     @Override
     public String toString() {
-        return "foobar";
+        return "RevisionState xxx";
+    }
+    
+    @Override
+    public boolean equals(Object other) {
+        boolean result = false;
+        
+        if (other instanceof DarcsRevisionState) {
+            
+        }
+
+        return result;
+    }
+
+    @Override
+    public int hashCode() {
+        return 1;
     }
 }
