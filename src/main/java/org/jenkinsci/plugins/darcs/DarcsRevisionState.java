@@ -57,6 +57,13 @@ import hudson.scm.SCMRevisionState;
  * kkawaguchi@cloudbees.com:
  * <quote>
  * There's utility code in Jenkins that computes MD5 digest of arbitrary byte stream or string. I think that seems like a good and cheap enough hashing for this kind of purpose.
+ *
+ * Javadoc
+ * hudson.Util.getDigestOf()
+ * public static String getDigestOf(InputStream source)
+ *                          throws IOException
+ *
+ *    Computes MD5 digest of the given input stream.
  * </quote>
  * 
  * @author Sven Strittmatter <ich@weltraumschaf.de>
