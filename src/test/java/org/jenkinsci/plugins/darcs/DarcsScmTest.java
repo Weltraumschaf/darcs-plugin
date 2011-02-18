@@ -10,7 +10,7 @@
 
 package org.jenkinsci.plugins.darcs;
 
-import junit.framework.Assert;
+//import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.junit.Ignore;
 
