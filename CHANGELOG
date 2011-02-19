@@ -22,3 +22,8 @@ Changelog
 0.3.1
 -----
 - Implemeted file diff link for Darcsweb.
+
+0.3.2
+-----
+- Factored out darcs command as abstracted object from SCM class.
+- Implemented revision state and polling.

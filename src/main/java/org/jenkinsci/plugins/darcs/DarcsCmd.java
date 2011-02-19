@@ -135,19 +135,19 @@ public class DarcsCmd {
     public void get(String repo, String from) throws DarcsCmdException {
         ArgumentListBuilder args = new ArgumentListBuilder();
         args.add(darcsExe)
-            .add("pull")
-            .add(from)
-            .add(repo);
+            .add("get")
+            .add(from);
         // todo use stdout as output buffer
         try {
             ProcStarter proc = createProc(args);
+            proc.pwd(repo);
             int ret = proc.join();
 
             if (0 != ret) {
-                throw new DarcsCmdException("can not do darcs changes in repo " + repo);
+                throw new DarcsCmdException("Getting repo with args " + args.toStringWithQuote() + " returne " + ret);
             }
         } catch (Exception $e) {
-            throw new DarcsCmdException("can not do darcs changes in repo " + repo, $e);
+            throw new DarcsCmdException("Can not get repo with args: " + args.toStringWithQuote(), $e);
         }
     }
 }
