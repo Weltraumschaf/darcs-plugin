@@ -88,6 +88,29 @@ public class DarcsCmd {
         return changes(repo, true, true, last);
     }
 
+    public int countChanges(FilePath repo) throws DarcsCmdException {
+        ArgumentListBuilder args = new ArgumentListBuilder();
+        args.add(darcsExe)
+            .add("changes")
+            .add("--repodir=" + repo.toString())
+            .add("--count");
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ProcStarter proc = createProc(args);
+        proc.stdout(baos);
+
+        try {
+            int ret = proc.join();
+
+            if (0 != ret) {
+                throw new DarcsCmdException("can not do darcs changes in repo " + repo);
+            }
+        } catch (Exception $e) {
+            throw new DarcsCmdException("can not do darcs changes in repo " + repo, $e);
+        }
+
+        return Integer.parseInt(baos.toString().trim());
+    }
+    
     public void pull() {
     }
 
