@@ -184,22 +184,15 @@ public class DarcsScm extends SCM implements Serializable {
      */
     private void getLog(Launcher launcher, int numPatches, FilePath workspace, File changeLog) throws InterruptedException {
         try {
-            int ret;
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ProcStarter proc = launcher.launch().cmds(getDescriptor().getDarcsExe(), "changes", "--xml-output", "--last=" + numPatches, "--summary").envs(EnvVars.masterEnvVars).stdout(baos).pwd(workspace);
-            ret = proc.join();
-
-            if (ret != 0) {
-                LOGGER.log(Level.WARNING, "darcs changes  --last=" + numPatches + " returned {0}", ret);
-            } else {
-                FileOutputStream fos = new FileOutputStream(changeLog);
-                fos.write(baos.toByteArray());
-                fos.close();
-            }
-        } catch (IOException e) {
+            DarcsCmd cmd = new DarcsCmd(launcher, EnvVars.masterEnvVars, getDescriptor().getDarcsExe());
+            ByteArrayOutputStream baos = cmd.changes(workspace, numPatches);
+            FileOutputStream fos = new FileOutputStream(changeLog);
+            fos.write(baos.toByteArray());
+            fos.close();
+        } catch (Exception e) {
             StringWriter w = new StringWriter();
             e.printStackTrace(new PrintWriter(w));
-            LOGGER.log(Level.WARNING, "Failed to poll repository: ", e);
+            LOGGER.log(Level.WARNING, "Failed to get log from repository: ", e);
         }
     }
 

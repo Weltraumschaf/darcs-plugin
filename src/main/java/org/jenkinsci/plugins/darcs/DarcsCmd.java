@@ -10,10 +10,13 @@
 
 package org.jenkinsci.plugins.darcs;
 
+import hudson.FilePath;
+import hudson.Launcher;
 import hudson.Launcher.ProcStarter;
 import hudson.util.ArgumentListBuilder;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Map;
 
 /**
  *
@@ -21,25 +24,32 @@ import java.io.ByteArrayOutputStream;
  */
 public class DarcsCmd {
 
-    private final String      repoDir;
-    private final ProcStarter proc;
-    private final String      darcsExe;
-    private final String[]    envs;
+    private final Launcher            launcher;
+    private final String              darcsExe;
+    private final Map<String, String> envs;
 
-    public DarcsCmd(String repodir, ProcStarter proc, String[] envs) {
-        this(repodir, proc, envs, "darcs");
+    public DarcsCmd(Launcher launcher, Map<String, String> envs) {
+        this(launcher, envs, "darcs");
     }
 
-    public DarcsCmd(String repodir, ProcStarter proc, String[] envs, String darcsExe) {
-        this.repoDir  = repodir;
+    public DarcsCmd(Launcher launcher, Map<String, String> envs, String darcsExe) {
         this.envs     = envs;
-        this.proc     = proc;
+        this.launcher = launcher;
         this.darcsExe = darcsExe;
     }
 
-    public String changes(boolean xmlOutput, boolean summary, int last) throws DarcsCmdException {
+    public ProcStarter createProc(ArgumentListBuilder args) {
+        ProcStarter proc = launcher.launch();
+        proc.envs(envs);
+        
+        return proc;
+    }
+
+    public ByteArrayOutputStream changes(FilePath repo, boolean xmlOutput, boolean summary, int last) throws DarcsCmdException {
         ArgumentListBuilder args = new ArgumentListBuilder();
-        args.add(darcsExe).add("changes");
+        args.add(darcsExe)
+            .add("changes")
+            .add("--repodir=" + repo.toString());
 
         if (xmlOutput) {
             args.add("--xml-output");
@@ -54,30 +64,28 @@ public class DarcsCmd {
         }
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        proc.cmds(args)
-            .envs(envs)
-            .stdout(baos)
-            .pwd(repoDir);
+        ProcStarter proc = createProc(args);
+        proc.stdout(baos);
 
         try {
             int ret = proc.join();
             
             if (0 != ret) {
-                throw new DarcsCmdException("can not do darcs changes on repo " + repoDir);
+                throw new DarcsCmdException("can not do darcs changes in repo " + repo);
             }
         } catch (Exception $e) {
-            throw new DarcsCmdException("can not do darcs changes on repo " + repoDir, $e);
+            throw new DarcsCmdException("can not do darcs changes in repo " + repo, $e);
         }
                 
-        return baos.toString();
+        return baos;
     }
 
-    public String changes() throws DarcsCmdException {
-        return changes(true, true, 0);
+    public ByteArrayOutputStream changes(FilePath repo) throws DarcsCmdException {
+        return changes(repo, true, true, 0);
     }
 
-    public String changes(int last) throws DarcsCmdException {
-        return changes(true, true, last);
+    public ByteArrayOutputStream changes(FilePath repo, int last) throws DarcsCmdException {
+        return changes(repo, true, true, last);
     }
 
     public void pull() {
