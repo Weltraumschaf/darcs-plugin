@@ -27,6 +27,7 @@ public class DarcsCmd {
     private final Launcher            launcher;
     private final String              darcsExe;
     private final Map<String, String> envs;
+//    private OutputStream stdout;
 
     public DarcsCmd(Launcher launcher, Map<String, String> envs) {
         this(launcher, envs, "darcs");
@@ -89,16 +90,16 @@ public class DarcsCmd {
     }
 
     public int countChanges(FilePath repo) throws DarcsCmdException {
-        ArgumentListBuilder args = new ArgumentListBuilder();
-        args.add(darcsExe)
-            .add("changes")
-            .add("--repodir=" + repo.toString())
-            .add("--count");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ProcStarter proc = createProc(args);
-        proc.stdout(baos);
-
+        
         try {
+            ArgumentListBuilder args = new ArgumentListBuilder();
+            args.add(darcsExe)
+                .add("changes")
+                .add("--repodir=" + repo.toString())
+                .add("--count");
+            ProcStarter proc = createProc(args);
+            proc.stdout(baos);
             int ret = proc.join();
 
             if (0 != ret) {
@@ -111,9 +112,42 @@ public class DarcsCmd {
         return Integer.parseInt(baos.toString().trim());
     }
     
-    public void pull() {
+    public void pull(FilePath repo, String from) throws DarcsCmdException {
+        ArgumentListBuilder args = new ArgumentListBuilder();
+        args.add(darcsExe)
+            .add("pull")
+            .add(from)
+            .add("--repodir=" + repo.toString())
+            .add("--all");
+        // todo use stdout as output buffer
+        try {
+            ProcStarter proc = createProc(args);
+            int ret = proc.join();
+
+            if (0 != ret) {
+                throw new DarcsCmdException("can not do darcs changes in repo " + repo);
+            }
+        } catch (Exception $e) {
+            throw new DarcsCmdException("can not do darcs changes in repo " + repo, $e);
+        }
     }
 
-    public void get() {
+    public void get(String repo, String from) throws DarcsCmdException {
+        ArgumentListBuilder args = new ArgumentListBuilder();
+        args.add(darcsExe)
+            .add("pull")
+            .add(from)
+            .add(repo);
+        // todo use stdout as output buffer
+        try {
+            ProcStarter proc = createProc(args);
+            int ret = proc.join();
+
+            if (0 != ret) {
+                throw new DarcsCmdException("can not do darcs changes in repo " + repo);
+            }
+        } catch (Exception $e) {
+            throw new DarcsCmdException("can not do darcs changes in repo " + repo, $e);
+        }
     }
 }

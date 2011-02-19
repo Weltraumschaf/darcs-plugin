@@ -252,26 +252,22 @@ public class DarcsScm extends SCM implements Serializable {
     private boolean pullRepo(AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, BuildListener listener, File changelogFile) throws InterruptedException, IOException {
         LOGGER.log(Level.INFO, "Pulling repo from: {0}", source);
         int preCnt = 0, postCnt = 0;
-
+        preCnt = countPatches(build, launcher, workspace, listener);
+        LOGGER.log(Level.INFO, "Count of patches pre pulling is {0}", preCnt);
+        
         try {
-            preCnt = countPatches(build, launcher, workspace, listener);
-            LOGGER.log(Level.INFO, "Count of patches pre pulling is {0}", preCnt);
-            ProcStarter proc = launcher.launch().cmds(getDescriptor().getDarcsExe(), "pull", source, "--all", "--repodir=" + workspace).envs(build.getEnvironment(listener)).stdout(listener.getLogger()).pwd(workspace);
-
-            if (proc.join() != 0) {
-                listener.error("Failed to pull");
-
-                return false;
-            }
-
-            postCnt = countPatches(build, launcher, workspace, listener);
-            LOGGER.log(Level.INFO, "Count of patches post pulling is {0}", preCnt);
-            getLog(launcher, postCnt - preCnt, workspace, changelogFile);
-        } catch (IOException e) {
+            
+            DarcsCmd cmd = new DarcsCmd(launcher, build.getEnvironment(listener), getDescriptor().getDarcsExe());
+            cmd.pull(workspace, source);
+        } catch (Exception e) {
             listener.error("Failed to pull");
 
             return false;
         }
+
+        postCnt = countPatches(build, launcher, workspace, listener);
+        LOGGER.log(Level.INFO, "Count of patches post pulling is {0}", preCnt);
+        getLog(launcher, postCnt - preCnt, workspace, changelogFile);
 
         return true;
     }
@@ -297,19 +293,10 @@ public class DarcsScm extends SCM implements Serializable {
             return false;
         }
 
-        ArgumentListBuilder args = new ArgumentListBuilder();
-        args.add(getDescriptor().getDarcsExe(), "get");
-        args.add(source, workspace.getRemote());
-
         try {
-            ProcStarter proc = launcher.launch().cmds(args).envs(build.getEnvironment(listener)).stdout(listener.getLogger());
-
-            if (proc.join() != 0) {
-                listener.error("Failed to get " + source);
-
-                return false;
-            }
-        } catch (IOException e) {
+            DarcsCmd cmd = new DarcsCmd(launcher, build.getEnvironment(listener), getDescriptor().getDarcsExe());
+            cmd.get(workspace.getRemote(), source);
+        } catch (Exception e) {
             e.printStackTrace(listener.error("Failed to get " + source));
 
             return false;
