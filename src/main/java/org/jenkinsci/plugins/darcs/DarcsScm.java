@@ -294,7 +294,9 @@ public class DarcsScm extends SCM implements Serializable {
         }
 
         try {
-            DarcsCmd cmd = new DarcsCmd(launcher, build.getEnvironment(listener), getDescriptor().getDarcsExe());
+            DarcsCmd cmd = new DarcsCmd(launcher, 
+                                        build.getEnvironment(listener),
+                                        getDescriptor().getDarcsExe());
             cmd.get(workspace.getRemote(), source);
         } catch (Exception e) {
             e.printStackTrace(listener.error("Failed to get " + source));

@@ -137,12 +137,12 @@ public class DarcsCmd {
         ArgumentListBuilder args = new ArgumentListBuilder();
         args.add(darcsExe)
             .add("get")
-            .add(from);
-        // todo use stdout as output buffer
+            .add(from)
+            .add(repo);
+        
         try {
             ProcStarter proc = createProc(args);
-            proc.pwd(repo)
-                .stdout(this.launcher.getListener());
+            proc.stdout(this.launcher.getListener());
             int ret = proc.join();
 
             if (0 != ret) {
