@@ -47,11 +47,11 @@ public class DarcsCmd {
         return proc;
     }
 
-    public ByteArrayOutputStream changes(FilePath repo, boolean xmlOutput, boolean summary, int last) throws DarcsCmdException {
+    public ByteArrayOutputStream changes(String repo, boolean xmlOutput, boolean summary, int last) throws DarcsCmdException {
         ArgumentListBuilder args = new ArgumentListBuilder();
         args.add(darcsExe)
             .add("changes")
-            .add("--repodir=" + repo.toString());
+            .add("--repodir=" + repo);
 
         if (xmlOutput) {
             args.add("--xml-output");
@@ -82,22 +82,22 @@ public class DarcsCmd {
         return baos;
     }
 
-    public ByteArrayOutputStream changes(FilePath repo) throws DarcsCmdException {
+    public ByteArrayOutputStream changes(String repo) throws DarcsCmdException {
         return changes(repo, true, true, 0);
     }
 
-    public ByteArrayOutputStream changes(FilePath repo, int last) throws DarcsCmdException {
+    public ByteArrayOutputStream changes(String repo, int last) throws DarcsCmdException {
         return changes(repo, true, true, last);
     }
 
-    public int countChanges(FilePath repo) throws DarcsCmdException {
+    public int countChanges(String repo) throws DarcsCmdException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         
         try {
             ArgumentListBuilder args = new ArgumentListBuilder();
             args.add(darcsExe)
                 .add("changes")
-                .add("--repodir=" + repo.toString())
+                .add("--repodir=" + repo)
                 .add("--count");
             ProcStarter proc = createProc(args);
             proc.stdout(baos);
@@ -113,16 +113,18 @@ public class DarcsCmd {
         return Integer.parseInt(baos.toString().trim());
     }
     
-    public void pull(FilePath repo, String from) throws DarcsCmdException {
+    public void pull(String repo, String from) throws DarcsCmdException {
         ArgumentListBuilder args = new ArgumentListBuilder();
         args.add(darcsExe)
             .add("pull")
             .add(from)
-            .add("--repodir=" + repo.toString())
-            .add("--all");
-        // todo use stdout as output buffer
+            .add("--repodir=" + repo)
+            .add("--all")
+            .add("--verbose");
+        
         try {
             ProcStarter proc = createProc(args);
+            proc.stdout(this.launcher.getListener());
             int ret = proc.join();
 
             if (0 != ret) {
