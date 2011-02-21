@@ -27,16 +27,15 @@ import hudson.model.TaskListener;
 import hudson.remoting.VirtualChannel;
 import hudson.scm.ChangeLogParser;
 import hudson.scm.PollingResult;
-import hudson.scm.PollingResult.Change;
+//import hudson.scm.PollingResult.Change;
 import hudson.scm.RepositoryBrowsers;
 import hudson.scm.SCM;
 import hudson.scm.SCMRevisionState;
 import hudson.scm.SCMDescriptor;
-import hudson.util.ArgumentListBuilder;
 import hudson.util.FormValidation;
 
 import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
+//import java.io.PrintStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -123,37 +122,39 @@ public class DarcsScm extends SCM implements Serializable {
      */
     @Override
     public DarcsRevisionState calcRevisionsFromBuild(AbstractBuild<?, ?> build, Launcher launcher, TaskListener listener) throws IOException, InterruptedException {
-        PrintStream output = listener.getLogger();
-        output.println("Getting local revision...");
-        DarcsRevisionState local = getRevisionState(launcher, 
-                                                    listener,
-                                                    build.getWorkspace().getRemote());
+//        PrintStream output = listener.getLogger();
+//        output.println("Getting local revision...");
+//        DarcsRevisionState local = getRevisionState(launcher,
+//                                                    listener,
+//                                                    build.getWorkspace().getRemote());
 //        output.println(local);
-        
-        return local;
+//
+//        return local;
+        return null;
     }
 
     @Override
     protected PollingResult compareRemoteRevisionWith(AbstractProject<?, ?> ap, Launcher launcher, FilePath fp, TaskListener listener, SCMRevisionState localRevisionState) throws IOException, InterruptedException {
-        PrintStream output = listener.getLogger();
-        final Change change;
-        final DarcsRevisionState remote = getRevisionState(launcher, listener, source);
-        
-        output.printf("Getting current remote revision...");
-        output.println(remote);
-        output.printf("Baseline is %s.\n", localRevisionState);
-
-        if ((localRevisionState == SCMRevisionState.NONE)
-            // appears that other instances of None occur - its not a singleton.
-            // so do a (fugly) class check.
-            || (localRevisionState.getClass() != DarcsRevisionState.class)
-            || (!remote.equals(localRevisionState))) {
-            change = Change.SIGNIFICANT;
-        } else {
-            change = Change.NONE;
-        }
-
-        return new PollingResult(localRevisionState, remote, change);
+//        PrintStream output = listener.getLogger();
+//        final Change change;
+//        final DarcsRevisionState remote = getRevisionState(launcher, listener, source);
+//
+//        output.printf("Getting current remote revision...");
+//        output.println(remote);
+//        output.printf("Baseline is %s.\n", localRevisionState);
+//
+//        if ((localRevisionState == SCMRevisionState.NONE)
+//            // appears that other instances of None occur - its not a singleton.
+//            // so do a (fugly) class check.
+//            || (localRevisionState.getClass() != DarcsRevisionState.class)
+//            || (!remote.equals(localRevisionState))) {
+//            change = Change.SIGNIFICANT;
+//        } else {
+//            change = Change.NONE;
+//        }
+//
+//        return new PollingResult(localRevisionState, remote, change);
+        return null;
     }
 
     /**
@@ -167,11 +168,11 @@ public class DarcsScm extends SCM implements Serializable {
      * @return
      * @throws InterruptedException
      */
-    private DarcsRevisionState getRevisionState(Launcher launcher, TaskListener listener, String root) throws InterruptedException {
-        DarcsRevisionState rev = null;
-
-        return rev;
-    }
+//    private DarcsRevisionState getRevisionState(Launcher launcher, TaskListener listener, String root) throws InterruptedException {
+//        DarcsRevisionState rev = null;
+//
+//        return rev;
+//    }
     
     /**
      * Writes the cahngelog of the last numPatches to the changeLog file.
@@ -184,16 +185,18 @@ public class DarcsScm extends SCM implements Serializable {
      */
     private void createChangeLog(Launcher launcher, int numPatches, FilePath workspace, File changeLog, BuildListener listener) throws InterruptedException {
         if (0 == numPatches) {
+            LOGGER.info("Creating empty changelog.");
             createEmptyChangeLog(changeLog, listener, "changelog");
             return;
         }
 
         try {
-            DarcsCmd cmd = new DarcsCmd(launcher, 
-                                        EnvVars.masterEnvVars,
+            DarcsCmd cmd = new DarcsCmd(launcher, EnvVars.masterEnvVars,
                                         getDescriptor().getDarcsExe());
-            FileOutputStream fos = new FileOutputStream(changeLog);
-            fos.write(cmd.changes(workspace.getRemote(), numPatches).toByteArray());
+            FileOutputStream      fos     = new FileOutputStream(changeLog);
+            ByteArrayOutputStream changes = cmd.lastSummarizedChanges(workspace.getRemote(), numPatches);
+            
+            fos.write(changes.toByteArray());
             fos.close();
         } catch (Exception e) {
             StringWriter w = new StringWriter();
@@ -232,15 +235,15 @@ public class DarcsScm extends SCM implements Serializable {
      * @throws InterruptedException
      * @throws IOException
      */
-    private int countPatches(AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, BuildListener listener) throws InterruptedException, IOException {
-        DarcsCmd cmd = new DarcsCmd(launcher, 
-                                    build.getEnvironment(listener),
-                                    getDescriptor().getDarcsExe());
-
+    private int countPatches(AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, BuildListener listener) {
         try {
+            DarcsCmd cmd = new DarcsCmd(launcher,
+                                        build.getEnvironment(listener),
+                                        getDescriptor().getDarcsExe());
+
             return cmd.countChanges(workspace.getRemote());
-        } catch (DarcsCmdException e) {
-            listener.error("Failed to count patches in workspace repo!");
+        } catch (Exception e) {
+            listener.error("Failed to count patches in workspace repo!\n", e.toString());
             return 0;
         }
     }
@@ -353,10 +356,10 @@ public class DarcsScm extends SCM implements Serializable {
         @Override
         public SCM newInstance(StaplerRequest req, JSONObject formData) throws FormException {
             DarcsScm scm = req.bindJSON(DarcsScm.class, formData);
-            scm.browser = RepositoryBrowsers.createInstance(DarcsRepositoryBrowser.class,
-                    req,
-                    formData,
-                    "browser");
+            scm.browser  = RepositoryBrowsers.createInstance(DarcsRepositoryBrowser.class,
+                                                             req,
+                                                             formData,
+                                                             "browser");
 
             return scm;
         }
