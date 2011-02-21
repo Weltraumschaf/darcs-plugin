@@ -378,9 +378,13 @@ public class DarcsScm extends SCM implements Serializable {
                 @Override
                 public FormValidation validate(File exe) {
                     try {
-                        ByteBuffer baos = new ByteBuffer();
-                        Launcher launcher = Hudson.getInstance().createLauncher(TaskListener.NULL);
-                        ProcStarter proc = launcher.launch().cmds(getDarcsExe(), "--version").stdout(baos);
+                        ByteBuffer  baos     = new ByteBuffer();
+                        Launcher    launcher = Hudson.getInstance()
+                                                     .createLauncher(TaskListener.NULL);
+                        ProcStarter proc     = launcher.launch()
+                                                       .cmds(exe, "--version")
+                                                       .stdout(baos);
+
                         if (proc.join() == 0) {
                             return FormValidation.ok();
                         } else {
@@ -388,13 +392,13 @@ public class DarcsScm extends SCM implements Serializable {
                         }
                     } catch (IOException e) {
                         // failed
-                        return FormValidation.error(e.toString());
+                        LOGGER.log(Level.WARNING, e.toString());
                     } catch (InterruptedException e) {
                         // failed
-                        return FormValidation.error(e.toString());
+                        LOGGER.log(Level.WARNING, e.toString());
                     }
 
-                    //return FormValidation.error("Unable to check darcs version");
+                    return FormValidation.error("Unable to check darcs version");
                 }
             });
         }
