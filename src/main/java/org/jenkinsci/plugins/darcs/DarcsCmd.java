@@ -13,6 +13,7 @@ package org.jenkinsci.plugins.darcs;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Launcher.ProcStarter;
+import hudson.model.TaskListener;
 import hudson.util.ArgumentListBuilder;
 
 import java.io.ByteArrayOutputStream;
@@ -27,7 +28,6 @@ public class DarcsCmd {
     private final Launcher            launcher;
     private final String              darcsExe;
     private final Map<String, String> envs;
-//    private OutputStream stdout;
 
     public DarcsCmd(Launcher launcher, Map<String, String> envs) {
         this(launcher, envs, "darcs");
@@ -41,6 +41,7 @@ public class DarcsCmd {
 
     public ProcStarter createProc(ArgumentListBuilder args) {
         ProcStarter proc = launcher.launch();
+        proc.cmds(args);
         proc.envs(envs);
         
         return proc;
@@ -140,7 +141,8 @@ public class DarcsCmd {
         // todo use stdout as output buffer
         try {
             ProcStarter proc = createProc(args);
-            proc.pwd(repo);
+            proc.pwd(repo)
+                .stdout(this.launcher.getListener());
             int ret = proc.join();
 
             if (0 != ret) {
