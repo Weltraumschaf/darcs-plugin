@@ -46,9 +46,18 @@ public class DarcsChangeSetTest extends TestCase {
     @Ignore("not ready yet")
     public void testGetAffectedPaths() {
         DarcsChangeSet sut = createSut();
-        Collection<String> p = sut.getAffectedPaths();
+        List<String> p = sut.getAffectedPaths();
         assertTrue(p instanceof ArrayList);
         assertEquals(9, p.size());
+        assertEquals("/foo/1", p.get(0));
+        assertEquals("/foo/2", p.get(1));
+        assertEquals("/foo/3", p.get(2));
+        assertEquals("/bar/1", p.get(3));
+        assertEquals("/bar/2", p.get(4));
+        assertEquals("/bar/3", p.get(5));
+        assertEquals("/baz/1", p.get(6));
+        assertEquals("/baz/2", p.get(7));
+        assertEquals("/baz/3", p.get(8));
     }
 
     @Ignore("not ready yet")
@@ -57,13 +66,22 @@ public class DarcsChangeSetTest extends TestCase {
         List<String> add = sut.getPaths(EditType.ADD);
         assertTrue(add instanceof ArrayList);
         assertEquals(3, add.size());
+        assertEquals("/foo/1", add.get(0));
+        assertEquals("/foo/2", add.get(1));
+        assertEquals("/foo/3", add.get(2));
 
         List<String> del = sut.getPaths(EditType.DELETE);
         assertTrue(del instanceof ArrayList);
         assertEquals(3, del.size());
+        assertEquals("/bar/1", del.get(0));
+        assertEquals("/bar/2", del.get(1));
+        assertEquals("/bar/3", del.get(2));
 
         List<String> mod = sut.getPaths(EditType.EDIT);
         assertTrue(del instanceof ArrayList);
         assertEquals(3, del.size());
+        assertEquals("/baz/1", mod.get(0));
+        assertEquals("/baz/2", mod.get(1));
+        assertEquals("/baz/3", mod.get(2));
     }
 }
