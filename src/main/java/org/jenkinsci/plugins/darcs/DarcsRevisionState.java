@@ -10,8 +10,6 @@
 package org.jenkinsci.plugins.darcs;
 
 import hudson.scm.SCMRevisionState;
-import java.util.List;
-import java.util.ArrayList;
 
 /**
  *
