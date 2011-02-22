@@ -14,6 +14,7 @@ import junit.framework.TestCase;
 import org.junit.Ignore;
 import java.util.List;
 import java.util.ArrayList;
+import hudson.Util;
 
 /**
  *
@@ -54,6 +55,16 @@ public class DarcsChangeSetListTest extends TestCase {
 
 	@Ignore("Not ready yet.")
 	public void testDigest() {
-		
+		DarcsChangeSet cs1 = createChangeSet("1");
+		DarcsChangeSet cs2 = createChangeSet("2");
+		DarcsChangeSet cs3 = createChangeSet("3");
+
+		List<DarcsChangeSet> list = new ArrayList<DarcsChangeSet>();
+		list.add(createChangeSet("1"));
+		list.add(createChangeSet("2"));
+		list.add(createChangeSet("3"));
+		DarcsChangeSetList sut = new DarcsChangeSetList(null, list);
+		assertEquals(Util.getDigestOf(cs1.getHash() + cs2.getHash() + cs3.getHash()),
+					 sut.digest());
 	}
 }
