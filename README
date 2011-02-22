@@ -6,7 +6,7 @@ Todo
 - write more unittests
     - DarcsSaxHandler/DarcsChangelogParser tests
     - BrowserChooser
-- iput validation for code browsers URL
+- input validation for code browsers URL
 - implement polling support
 - write more javadoc
 - ipmroving the changeset index view
