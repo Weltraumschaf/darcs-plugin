@@ -81,23 +81,26 @@ public class DarcsChangeSetListTest extends TestCase {
 							 list3 = new ArrayList<DarcsChangeSet>();
 		list1.add(cs1);
 		list1.add(cs2);
-
+		DarcsChangeSetList sut1 = new DarcsChangeSetList(null, list1);
 		list2.add(cs1);
 		list2.add(cs2);
-
+		DarcsChangeSetList sut2 = new DarcsChangeSetList(null, list2);
 		list3.add(cs1);
 		list3.add(cs2);
 		list3.add(cs3);
+		DarcsChangeSetList sut3 = new DarcsChangeSetList(null, list3);
 
 		// equals to itself
-		assertTrue(list1.equals(list1));
-		assertTrue(list2.equals(list2));
+		assertTrue(sut1.equals(sut1));
+		assertTrue(sut2.equals(sut2));
 		assertTrue(list3.equals(list3));
 		// list1 and list2 are euqal
-		assertTrue(list1.equals(list2));
-		assertTrue(list2.equals(list1));
+		assertTrue(sut1.equals(sut2));
+		assertTrue(sut2.equals(sut1));
 		// list3 has one more patch
-		assertFalse(list1.equals(list3));
-		assertFalse(list2.equals(list3));
+		assertFalse(sut1.equals(sut3));
+		assertFalse(sut2.equals(sut3));
+		// wron types
+		assertFalse(sut1.equals(cs3));
 	}
 }
