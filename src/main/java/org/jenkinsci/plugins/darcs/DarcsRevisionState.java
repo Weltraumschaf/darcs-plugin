@@ -71,16 +71,20 @@ import java.util.ArrayList;
  */
 public class DarcsRevisionState extends SCMRevisionState {
 
-    private List<String> hashes;
+    private DarcsChangeSetList changes;
 
-    public DarcsRevisionState(ArrayList<String> hashes) {
+    public DarcsRevisionState(DarcsChangeSetList changes) {
         super();
-        this.hashes = hashes;
+        this.changes = changes;
+    }
+
+    public DarcsChangeSetList getChanges() {
+        return changes;
     }
 
     @Override
     public String toString() {
-        return "RevisionState " + hashCode();
+        return "<RevisionState: " + getChanges().digest() + ">";
     }
 
     @Override
@@ -89,14 +93,9 @@ public class DarcsRevisionState extends SCMRevisionState {
 
         if (other instanceof DarcsRevisionState) {
             DarcsRevisionState that = (DarcsRevisionState) other;
-            result = hashCode() == that.hashCode();
+            return getChanges().equals(other.getClass());
         }
 
         return result;
-    }
-
-    @Override
-    public int hashCode() {
-        return hashes.hashCode();
     }
 }
