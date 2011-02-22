@@ -93,7 +93,7 @@ public class DarcsRevisionState extends SCMRevisionState {
 
         if (other instanceof DarcsRevisionState) {
             DarcsRevisionState that = (DarcsRevisionState) other;
-            return getChanges().equals(other.getClass());
+            return getChanges().equals(that.getChanges());
         }
 
         return result;
