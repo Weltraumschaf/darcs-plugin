@@ -66,7 +66,7 @@ import java.util.ArrayList;
  *
  *    Computes MD5 digest of the given input stream.
  * </quote>
- * 
+ *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsRevisionState extends SCMRevisionState {
