@@ -11,6 +11,7 @@
 package org.jenkinsci.plugins.darcs;
 
 import junit.framework.TestCase;
+import org.junit.Ignore;
 
 /**
  *
@@ -20,4 +21,14 @@ public class DarcsRevisionStateTest extends TestCase {
     public DarcsRevisionStateTest(String testName) {
         super(testName);
     }
+
+	@Ignore("Not ready yet.")
+	public void testToString() {
+
+	}
+
+	@Ignore("Not ready yet.")
+	public void testEquals() {
+
+	}
 }
