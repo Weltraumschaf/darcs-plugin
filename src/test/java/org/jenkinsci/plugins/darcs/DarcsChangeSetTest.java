@@ -24,7 +24,27 @@ public class DarcsChangeSetTest extends TestCase {
     }
 
     @Ignore("not ready yet")
-    public void testImplementSome() {
+    public void testGetAffectedPaths() {
 
     }
+
+	@Ignore("not ready yet")
+    public void testGetAddedPaths(){
+
+	}
+
+	@Ignore("not ready yet")
+    public void testGetDeletedPaths(){
+
+	}
+
+	@Ignore("not ready yet")
+    public void testGetModifiedPaths(){
+
+	}
+
+	@Ignore("not ready yet")
+    public void testGetPaths(){
+
+	}
 }
