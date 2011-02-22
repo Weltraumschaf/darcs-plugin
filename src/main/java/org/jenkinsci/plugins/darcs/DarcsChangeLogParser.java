@@ -7,7 +7,6 @@
  * this stuff. If we meet some day, and you think this stuff is worth it,
  * you can buy me a beer in return.
  */
-
 package org.jenkinsci.plugins.darcs;
 
 import hudson.model.AbstractBuild;
@@ -30,23 +29,22 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * 
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
-public class DarcsChangeLogParser  extends ChangeLogParser {
+public class DarcsChangeLogParser extends ChangeLogParser {
 
-    private static final Logger LOGGER = Logger.getLogger(DarcsScm.class.getName());
-    
-    @Override
-    public ChangeLogSet<? extends Entry> parse(AbstractBuild build, File changelogFile) throws IOException, SAXException {
-        LOGGER.info("Parsing changelog file " + changelogFile.toString());
+	private static final Logger LOGGER = Logger.getLogger(DarcsScm.class.getName());
 
-        XMLReader       xr      = XMLReaderFactory.createXMLReader();
-        DarcsSaxHandler handler = new DarcsSaxHandler();
-        FileReader      r       = new FileReader(changelogFile);
-        
-	xr.setContentHandler(handler);
-	xr.setErrorHandler(handler); 
-        xr.parse(new InputSource(r));
+	@Override
+	public ChangeLogSet<? extends Entry> parse(AbstractBuild build, File changelogFile) throws IOException, SAXException {
+		LOGGER.info("Parsing changelog file " + changelogFile.toString());
 
-        return new DarcsChangeSetList(build, handler.getChangeSets());
-    }
+		XMLReader xr = XMLReaderFactory.createXMLReader();
+		DarcsSaxHandler handler = new DarcsSaxHandler();
+		FileReader r = new FileReader(changelogFile);
 
+		xr.setContentHandler(handler);
+		xr.setErrorHandler(handler);
+		xr.parse(new InputSource(r));
+
+		return new DarcsChangeSetList(build, handler.getChangeSets());
+	}
 }

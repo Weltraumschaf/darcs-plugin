@@ -40,13 +40,17 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
 
     @Override
     public boolean isEmptySet() {
-        return changeSets.isEmpty();
+        return getLogs().isEmpty();
     }
 
     public Iterator<DarcsChangeSet> iterator() {
-        return changeSets.iterator();
+        return getLogs().iterator();
     }
 
+	public int size() {
+		return getLogs().size();
+	}
+	
     public List<DarcsChangeSet> getLogs() {
         return changeSets;
     }
