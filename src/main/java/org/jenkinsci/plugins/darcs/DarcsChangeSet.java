@@ -12,7 +12,6 @@ package org.jenkinsci.plugins.darcs;
 
 import hudson.model.User;
 import hudson.scm.ChangeLogSet;
-import hudson.scm.ChangeLogSet.AffectedFile;
 import hudson.scm.EditType;
 
 import java.util.ArrayList;
@@ -21,7 +20,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.kohsuke.stapler.export.Exported;
-import org.kohsuke.stapler.export.ExportedBean;
 
 /**
  * Represents a change set (aka. a patch in darcs).
@@ -64,11 +62,11 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
     /**
      * Filles added by this patch.
      */
-    private List<String> added    = new ArrayList<String>();
+    private List<String> added = new ArrayList<String>();
     /**
      * Filles deleted by this patch.
      */
-    private List<String> deleted  = new ArrayList<String>();
+    private List<String> deleted = new ArrayList<String>();
     /**
      * Filles modified by this patch.
      */
