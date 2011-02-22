@@ -27,7 +27,6 @@ public class DarcsSaxHandler extends DefaultHandler {
     private static final Logger LOGGER = Logger.getLogger(DarcsSaxHandler.class.getName());
 
     public enum DarcsChangelogTag {
-
         CHANGELOG,
         PATCH,
         NAME,
@@ -40,6 +39,7 @@ public class DarcsSaxHandler extends DefaultHandler {
         ADDED_LINES,
         REMOVED_LINES;
     }
+
     private DarcsChangelogTag currentTag;
     private DarcsChangeSet currentChangeset;
     private boolean ready;
