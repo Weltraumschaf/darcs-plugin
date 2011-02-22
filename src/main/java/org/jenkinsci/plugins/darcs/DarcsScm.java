@@ -17,6 +17,7 @@ import hudson.Extension;
 import hudson.FilePath;
 import hudson.FilePath.FileCallable;
 import hudson.Launcher;
+import hudson.Launcher.LocalLauncher;
 import hudson.Launcher.ProcStarter;
 import hudson.Util;
 import hudson.model.Hudson;
@@ -168,6 +169,14 @@ public class DarcsScm extends SCM implements Serializable {
      */
     private DarcsRevisionState getRevisionState(Launcher launcher, TaskListener listener, String repo) throws InterruptedException {
         DarcsRevisionState rev = null;
+
+        if (launcher == null) {
+            /* Create a launcher on master
+             * todo better grab a launcher on 'any slave'
+             */
+            launcher = new LocalLauncher(listener);
+        }
+
         DarcsCmd cmd = new DarcsCmd(launcher, EnvVars.masterEnvVars,
                                     getDescriptor().getDarcsExe());
 
