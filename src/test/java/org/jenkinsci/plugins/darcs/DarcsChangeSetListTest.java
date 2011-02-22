@@ -53,7 +53,6 @@ public class DarcsChangeSetListTest extends TestCase {
 		assertEquals(3, sut.size());
 	}
 
-	@Ignore("Not ready yet.")
 	public void testDigest() {
 		DarcsChangeSet cs1 = createChangeSet("1");
 		DarcsChangeSet cs2 = createChangeSet("2");
@@ -66,5 +65,39 @@ public class DarcsChangeSetListTest extends TestCase {
 		DarcsChangeSetList sut = new DarcsChangeSetList(null, list);
 		assertEquals(Util.getDigestOf(cs1.getHash() + cs2.getHash() + cs3.getHash()),
 					 sut.digest());
+	}
+
+	public void testGetKind() {
+		DarcsChangeSetList sut = new DarcsChangeSetList(null, new ArrayList<DarcsChangeSet>());
+		assertEquals("darcs", sut.getKind());
+	}
+
+	public void testEquals() {
+		DarcsChangeSet cs1 = createChangeSet("1");
+		DarcsChangeSet cs2 = createChangeSet("2");
+		DarcsChangeSet cs3 = createChangeSet("3");
+		List<DarcsChangeSet> list1 = new ArrayList<DarcsChangeSet>(),
+							 list2 = new ArrayList<DarcsChangeSet>(),
+							 list3 = new ArrayList<DarcsChangeSet>();
+		list1.add(cs1);
+		list1.add(cs2);
+
+		list2.add(cs1);
+		list2.add(cs2);
+
+		list3.add(cs1);
+		list3.add(cs2);
+		list3.add(cs3);
+
+		// equals to itself
+		assertTrue(list1.equals(list1));
+		assertTrue(list2.equals(list2));
+		assertTrue(list3.equals(list3));
+		// list1 and list2 are euqal
+		assertTrue(list1.equals(list2));
+		assertTrue(list2.equals(list1));
+		// list3 has one more patch
+		assertFalse(list1.equals(list3));
+		assertFalse(list2.equals(list3));
 	}
 }
