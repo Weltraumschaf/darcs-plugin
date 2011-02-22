@@ -80,7 +80,11 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
 
     @Exported
     public User getAuthor() {
-        return User.get(author);
+        return User.get(getPlainAuthor());
+    }
+
+    public String getPlainAuthor() {
+        return author;
     }
 
     @Exported

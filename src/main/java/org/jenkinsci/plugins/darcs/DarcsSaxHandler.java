@@ -118,8 +118,9 @@ public class DarcsSaxHandler extends DefaultHandler {
 
         if (DarcsChangelogTag.PATCH == currentTag) {
             changeSets.add(currentChangeset);
-            currentTag = null;
         }
+
+        currentTag = null;
     }
 
     private boolean isWhiteSpace(char c) {
@@ -139,7 +140,7 @@ public class DarcsSaxHandler extends DefaultHandler {
         String literal = "";
 
         for (int i = start; i < start + length; i++) {
-            if (isWhiteSpace(ch[i])) {
+            if (isWhiteSpace(ch[i]) && DarcsChangelogTag.NAME != currentTag && DarcsChangelogTag.COMMENT != currentTag) {
                 continue;
             }
 
