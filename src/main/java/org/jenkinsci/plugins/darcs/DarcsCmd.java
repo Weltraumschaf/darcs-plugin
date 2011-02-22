@@ -57,15 +57,18 @@ public class DarcsCmd {
         return proc;
     }
 
-    public ByteArrayOutputStream lastSummarizedChanges(String repo, int n) throws DarcsCmdException {
+    private ByteArrayOutputStream getChanges(String repo, boolean summarize, int n) throws DarcsCmdException {
         ArgumentListBuilder args = new ArgumentListBuilder();
         args.add(darcsExe)
             .add("changes")
-            .add("--repodir=" + repo)
-            .add("--xml-output")
-            .add("--summary")
-            .add("--last=" + n);
-
+            .add("--repo=" + repo)
+            .add("--xml-output");
+        if (summarize) {
+            args.add("--summary");
+        }
+        if (n != 0) {
+            args.add("--last=" + n);
+        }
 
         ProcStarter proc = createProc(args);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -84,50 +87,30 @@ public class DarcsCmd {
         return baos;
     }
 
-    /**
-     * @todo refactor the changes method: dublicated code!
-     *
-     * @param repo
-     * @return
-     * @throws org.jenkinsci.plugins.darcs.DarcsCmd.DarcsCmdException
-     */
+    public ByteArrayOutputStream lastSummarizedChanges(String repo, int n) throws DarcsCmdException {
+        return getChanges(repo, true, n);
+    }
+
     public ByteArrayOutputStream allSummarizedChanges(String repo) throws DarcsCmdException {
-        ArgumentListBuilder args = new ArgumentListBuilder();
-        args.add(darcsExe)
-            .add("changes")
-            .add("--repodir=" + repo)
-            .add("--xml-output")
-            .add("--summary");
+        return getChanges(repo, true, 0);
+    }
 
-
-        ProcStarter proc = createProc(args);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        proc.stdout(baos);
-
-        try {
-            int ret = proc.join();
-
-            if (0 != ret) {
-                throw new DarcsCmdException("can not do darcs changes in repo " + repo);
-            }
-        } catch (Exception $e) {
-            throw new DarcsCmdException("can not do darcs changes in repo " + repo, $e);
-        }
-
-        return baos;
+    public ByteArrayOutputStream allChanges(String repo) throws DarcsCmdException {
+        return getChanges(repo, false, 0);
     }
 
     public int countChanges(String repo) throws DarcsCmdException {
+        ArgumentListBuilder args = new ArgumentListBuilder();
+        args.add(darcsExe)
+            .add("changes")
+            .add("--repodir=" + repo)
+            .add("--count");
+
+        ProcStarter proc = createProc(args);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        proc.stdout(baos);
 
         try {
-            ArgumentListBuilder args = new ArgumentListBuilder();
-            args.add(darcsExe)
-                .add("changes")
-                .add("--repodir=" + repo)
-                .add("--count");
-            ProcStarter proc = createProc(args);
-            proc.stdout(baos);
             int ret = proc.join();
 
             if (0 != ret) {
