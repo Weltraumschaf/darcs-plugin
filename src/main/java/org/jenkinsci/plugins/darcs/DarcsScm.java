@@ -35,7 +35,7 @@ import hudson.scm.SCMDescriptor;
 import hudson.util.FormValidation;
 
 import java.io.ByteArrayOutputStream;
-//import java.io.PrintStream;
+import java.io.PrintStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -111,7 +111,6 @@ public class DarcsScm extends SCM implements Serializable {
     }
 
     /**
-     * darcs pull --dry --xml-output --repodir=REPO
      *
      * @param build
      * @param launcher
@@ -122,15 +121,14 @@ public class DarcsScm extends SCM implements Serializable {
      */
     @Override
     public DarcsRevisionState calcRevisionsFromBuild(AbstractBuild<?, ?> build, Launcher launcher, TaskListener listener) throws IOException, InterruptedException {
-//        PrintStream output = listener.getLogger();
-//        output.println("Getting local revision...");
-//        DarcsRevisionState local = getRevisionState(launcher,
-//                                                    listener,
-//                                                    build.getWorkspace().getRemote());
-//        output.println(local);
-//
-//        return local;
-        return null;
+        PrintStream output = listener.getLogger();
+        output.println("Getting local revision...");
+        DarcsRevisionState local = getRevisionState(launcher,
+                                                    listener,
+                                                    build.getWorkspace().getRemote());
+        output.println(local);
+
+        return local;
     }
 
     @Override
@@ -164,15 +162,24 @@ public class DarcsScm extends SCM implements Serializable {
      * 
      * @param launcher
      * @param listener
-     * @param root
+     * @param repo
      * @return
      * @throws InterruptedException
      */
-//    private DarcsRevisionState getRevisionState(Launcher launcher, TaskListener listener, String root) throws InterruptedException {
-//        DarcsRevisionState rev = null;
-//
-//        return rev;
-//    }
+    private DarcsRevisionState getRevisionState(Launcher launcher, TaskListener listener, String repo) throws InterruptedException {
+        DarcsRevisionState rev = null;
+        DarcsCmd cmd = new DarcsCmd(launcher, EnvVars.masterEnvVars,
+                                    getDescriptor().getDarcsExe());
+
+        try {
+            ByteArrayOutputStream changes = cmd.allSummarizedChanges(repo);
+        } catch (DarcsCmd.DarcsCmdException e) {
+
+        }
+        
+
+        return rev;
+    }
     
     /**
      * Writes the cahngelog of the last numPatches to the changeLog file.
