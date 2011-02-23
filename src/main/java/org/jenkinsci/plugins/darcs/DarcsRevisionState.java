@@ -10,6 +10,8 @@
 package org.jenkinsci.plugins.darcs;
 
 import hudson.scm.SCMRevisionState;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -66,23 +68,28 @@ import hudson.scm.SCMRevisionState;
  * </quote>
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
+ * @author Ralph Lange <Ralph.Lange@gmx.de>
  */
 public class DarcsRevisionState extends SCMRevisionState {
 
-    private DarcsChangeSetList changes;
+    private List<DarcsChangeSet> changes = new ArrayList<DarcsChangeSet>();
 
-    public DarcsRevisionState(DarcsChangeSetList changes) {
+    public DarcsRevisionState(List<DarcsChangeSet> changes) {
         super();
         this.changes = changes;
     }
 
-    public DarcsChangeSetList getChanges() {
+    public List<DarcsChangeSet> getChanges() {
         return changes;
     }
 
     @Override
     public String toString() {
-        return "<RevisionState: " + getChanges().digest() + ">";
+        StringBuilder hashes = new StringBuilder();
+        for (DarcsChangeSet cset : changes) {
+            hashes.append(cset.getHash());
+        }
+        return "<RevisionState: " + hudson.Util.getDigestOf(hashes.toString()) + ">";
     }
 
     @Override
