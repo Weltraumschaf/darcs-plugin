@@ -86,6 +86,30 @@ public class DarcsChangeLogParserTest extends TestCase {
             put("hash", "20110214201649-7677a-9c3c62c42467fe20e75a9ab62e52441ef7cdc8ba.gz");
             put("comment", "Ignore-this: 85d0cdf2679dfcab72469629d6a80945");
         }});
+        assertPatch(logs.get(5), true, new HashMap<String, String>() {{
+            put("plainAuthor", "ich@weltraumschaf.de");
+            put("name", "Implemented class Baz");
+            put("date", "20110214201618");
+            put("localDate", "Mon Feb 14 21:16:18 CET 2011");
+            put("hash", "20110214201618-7677a-631eee269c4a252d953fa2f61b1127874bbc57d4.gz");
+            put("comment", "Ignore-this: 751c6c8a858104b5b15833496fce9a2");
+        }});
+        assertPatch(logs.get(6), false, new HashMap<String, String>() {{
+            put("plainAuthor", "ich@weltraumschaf.de");
+            put("name", "Implemented class Bar");
+            put("date", "20110214201544");
+            put("localDate", "Mon Feb 14 21:15:44 CET 2011");
+            put("hash", "20110214201544-7677a-1cd5bbbc18b5e78240a80c9d1576faaa63c9f7d7.gz");
+            put("comment", "Ignore-this: e2eb7de380585ad9e4cb9515d8b21621");
+        }});
+        assertPatch(logs.get(7), true, new HashMap<String, String>() {{
+            put("plainAuthor", "ich@weltraumschaf.de");
+            put("name", "inital files added");
+            put("date", "20110214201356");
+            put("localDate", "Mon Feb 14 21:13:56 CET 2011");
+            put("hash", "20110214201356-7677a-15b1d7313611ef85de46d8daf57123a365d5b800.gz");
+            put("comment", "Ignore-this: 391a1ff64b0f64546446368f2d45fbc8");
+        }});
     }
 
     private void assertPatch(DarcsChangeSet cs, boolean isInverted, Map<String, String> expected) {
