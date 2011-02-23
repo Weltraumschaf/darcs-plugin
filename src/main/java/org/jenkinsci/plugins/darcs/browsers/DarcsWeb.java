@@ -27,7 +27,7 @@ import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
-        
+
 /**
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
@@ -37,7 +37,7 @@ public class DarcsWeb extends DarcsRepositoryBrowser {
     @Extension
     public static class DescriptorImpl extends Descriptor<RepositoryBrowser<?>> {
 //        private static final Pattern URL_PATTERN = Pattern.compile(".+/cgi-bin/darcsweb.cgi");
-        
+
         public String getDisplayName() {
             return "Darcsweb";
         }
@@ -46,7 +46,7 @@ public class DarcsWeb extends DarcsRepositoryBrowser {
          * Validates the URL given in the config formular.
          *
          * @todo implement check.
-         * 
+         *
          * @param value
          * @return
          * @throws IOException
@@ -106,7 +106,7 @@ public class DarcsWeb extends DarcsRepositoryBrowser {
 
     /**
      * http://localhost/cgi-bin/darcsweb.cgi?r=REPO;a=filediff;h=HASH;f=FILE
-     * 
+     *
      * @param changeSet
      * @param file
      * @return

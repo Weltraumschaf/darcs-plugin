@@ -71,7 +71,7 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
      * Filles modified by this patch.
      */
     private List<String> modified = new ArrayList<String>();
-    
+
     /**
      * Filepaths affected by the patch.
      * Lazily computed.
@@ -159,7 +159,7 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
             r.addAll(modified);
             affectedPaths = r;
         }
-        
+
         return affectedPaths;
     }
 
@@ -215,5 +215,5 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
     @Override
     protected void setParent(ChangeLogSet parent) {
         super.setParent(parent);
-    }    
+    }
 }

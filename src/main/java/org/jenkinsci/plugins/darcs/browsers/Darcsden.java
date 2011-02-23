@@ -44,7 +44,7 @@ public final class Darcsden extends DarcsRepositoryBrowser {
          * Validates the URL given in the config formular.
          *
          * @todo implement check.
-         * 
+         *
          * @param value
          * @return
          * @throws IOException
@@ -70,7 +70,7 @@ public final class Darcsden extends DarcsRepositoryBrowser {
     private static final long serialVersionUID = 1L;
 
     public final URL url;
-    
+
     @DataBoundConstructor
     public Darcsden(URL url) throws MalformedURLException {
         this.url = new URL(Util.removeTrailingSlash(url.toString()));

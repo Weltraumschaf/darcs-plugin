@@ -1,11 +1,15 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * LICENSE
+ *
+ * "THE BEER-WARE LICENSE" (Revision 42):
+ * "Sven Strittmatter" <ich@weltraumschaf.de> wrote this file.
+ * As long as you retain this notice you can do whatever you want with
+ * this stuff. If we meet some day, and you think this stuff is worth it,
+ * you can buy me a beer in return.
  */
 
 package org.jenkinsci.plugins.darcs.browsers;
 
-import org.jenkinsci.plugins.darcs.browsers.Darcsden;
 import org.jenkinsci.plugins.darcs.DarcsChangeSet;
 
 import junit.framework.TestCase;
@@ -36,7 +40,7 @@ public class DarcsdenTest extends TestCase {
             String         url  = "http://darcsden.com/Weltraumschaf/test";
             DarcsChangeSet cs   = new DarcsChangeSet();
             Darcsden       sut  = new Darcsden(new URL(url));
-            
+
             cs.setHash(hash);
             assertEquals("",
                          url + "/patch/20110214201356-7677a",
