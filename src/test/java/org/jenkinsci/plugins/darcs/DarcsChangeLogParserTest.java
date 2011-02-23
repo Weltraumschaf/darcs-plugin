@@ -152,6 +152,16 @@ public class DarcsChangeLogParserTest extends TestCase {
     }
 
     private void assertSummary(DarcsChangeSet cs, List added, List deleted, List modified) {
-        
+		if (null != added) {
+			assertTrue("added files does not match", cs.getAddedPaths().equals(added));
+		}
+
+		if (null != deleted) {
+			assertTrue("deleted files does not match", cs.getDeletedPaths().equals(deleted));
+		}
+
+		if (null != modified) {
+			assertTrue("modified files does not match", cs.getModifiedPaths().equals(modified));
+		}
     }
 }
