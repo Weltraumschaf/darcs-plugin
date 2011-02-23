@@ -69,7 +69,7 @@ import hudson.scm.SCMRevisionState;
  */
 public class DarcsRevisionState extends SCMRevisionState {
 
-    private DarcsChangeSetList changes;
+    private final DarcsChangeSetList changes;
 
     public DarcsRevisionState(DarcsChangeSetList changes) {
         super();
@@ -95,5 +95,10 @@ public class DarcsRevisionState extends SCMRevisionState {
         }
 
         return result;
+    }
+
+    @Override
+    public int hashCode() {
+        return changes.hashCode();
     }
 }

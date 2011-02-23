@@ -137,35 +137,35 @@ public class DarcsSaxHandler extends DefaultHandler {
 
     @Override
     public void characters(char ch[], int start, int length) {
-        String literal = "";
+        StringBuilder literal = new StringBuilder();
 
         for (int i = start; i < start + length; i++) {
             if (isWhiteSpace(ch[i]) && DarcsChangelogTag.NAME != currentTag && DarcsChangelogTag.COMMENT != currentTag) {
                 continue;
             }
 
-            literal += ch[i];
+            literal.append(ch[i]);
         }
 
-        if (literal.equals("")) {
+        if (literal.length() == 0) {
             return;
         }
 
         switch (currentTag) {
             case NAME:
-                currentChangeset.setName(literal);
+                currentChangeset.setName(literal.toString());
                 break;
             case COMMENT:
-                currentChangeset.setComment(literal);
+                currentChangeset.setComment(literal.toString());
                 break;
             case ADD_FILE:
-                currentChangeset.getAddedPaths().add(literal);
+                currentChangeset.getAddedPaths().add(literal.toString());
                 break;
             case REMOVE_FILE:
-                currentChangeset.getDeletedPaths().add(literal);
+                currentChangeset.getDeletedPaths().add(literal.toString());
                 break;
             case MODIFY_FILE:
-                currentChangeset.getModifiedPaths().add(literal);
+                currentChangeset.getModifiedPaths().add(literal.toString());
                 break;
         }
     }

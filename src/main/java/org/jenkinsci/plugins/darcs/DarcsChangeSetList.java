@@ -7,7 +7,6 @@
  * this stuff. If we meet some day, and you think this stuff is worth it,
  * you can buy me a beer in return.
  */
-
 package org.jenkinsci.plugins.darcs;
 
 import hudson.scm.ChangeLogSet;
@@ -20,14 +19,21 @@ import java.util.Iterator;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-
 /**
  * List of changeset that went into a particular build.
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
+
+    /**
+     * Set of the changes.
+     */
     private final List<DarcsChangeSet> changeSets;
+    /**
+     * Lazy computed digest over all changeset hashes.
+     */
+    private String digest;
 
     public DarcsChangeSetList(AbstractBuild build, List<DarcsChangeSet> logs) {
         super(build);
@@ -40,18 +46,18 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
 
     @Override
     public boolean isEmptySet() {
-        return getLogs().isEmpty();
+        return getChangeSets().isEmpty();
     }
 
     public Iterator<DarcsChangeSet> iterator() {
-        return getLogs().iterator();
+        return getChangeSets().iterator();
     }
 
-	public int size() {
-		return getLogs().size();
-	}
+    public int size() {
+        return getChangeSets().size();
+    }
 
-    public List<DarcsChangeSet> getLogs() {
+    public List<DarcsChangeSet> getChangeSets() {
         return changeSets;
     }
 
@@ -64,11 +70,11 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
      * Calculates md5 digest over all changesets hashes
      *
      * Inspired by http://www.stratos.me/2008/05/java-string-calculate-md5/
-     *
+     * 
      * @return
      */
-    public String digest() {
-        String res = "";
+    protected String calcDigest() {
+        StringBuilder res = new StringBuilder();
 
         try {
             MessageDigest algorithm = MessageDigest.getInstance("MD5");
@@ -83,16 +89,30 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
 
             for (int i = 0; i < md5.length; i++) {
                 tmp = (Integer.toHexString(0xFF & md5[i]));
+                
                 if (tmp.length() == 1) {
-                    res += "0" + tmp;
-                } else {
-                    res += tmp;
+                    res.append("0");
                 }
+
+                res.append(tmp);
             }
+        } catch (NoSuchAlgorithmException ex) {
+        }
 
-        } catch (NoSuchAlgorithmException ex) {}
+        return res.toString();
+    }
 
-        return res;
+    /**
+     * Returns the digest for the whole changeset.
+     *
+     * @return
+     */
+    public String digest() {
+        if (null == digest) {
+            digest = calcDigest();
+        }
+
+        return digest;
     }
 
     @Override
@@ -105,5 +125,10 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
         }
 
         return result;
+    }
+
+    @Override
+    public int hashCode() {
+        return digest().hashCode();
     }
 }

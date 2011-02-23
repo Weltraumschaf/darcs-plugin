@@ -43,7 +43,7 @@ public class DarcsChangeLogParserTest extends TestCase {
         }
 
         assertEquals(8, list.size());
-        List<DarcsChangeSet> logs = list.getLogs();
+        List<DarcsChangeSet> logs = list.getChangeSets();
         assertEquals(8, logs.size());
 
         assertPatch(logs.get(0), false, new HashMap<String, String>() {

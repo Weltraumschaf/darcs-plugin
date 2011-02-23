@@ -170,7 +170,7 @@ public class DarcsScm extends SCM implements Serializable {
     private DarcsRevisionState getRevisionState(Launcher launcher, TaskListener listener, String repo) throws InterruptedException {
         DarcsRevisionState rev = null;
 
-        if (launcher == null) {
+        if (null == launcher) {
             /* Create a launcher on master
              * todo better grab a launcher on 'any slave'
              */
