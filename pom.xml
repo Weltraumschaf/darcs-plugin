@@ -15,7 +15,7 @@
     <packaging>hpi</packaging>
     <name>Hudson Darcs plugin</name>
     <description>This plugin integrates the Darcs SCM into Hudson.</description>
-    <url>https://weltraumschaf.github.com/hudson-darcs</url>
+    <url>http://weltraumschaf.github.com/hudson-darcs</url>
 
     <organization>
         <name>weltraumschaf.de</name>
