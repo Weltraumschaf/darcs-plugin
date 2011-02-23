@@ -11,7 +11,6 @@
 package org.jenkinsci.plugins.darcs;
 
 import junit.framework.TestCase;
-import org.junit.Ignore;
 import java.util.List;
 import java.util.ArrayList;
 import hudson.Util;

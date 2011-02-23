@@ -26,25 +26,25 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * Parses the output of darcs log.
- * 
+ *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsChangeLogParser extends ChangeLogParser {
 
-	private static final Logger LOGGER = Logger.getLogger(DarcsScm.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(DarcsScm.class.getName());
 
-	@Override
-	public ChangeLogSet<? extends Entry> parse(AbstractBuild build, File changelogFile) throws IOException, SAXException {
-		LOGGER.info("Parsing changelog file " + changelogFile.toString());
+    @Override
+    public DarcsChangeSetList parse(AbstractBuild build, File changelogFile) throws IOException, SAXException {
+        LOGGER.info("Parsing changelog file " + changelogFile.toString());
 
-		XMLReader xr = XMLReaderFactory.createXMLReader();
-		DarcsSaxHandler handler = new DarcsSaxHandler();
-		FileReader r = new FileReader(changelogFile);
+        XMLReader       xmlReader  = XMLReaderFactory.createXMLReader();
+        DarcsSaxHandler handler    = new DarcsSaxHandler();
+        FileReader      fileReader = new FileReader(changelogFile);
 
-		xr.setContentHandler(handler);
-		xr.setErrorHandler(handler);
-		xr.parse(new InputSource(r));
+        xmlReader.setContentHandler(handler);
+        xmlReader.setErrorHandler(handler);
+        xmlReader.parse(new InputSource(fileReader));
 
-		return new DarcsChangeSetList(build, handler.getChangeSets());
-	}
+        return new DarcsChangeSetList(build, handler.getChangeSets());
+    }
 }
