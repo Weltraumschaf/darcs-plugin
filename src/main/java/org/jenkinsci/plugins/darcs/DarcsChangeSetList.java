@@ -50,7 +50,7 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
 	public int size() {
 		return getLogs().size();
 	}
-	
+
     public List<DarcsChangeSet> getLogs() {
         return changeSets;
     }

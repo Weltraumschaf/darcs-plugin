@@ -19,12 +19,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.MalformedURLException;
 
-
 /**
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsWebTest extends TestCase {
+    
     private static final String URL  = "http://www.foobar.com/";
     private static final String REPO = "arepo";
 
@@ -49,7 +49,7 @@ public class DarcsWebTest extends TestCase {
     public void testCreateDefaultQuery() {
         try {
             ExposingDarcsWeb sut = new ExposingDarcsWeb();
-            assertEquals("Query", 
+            assertEquals("Query",
                          "?r=" + sut.repo,
                          sut.exposedCreateDefaultQuery().toString());
         } catch (MalformedURLException e) {
@@ -74,7 +74,7 @@ public class DarcsWebTest extends TestCase {
             String         hash = "1234-the-commit-hash.gz";
             DarcsChangeSet cs   = new DarcsChangeSet();
             DarcsWeb       sut  = new DarcsWeb(new URL(URL), REPO);
-            
+
             cs.setHash(hash);
             assertEquals("",
                          URL + "?r=" + REPO + ";a=commit;h=" + hash,

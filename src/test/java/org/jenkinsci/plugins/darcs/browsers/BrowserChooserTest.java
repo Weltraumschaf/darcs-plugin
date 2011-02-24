@@ -10,8 +10,6 @@
 
 package org.jenkinsci.plugins.darcs.browsers;
 
-import org.jenkinsci.plugins.darcs.browsers.DarcsRepositoryBrowser;
-import org.jenkinsci.plugins.darcs.browsers.DarcsWeb;
 import hudson.util.IOUtils;
 
 import junit.framework.TestCase;
@@ -20,7 +18,7 @@ import org.junit.Ignore;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
-        
+
 import javax.servlet.http.HttpServletRequest;
 
 import net.sf.json.JSONObject;
@@ -37,6 +35,7 @@ import org.mockito.Mockito;
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class BrowserChooserTest extends TestCase {
+
     private final Stapler stapler = Mockito.mock(Stapler.class);
     private final HttpServletRequest servletRequest = Mockito.mock(HttpServletRequest.class);
     @SuppressWarnings("unchecked")

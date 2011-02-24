@@ -34,6 +34,6 @@ public class DarcsCmdTest extends TestCase {
 
     @Ignore("not ready yet")
     public void testGet() {
-        
+
     }
 }

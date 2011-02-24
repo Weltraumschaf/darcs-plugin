@@ -60,7 +60,7 @@ import org.kohsuke.stapler.framework.io.ByteBuffer;
  * Contains the job configuration options as fields.
  *
  * @see http://darcs.net/
- * 
+ *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsScm extends SCM implements Serializable {
@@ -160,7 +160,7 @@ public class DarcsScm extends SCM implements Serializable {
      * Calculates the revision state of a repository.
      *
      * @todo implement.
-     * 
+     *
      * @param launcher
      * @param listener
      * @param repo
@@ -185,14 +185,14 @@ public class DarcsScm extends SCM implements Serializable {
         } catch (DarcsCmd.DarcsCmdException e) {
 
         }
-        
+
 
         return rev;
     }
-    
+
     /**
      * Writes the cahngelog of the last numPatches to the changeLog file.
-     * 
+     *
      * @param launcher
      * @param numPatches
      * @param workspace
@@ -211,7 +211,7 @@ public class DarcsScm extends SCM implements Serializable {
                                         getDescriptor().getDarcsExe());
             FileOutputStream      fos     = new FileOutputStream(changeLog);
             ByteArrayOutputStream changes = cmd.lastSummarizedChanges(workspace.getRemote(), numPatches);
-            
+
             fos.write(changes.toByteArray());
             fos.close();
         } catch (Exception e) {
@@ -242,7 +242,7 @@ public class DarcsScm extends SCM implements Serializable {
 
     /**
      * Counts the patches in an repo.
-     * 
+     *
      * @param build
      * @param launcher
      * @param workspace
@@ -281,9 +281,9 @@ public class DarcsScm extends SCM implements Serializable {
         int preCnt = 0, postCnt = 0;
         preCnt = countPatches(build, launcher, workspace, listener);
         LOGGER.log(Level.INFO, "Count of patches pre pulling is {0}", preCnt);
-        
+
         try {
-            DarcsCmd cmd = new DarcsCmd(launcher, 
+            DarcsCmd cmd = new DarcsCmd(launcher,
                                         build.getEnvironment(listener),
                                         getDescriptor().getDarcsExe());
             cmd.pull(workspace.getRemote(), source);
@@ -322,7 +322,7 @@ public class DarcsScm extends SCM implements Serializable {
         }
 
         try {
-            DarcsCmd cmd = new DarcsCmd(launcher, 
+            DarcsCmd cmd = new DarcsCmd(launcher,
                                         build.getEnvironment(listener),
                                         getDescriptor().getDarcsExe());
             cmd.get(workspace.getRemote(), source);

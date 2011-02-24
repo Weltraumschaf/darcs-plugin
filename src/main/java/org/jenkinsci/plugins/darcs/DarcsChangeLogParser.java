@@ -11,8 +11,6 @@ package org.jenkinsci.plugins.darcs;
 
 import hudson.model.AbstractBuild;
 import hudson.scm.ChangeLogParser;
-import hudson.scm.ChangeLogSet;
-import hudson.scm.ChangeLogSet.Entry;
 
 import java.io.File;
 import java.io.FileReader;
@@ -31,10 +29,27 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 public class DarcsChangeLogParser extends ChangeLogParser {
 
-    private static final Logger LOGGER = Logger.getLogger(DarcsScm.class.getName());
+    /**
+     * Logger facility.
+     */
+    private static final Logger LOGGER = Logger.getLogger(DarcsChangeLogParser
+                                                          .class.getName());
 
+    /**
+     * Parses the darcs changelog file.
+     *
+     * The darcs changelog file is in XML format (as given by the command
+     * darcs changes --xml-output --summary).
+     *
+     * @param build
+     * @param changelogFile
+     * @return
+     * @throws IOException
+     * @throws SAXException
+     */
     @Override
-    public DarcsChangeSetList parse(AbstractBuild build, File changelogFile) throws IOException, SAXException {
+    public DarcsChangeSetList parse(AbstractBuild build, File changelogFile)
+    throws IOException, SAXException {
         LOGGER.info("Parsing changelog file " + changelogFile.toString());
 
         XMLReader       xmlReader  = XMLReaderFactory.createXMLReader();

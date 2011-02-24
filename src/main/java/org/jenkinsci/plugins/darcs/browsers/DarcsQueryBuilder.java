@@ -24,7 +24,7 @@ public class DarcsQueryBuilder {
         SEMICOLONS, // starts wit ? and then seperates with ;
         AMPERSANDS  // starts wit ? and then seperates with &
     }
-    
+
     /**
      * Buffers the builded query string
      */

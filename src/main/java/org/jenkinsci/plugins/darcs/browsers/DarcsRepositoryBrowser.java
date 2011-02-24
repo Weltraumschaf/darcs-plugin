@@ -28,6 +28,6 @@ public abstract class DarcsRepositoryBrowser extends RepositoryBrowser<DarcsChan
      *      null if the browser doesn't have any suitable URL.
      */
     public abstract URL getFileDiffLink(DarcsChangeSet changeSet, String file) throws IOException;
-    
+
     private static final long serialVersionUID = 1L;
 }

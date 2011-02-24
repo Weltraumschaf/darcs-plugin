@@ -16,7 +16,6 @@ import hudson.scm.EditType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import org.kohsuke.stapler.export.Exported;
@@ -31,11 +30,11 @@ import org.kohsuke.stapler.export.Exported;
  */
 public class DarcsChangeSet extends ChangeLogSet.Entry {
     /**
-     * The patch author
+     * The patch author.
      */
     private String author;
     /**
-     * The patch date in UTC
+     * The patch date in UTC.
      */
     private String date;
     /**
@@ -71,100 +70,213 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
      * Filles modified by this patch.
      */
     private List<String> modified = new ArrayList<String>();
-    
+
     /**
      * Filepaths affected by the patch.
      * Lazily computed.
      */
     private volatile List<String> affectedPaths;
 
+    /**
+     * Returns the author as User object.
+     *
+     * If you want the parsed author string from darcs call getPlainAuthor().
+     *
+     * @return
+     */
     @Exported
     public User getAuthor() {
         return User.get(getPlainAuthor());
     }
 
+    /**
+     * Returns the plain author string used in the darcs repo.
+     *
+     * @return
+     */
     public String getPlainAuthor() {
         return author;
     }
 
+    /**
+     * Returns the patch comment.
+     *
+     * @return
+     */
     @Exported
     public String getComment() {
         return comment;
     }
 
+    /**
+     * Returns the patch date as string.
+     *
+     * @todo a date object would be better.
+     * @return
+     */
     @Exported
     public String getDate() {
         return date;
     }
 
+    /**
+     * Returns the unique hash string of the patch.
+     *
+     * @return
+     */
     @Exported
     public String getHash() {
         return hash;
     }
 
+    /**
+     * Returns whether the patch is inverted or not.
+     *
+     * @return
+     */
     @Exported
     public boolean isInverted() {
         return inverted;
     }
 
+    /**
+     * Returns the localized date string.
+     *
+     * @return
+     */
     @Exported
     public String getLocalDate() {
         return localDate;
     }
 
+    /**
+     * Returns the patch name.
+     *
+     * @return
+     */
     @Exported
     public String getName() {
         return name;
     }
 
+    /**
+     * Method for fullfill the interface. Delegates to getComment().
+     *
+     * @return
+     */
     @Override
     public String getMsg() {
         return getComment();
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    /**
+     * Sets the author string from darcs.
+     *
+     * Thus this object should be treated as imutable, this setter should only
+     * be called from the DarcsChangeLogParser.
+     *
+     * @param anAuthor
+     */
+    public void setAuthor(String anAuthor) {
+        author = anAuthor;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    /**
+     * Sets the comment string.
+     *
+     * Thus this object should be treated as imutable, this setter should only
+     * be called from the DarcsChangeLogParser.
+     *
+     * @param aComment
+     */
+    public void setComment(String aComment) {
+        comment = aComment;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    /**
+     * Sets the date string.
+     *
+     * Thus this object should be treated as imutable, this setter should only
+     * be called from the DarcsChangeLogParser.
+     *
+     * @param aDate
+     */
+    public void setDate(String aDate) {
+        date = aDate;
     }
 
-    public void setHash(String hash) {
-        this.hash = hash;
+    /**
+     * Sets the hash string.
+     *
+     * Thus this object should be treated as imutable, this setter should only
+     * be called from the DarcsChangeLogParser.
+     *
+     * @param aHash
+     */
+    public void setHash(String aHash) {
+        hash = aHash;
     }
 
-    public void setInverted(boolean inverted) {
-        this.inverted = inverted;
+    /**
+     * Sets the inverted flag.
+     *
+     * Thus this object should be treated as imutable, this setter should only
+     * be called from the DarcsChangeLogParser.
+     *
+     * @param isInverted
+     */
+    public void setInverted(boolean isInverted) {
+        inverted = isInverted;
     }
 
-    public void setLocalDate(String localDate) {
-        this.localDate = localDate;
+    /**
+     * Sets the localized date string.
+     *
+     * Thus this object should be treated as imutable, this setter should only
+     * be called from the DarcsChangeLogParser.
+     *
+     * @param aLocalDate
+     */
+    public void setLocalDate(String aLocalDate) {
+        localDate = aLocalDate;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    /**
+     * Sets the patch name.
+     *
+     * Thus this object should be treated as imutable, this setter should only
+     * be called from the DarcsChangeLogParser.
+     *
+     * @param aName
+     */
+    public void setName(String aName) {
+        name = aName;
     }
 
+    /**
+     * Returns a list of all files affected by this patch.
+     *
+     * @return
+     */
     @Override
     public List<String> getAffectedPaths() {
         if (affectedPaths == null) {
-            List<String> r = new ArrayList<String>(added.size() + modified.size() + deleted.size());
+            List<String> r = new ArrayList<String>(added.size() +
+                                                   modified.size() +
+                                                   deleted.size());
             r.addAll(added);
             r.addAll(deleted);
             r.addAll(modified);
             affectedPaths = r;
         }
-        
+
         return affectedPaths;
     }
 
     /**
      * Gets all the files that were added.
+     *
+     * @return
      */
     @Exported
     public List<String> getAddedPaths() {
@@ -173,6 +285,8 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
 
     /**
      * Gets all the files that were deleted.
+     *
+     * @return
      */
     @Exported
     public List<String> getDeletedPaths() {
@@ -181,12 +295,20 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
 
     /**
      * Gets all the files that were modified.
+     *
+     * @return
      */
     @Exported
     public List<String> getModifiedPaths() {
         return modified;
     }
 
+    /**
+     * Convenience methodfor getting affected paths by type.
+     *
+     * @param kind
+     * @return
+     */
     public List<String> getPaths(EditType kind) {
         if (kind == EditType.ADD) {
             return getAddedPaths();
@@ -206,14 +328,20 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
     /**
      * Returns all three variations of {@link EditType}.
      * Placed here to simplify access from views.
+     *
+     * @return
      */
     public List<EditType> getEditTypes() {
-        // return EditType.ALL;
         return Arrays.asList(EditType.ADD, EditType.EDIT, EditType.DELETE);
     }
 
+    /**
+     * See ChangeLogSet.Entry.setParent().
+     *
+     * @param parent
+     */
     @Override
     protected void setParent(ChangeLogSet parent) {
         super.setParent(parent);
-    }    
+    }
 }
