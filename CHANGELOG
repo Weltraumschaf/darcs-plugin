@@ -27,4 +27,5 @@ Changelog
 -----
 - Factored out darcs command as abstracted object from SCM class.
 - Bugfix: Changelog parser stripped of whitespaces from patch names and comments.
+- Fixed Findbug and PMD issues.
 - Implemented revision state and polling.
