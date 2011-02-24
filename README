@@ -4,7 +4,6 @@ Darcs Plugin for Hudson CI
 Todo
 ----
 - write more unittests
-    - DarcsSaxHandler/DarcsChangelogParser tests
     - BrowserChooser
 - input validation for code browsers URL
 - implement polling support
