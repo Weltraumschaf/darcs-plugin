@@ -29,13 +29,15 @@ import hudson.remoting.VirtualChannel;
 import hudson.scm.ChangeLogParser;
 import hudson.scm.PollingResult;
 //import hudson.scm.PollingResult.Change;
+import hudson.scm.PollingResult.Change;
 import hudson.scm.RepositoryBrowsers;
 import hudson.scm.SCM;
 import hudson.scm.SCMRevisionState;
 import hudson.scm.SCMDescriptor;
 import hudson.util.FormValidation;
-
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+
 import java.io.PrintStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -53,6 +55,9 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.framework.io.ByteBuffer;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * Darcs is a patch based distributed version controll system.
@@ -62,6 +67,7 @@ import org.kohsuke.stapler.framework.io.ByteBuffer;
  * @see http://darcs.net/
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
+ * @author Ralph Lange <Ralph.Lange@gmx.de>
  */
 public class DarcsScm extends SCM implements Serializable {
 
@@ -134,26 +140,25 @@ public class DarcsScm extends SCM implements Serializable {
 
     @Override
     protected PollingResult compareRemoteRevisionWith(AbstractProject<?, ?> ap, Launcher launcher, FilePath fp, TaskListener listener, SCMRevisionState localRevisionState) throws IOException, InterruptedException {
-//        PrintStream output = listener.getLogger();
-//        final Change change;
-//        final DarcsRevisionState remote = getRevisionState(launcher, listener, source);
-//
-//        output.printf("Getting current remote revision...");
-//        output.println(remote);
-//        output.printf("Baseline is %s.\n", localRevisionState);
-//
-//        if ((localRevisionState == SCMRevisionState.NONE)
-//            // appears that other instances of None occur - its not a singleton.
-//            // so do a (fugly) class check.
-//            || (localRevisionState.getClass() != DarcsRevisionState.class)
-//            || (!remote.equals(localRevisionState))) {
-//            change = Change.SIGNIFICANT;
-//        } else {
-//            change = Change.NONE;
-//        }
-//
-//        return new PollingResult(localRevisionState, remote, change);
-        return null;
+        PrintStream output = listener.getLogger();
+        final Change change;
+        final DarcsRevisionState remote = getRevisionState(launcher, listener, source);
+
+        output.printf("Getting current remote revision...");
+        output.println(remote);
+        output.printf("Baseline is %s.\n", localRevisionState);
+
+        if ((SCMRevisionState.NONE == localRevisionState)
+            // appears that other instances of None occur - its not a singleton.
+            // so do a (fugly) class check.
+            || (localRevisionState.getClass() != DarcsRevisionState.class)
+            || (!remote.equals(localRevisionState))) {
+            change = Change.SIGNIFICANT;
+        } else {
+            change = Change.NONE;
+        }
+
+        return new PollingResult(localRevisionState, remote, change);
     }
 
     /**
@@ -170,7 +175,7 @@ public class DarcsScm extends SCM implements Serializable {
     private DarcsRevisionState getRevisionState(Launcher launcher, TaskListener listener, String repo) throws InterruptedException {
         DarcsRevisionState rev = null;
 
-        if (launcher == null) {
+        if (null == launcher) {
             /* Create a launcher on master
              * todo better grab a launcher on 'any slave'
              */
@@ -181,11 +186,20 @@ public class DarcsScm extends SCM implements Serializable {
                                     getDescriptor().getDarcsExe());
 
         try {
-            ByteArrayOutputStream changes = cmd.allSummarizedChanges(repo);
-        } catch (DarcsCmd.DarcsCmdException e) {
+            byte[] changes          = cmd.allChanges(repo).toByteArray();
+            XMLReader       xr      = XMLReaderFactory.createXMLReader();
+            DarcsSaxHandler handler = new DarcsSaxHandler();
 
+            xr.setContentHandler(handler);
+            xr.setErrorHandler(handler);
+            xr.parse(new InputSource(new ByteArrayInputStream(changes)));
+
+            rev = new DarcsRevisionState(handler.getChangeSets());
+        } catch (Exception e) {
+            StringWriter w = new StringWriter();
+            e.printStackTrace(new PrintWriter(w));
+            LOGGER.log(Level.WARNING, "Failed to get revision state for repository: ", e);
         }
-
 
         return rev;
     }
@@ -206,13 +220,14 @@ public class DarcsScm extends SCM implements Serializable {
             return;
         }
 
+        DarcsCmd cmd = new DarcsCmd(launcher, EnvVars.masterEnvVars,
+                                    getDescriptor().getDarcsExe());
+
         try {
-            DarcsCmd cmd = new DarcsCmd(launcher, EnvVars.masterEnvVars,
-                                        getDescriptor().getDarcsExe());
-            FileOutputStream      fos     = new FileOutputStream(changeLog);
+            FileOutputStream fos = new FileOutputStream(changeLog);
             ByteArrayOutputStream changes = cmd.lastSummarizedChanges(workspace.getRemote(), numPatches);
 
-            fos.write(changes.toByteArray());
+            changes.writeTo(fos);
             fos.close();
         } catch (Exception e) {
             StringWriter w = new StringWriter();
