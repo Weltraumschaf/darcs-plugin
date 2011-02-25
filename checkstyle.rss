@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<rss version="0.91">
+  <channel>
+    <title>Jenkins Darcs plugin - Checkstyle report</title>
+    <link>http://weltraumschaf.github.com/jenkins-darcs</link>
+    <description>Jenkins Darcs plugin - Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>&#169;2004 - 2011 weltraumschaf.de</copyright>
+    <item>
+      <title>File: 11,
+             Errors: 410,
+             Warnings: 0,
+             Infos: 0
+      </title>
+            <link>http://weltraumschaf.github.com/jenkins-darcs/checkstyle.html</link>
+      <description>
+        <p>Click <a href="http://weltraumschaf.github.com/jenkins-darcs/checkstyle.html">here</a> for the full Checkstyle report.</p>
+
+        <table summary="Files" boder="1">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px;"><abbr title="Info">I</abbr></th>
+              <th style="width:30px;"><abbr title="Warning">W</abbr></th>
+              <th style="width:30px;"><abbr title="Error">E</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+                          <tr>
+                <td>
+                  <a href="http://weltraumschaf.github.com/jenkins-darcs/checkstyle.html#org.jenkinsci.plugins.darcs.DarcsCmd.java">org/jenkinsci/plugins/darcs/DarcsCmd.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  66
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://weltraumschaf.github.com/jenkins-darcs/checkstyle.html#org.jenkinsci.plugins.darcs.browsers.DarcsWeb.java">org/jenkinsci/plugins/darcs/browsers/DarcsWeb.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  18
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://weltraumschaf.github.com/jenkins-darcs/checkstyle.html#org.jenkinsci.plugins.darcs.DarcsSaxHandler.java">org/jenkinsci/plugins/darcs/DarcsSaxHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  47
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://weltraumschaf.github.com/jenkins-darcs/checkstyle.html#org.jenkinsci.plugins.darcs.browsers.DarcsQueryBuilder.java">org/jenkinsci/plugins/darcs/browsers/DarcsQueryBuilder.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  16
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://weltraumschaf.github.com/jenkins-darcs/checkstyle.html#org.jenkinsci.plugins.darcs.DarcsChangeSet.java">org/jenkinsci/plugins/darcs/DarcsChangeSet.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  58
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://weltraumschaf.github.com/jenkins-darcs/checkstyle.html#org.jenkinsci.plugins.darcs.DarcsChangeLogParser.java">org/jenkinsci/plugins/darcs/DarcsChangeLogParser.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  9
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://weltraumschaf.github.com/jenkins-darcs/checkstyle.html#org.jenkinsci.plugins.darcs.DarcsScm.java">org/jenkinsci/plugins/darcs/DarcsScm.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  132
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://weltraumschaf.github.com/jenkins-darcs/checkstyle.html#org.jenkinsci.plugins.darcs.DarcsRevisionState.java">org/jenkinsci/plugins/darcs/DarcsRevisionState.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  17
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://weltraumschaf.github.com/jenkins-darcs/checkstyle.html#org.jenkinsci.plugins.darcs.browsers.DarcsRepositoryBrowser.java">org/jenkinsci/plugins/darcs/browsers/DarcsRepositoryBrowser.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  6
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://weltraumschaf.github.com/jenkins-darcs/checkstyle.html#org.jenkinsci.plugins.darcs.browsers.Darcsden.java">org/jenkinsci/plugins/darcs/browsers/Darcsden.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  18
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://weltraumschaf.github.com/jenkins-darcs/checkstyle.html#org.jenkinsci.plugins.darcs.DarcsChangeSetList.java">org/jenkinsci/plugins/darcs/DarcsChangeSetList.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  23
+                </td>
+              </tr>
+                      </tbody>
+        </table>
+        
+      </description>
+    </item>
+  </channel>
+</rss>
+
