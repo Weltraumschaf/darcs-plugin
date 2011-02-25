@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>1.396</version><!-- which version of Hudson is this plugin built against? -->
+        <version>1.396</version><!-- which version of Jenkins is this plugin built against? -->
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -13,9 +13,9 @@
     <artifactId>darcs</artifactId>
     <version>0.3.2-pre</version>
     <packaging>hpi</packaging>
-    <name>Hudson Darcs plugin</name>
-    <description>This plugin integrates the Darcs SCM into Hudson.</description>
-    <url>http://weltraumschaf.github.com/hudson-darcs</url>
+    <name>Jenkins Darcs plugin</name>
+    <description>This plugin integrates the Darcs SCM into Jenkis</description>
+    <url>http://weltraumschaf.github.com/jenkins-darcs</url>
 
     <organization>
         <name>weltraumschaf.de</name>
@@ -52,13 +52,13 @@
     
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/Weltraumschaf/hudson-darcs/issues</url>
+        <url>https://github.com/Weltraumschaf/jenkins-darcs/issues</url>
     </issueManagement>
 
     <scm>
-        <connection>scm:git:git://github.com/Weltraumschaf/hudson-darcs.git</connection>
-        <developerConnection>scm:git:git@github.com:Weltraumschaf/hudson-darcs.git</developerConnection>
-        <url>https://github.com/Weltraumschaf/hudson-darcs/</url>
+        <connection>scm:git:git://github.com/Weltraumschaf/jenkins-darcs.git</connection>
+        <developerConnection>scm:git:git@github.com:Weltraumschaf/jenkins-darcs.git</developerConnection>
+        <url>https://github.com/Weltraumschaf/jenkins-darcs/</url>
     </scm>
 
     <properties>
@@ -133,7 +133,7 @@
     <distributionManagement>
         <site>
             <id>github-project-site</id>
-            <url>gitsite:git@github.com/Weltraumschaf/hudson-darcs</url>
+            <url>gitsite:git@github.com/Weltraumschaf/jenkins-darcs</url>
         </site>
     </distributionManagement>
 
