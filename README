@@ -1,14 +1,15 @@
-Darcs Plugin for Hudson CI
-==========================
+Darcs Plugin for Jenkins CI
+===========================
 
 Todo
 ----
 - write more unittests
     - BrowserChooser
 - input validation for code browsers URL
-- implement polling support
+- test polling support
 - write more javadoc
-- ipmroving the changeset index view
+- improve the changeset index view
+- fix issue with invalid characters / mixed encoding in changelog XML
 
 Installation
 -----------
@@ -30,6 +31,6 @@ In your ~/.m2/settings.xml you need:
      </pluginGroups>
  <settings>
 
-Clone this repo with: git clone git://github.com/Weltraumschaf/hudson-darcs.git
+Clone this repo with: git clone git://github.com/Weltraumschaf/jenkins-darcs.git
 
 Change into the repo and run mvn install. After that you can open the pom.xml e.g. in Netbeans and start coding.
