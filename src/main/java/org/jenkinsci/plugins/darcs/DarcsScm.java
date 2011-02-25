@@ -55,7 +55,7 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.framework.io.ByteBuffer;
 
 /**
- * Darcs is a patch based distributed version controll system.
+ * Darcs is a patch based distributed version control system.
  *
  * Contains the job configuration options as fields.
  *
@@ -157,9 +157,7 @@ public class DarcsScm extends SCM implements Serializable {
     }
 
     /**
-     * Calculates the revision state of a repository.
-     *
-     * @todo implement.
+     * Calculates the revision state of a repository (local or remote).
      *
      * @param launcher
      * @param listener
@@ -191,7 +189,7 @@ public class DarcsScm extends SCM implements Serializable {
     }
 
     /**
-     * Writes the cahngelog of the last numPatches to the changeLog file.
+     * Writes the changelog of the last numPatches to the changeLog file.
      *
      * @param launcher
      * @param numPatches
@@ -241,7 +239,7 @@ public class DarcsScm extends SCM implements Serializable {
     }
 
     /**
-     * Counts the patches in an repo.
+     * Counts the patches in a repo.
      *
      * @param build
      * @param launcher
@@ -259,7 +257,7 @@ public class DarcsScm extends SCM implements Serializable {
 
             return cmd.countChanges(workspace.getRemote());
         } catch (Exception e) {
-            listener.error("Failed to count patches in workspace repo!\n", e.toString());
+            listener.error("Failed to count patches in workspace repo:\n", e.toString());
             return 0;
         }
     }
@@ -327,7 +325,7 @@ public class DarcsScm extends SCM implements Serializable {
                                         getDescriptor().getDarcsExe());
             cmd.get(workspace.getRemote(), source);
         } catch (Exception e) {
-            e.printStackTrace(listener.error("Failed to get " + source));
+            e.printStackTrace(listener.error("Failed to get repo from " + source));
 
             return false;
         }
@@ -346,7 +344,7 @@ public class DarcsScm extends SCM implements Serializable {
     }
 
     /**
-     * Inner class of the SCM descitopr.
+     * Inner class of the SCM descriptor.
      *
      * Contains the global configuration options as fields.
      */
