@@ -27,7 +27,7 @@
             <ol>
                 <j:forEach var="changeset" items="${it.changeSets}" varStatus="loop">
                     <j:set var="changesetLink" value="${browser.getChangeSetLink(changeset)}"/>
-                    <li value="${loop.index + 1}">Patch <strong>${cs.name}</strong> &#8212;
+                    <li value="${loop.index + 1}">Patch <strong>${changeset.name}</strong> &#8212;
                         <a href="${rootURL}/${changeset.author.url}/">${changeset.author}</a> /
                         <a href="changes#detail${loop.index}">${%detail}</a>
                         <j:set var="changesetLink" value="${browser.getChangeSetLink(changeset)}"/>
