@@ -6,7 +6,6 @@ Todo
 - write more unittests
     - BrowserChooser
 - input validation for code browsers URL
-- test polling support
 - write more javadoc
 - improve the changeset index view
 - fix issue with invalid characters / mixed encoding in changelog XML

@@ -26,6 +26,8 @@ Changelog
 0.3.2
 -----
 - Factored out darcs command as abstracted object from SCM class.
-- Bugfix: Changelog parser stripped of whitespaces from patch names and comments.
+- Fixed changelog parser stripped of whitespaces from patch names and comments.
 - Fixed Findbug and PMD issues.
 - Implemented revision state and polling.
+- Fixed add/remove dir tag recognition
+- Fixed comment/name parsing
