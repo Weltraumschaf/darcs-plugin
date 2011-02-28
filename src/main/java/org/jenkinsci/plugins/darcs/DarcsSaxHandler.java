@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -172,6 +173,16 @@ public class DarcsSaxHandler extends DefaultHandler {
 
     @Override
     public void error(SAXParseException saxpe) {
+        LOGGER.log(Level.WARNING, saxpe.toString());
+    }
+
+    @Override
+    public void fatalError(SAXParseException saxpe) {
+        LOGGER.log(Level.WARNING, saxpe.toString());
+    }
+
+    @Override
+    public void warning(SAXParseException saxpe) {
         LOGGER.log(Level.WARNING, saxpe.toString());
     }
 }
