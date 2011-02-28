@@ -47,7 +47,6 @@ public class DarcsChangeLogParserTest extends TestCase {
         assertEquals(8, logs.size());
 
         assertPatch(logs.get(0), false, new HashMap<String, String>() {
-
             {
                 put("plainAuthor", "ich@weltraumschaf.de");
                 put("name", "Implemented toString()");
@@ -58,15 +57,14 @@ public class DarcsChangeLogParserTest extends TestCase {
             }
         });
         assertSummary(logs.get(0), null, null, new ArrayList<String>() {
-
             {
                 add("Bar.java");
                 add("Baz.java");
                 add("Foo.java");
             }
         });
-        assertPatch(logs.get(1), false, new HashMap<String, String>() {
 
+        assertPatch(logs.get(1), false, new HashMap<String, String>() {
             {
                 put("plainAuthor", "ich@weltraumschaf.de");
                 put("name", "Implemented value in class Foo");
@@ -82,8 +80,8 @@ public class DarcsChangeLogParserTest extends TestCase {
                 add("Foo.java");
             }
         });
-        assertPatch(logs.get(2), false, new HashMap<String, String>() {
 
+        assertPatch(logs.get(2), false, new HashMap<String, String>() {
             {
                 put("plainAuthor", "ich@weltraumschaf.de");
                 put("name", "Implemented value in class Baz");
@@ -94,13 +92,12 @@ public class DarcsChangeLogParserTest extends TestCase {
             }
         });
         assertSummary(logs.get(2), null, null, new ArrayList<String>() {
-
             {
                 add("Baz.java");
             }
         });
-        assertPatch(logs.get(3), false, new HashMap<String, String>() {
 
+        assertPatch(logs.get(3), false, new HashMap<String, String>() {
             {
                 put("plainAuthor", "ich@weltraumschaf.de");
                 put("name", "Implemented value in class Bar");
@@ -111,13 +108,12 @@ public class DarcsChangeLogParserTest extends TestCase {
             }
         });
         assertSummary(logs.get(3), null, null, new ArrayList() {
-
             {
                 add("Bar.java");
             }
         });
-        assertPatch(logs.get(4), false, new HashMap<String, String>() {
 
+        assertPatch(logs.get(4), false, new HashMap<String, String>() {
             {
                 put("plainAuthor", "ich@weltraumschaf.de");
                 put("name", "Implemented class Foo");
@@ -128,13 +124,12 @@ public class DarcsChangeLogParserTest extends TestCase {
             }
         });
         assertSummary(logs.get(4), null, null, new ArrayList() {
-
             {
                 add("Foo.java");
             }
         });
-        assertPatch(logs.get(5), true, new HashMap<String, String>() {
 
+        assertPatch(logs.get(5), true, new HashMap<String, String>() {
             {
                 put("plainAuthor", "ich@weltraumschaf.de");
                 put("name", "Implemented class Baz");
@@ -150,8 +145,8 @@ public class DarcsChangeLogParserTest extends TestCase {
                 add("Baz.java");
             }
         });
-        assertPatch(logs.get(6), false, new HashMap<String, String>() {
 
+        assertPatch(logs.get(6), false, new HashMap<String, String>() {
             {
                 put("plainAuthor", "ich@weltraumschaf.de");
                 put("name", "Implemented class Bar");
@@ -161,14 +156,17 @@ public class DarcsChangeLogParserTest extends TestCase {
                 put("comment", "Ignore-this: e2eb7de380585ad9e4cb9515d8b21621");
             }
         });
-        assertSummary(logs.get(6), null, null, new ArrayList() {
-
+        assertSummary(logs.get(6), new ArrayList() {
+            {
+                add("bar/baz");
+            }
+        }, null, new ArrayList() {
             {
                 add("Bar.java");
             }
         });
-        assertPatch(logs.get(7), true, new HashMap<String, String>() {
 
+        assertPatch(logs.get(7), true, new HashMap<String, String>() {
             {
                 put("plainAuthor", "ich@weltraumschaf.de");
                 put("name", "inital files added");
@@ -179,13 +177,16 @@ public class DarcsChangeLogParserTest extends TestCase {
             }
         });
         assertSummary(logs.get(7), new ArrayList() {
-
             {
                 add("Bar.java");
                 add("Baz.java");
                 add("Foo.java");
             }
-        }, null, null);
+        }, new ArrayList() {
+            {
+                add("foo/bar");
+            }
+        }, null);
     }
 
     private void assertPatch(DarcsChangeSet cs, boolean isInverted, Map<String, String> expected) {
@@ -200,15 +201,18 @@ public class DarcsChangeLogParserTest extends TestCase {
 
     private void assertSummary(DarcsChangeSet cs, List added, List deleted, List modified) {
         if (null != added) {
-            assertTrue("added files does not match", cs.getAddedPaths().equals(added));
+            assertEquals("added files does not match on patch " + cs.getHash(),
+                         added, cs.getAddedPaths());
         }
 
         if (null != deleted) {
-            assertTrue("deleted files does not match", cs.getDeletedPaths().equals(deleted));
+            assertEquals("deleted files does not match on patch " + cs.getHash(),
+                         deleted, cs.getDeletedPaths());
         }
 
         if (null != modified) {
-            assertTrue("modified files does not match", cs.getModifiedPaths().equals(modified));
+            assertEquals("modified files does not match on patch " + cs.getHash(),
+                         modified, cs.getModifiedPaths());
         }
     }
 }

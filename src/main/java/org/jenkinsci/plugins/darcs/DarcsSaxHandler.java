@@ -15,7 +15,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -38,13 +37,16 @@ public class DarcsSaxHandler extends DefaultHandler {
         REMOVE_FILE,
         MOVE_FILE,
         ADDED_LINES,
-        REMOVED_LINES;
+        REMOVED_LINES,
+        ADD_DIRECTORY,
+        REMOVE_DIRECTORY;
     }
 
     private DarcsChangelogTag currentTag;
     private DarcsChangeSet currentChangeset;
     private boolean ready;
     private List<DarcsChangeSet> changeSets;
+    private StringBuilder literal;
 
     public DarcsSaxHandler() {
         super();
@@ -88,11 +90,21 @@ public class DarcsSaxHandler extends DefaultHandler {
             currentTag = DarcsChangelogTag.ADDED_LINES;
         } else if ("removed_lines".equals(tagName)) {
             currentTag = DarcsChangelogTag.REMOVED_LINES;
+        } else if ("add_directory".equals(tagName)) {
+            currentTag = DarcsChangelogTag.ADD_DIRECTORY;
+        } else if ("remove_directory".equals(tagName)) {
+            currentTag = DarcsChangelogTag.REMOVE_DIRECTORY;
+        } else {
+            LOGGER.log(Level.WARNING, "Unrecognized tag <" + tagName + ">!");
         }
     }
 
     @Override
     public void startElement(String uri, String name, String qName, Attributes atts) {
+        if (DarcsChangelogTag.MODIFY_FILE == currentTag) {
+            currentChangeset.getModifiedPaths().add(literal.toString());
+        }
+        
         recognizeTag(qName);
 
         if (DarcsChangelogTag.PATCH == currentTag) {
@@ -111,16 +123,34 @@ public class DarcsSaxHandler extends DefaultHandler {
             currentChangeset.getDeletedPaths().add(atts.getValue("from"));
             currentChangeset.getAddedPaths().add(atts.getValue("to"));
         }
+
+        literal = new StringBuilder();
     }
 
     @Override
     public void endElement(String uri, String name, String qName) {
         recognizeTag(qName);
-
-        if (DarcsChangelogTag.PATCH == currentTag) {
-            changeSets.add(currentChangeset);
+        
+        switch (currentTag) {
+            case PATCH:
+                changeSets.add(currentChangeset);
+                break;
+            case NAME:
+                currentChangeset.setName(literal.toString());
+                break;
+            case COMMENT:
+                currentChangeset.setComment(literal.toString());
+                break;
+            case ADD_FILE:
+            case ADD_DIRECTORY:
+                currentChangeset.getAddedPaths().add(literal.toString());
+                break;
+            case REMOVE_FILE:
+            case REMOVE_DIRECTORY:
+                currentChangeset.getDeletedPaths().add(literal.toString());
+                break;
         }
-
+        
         currentTag = null;
     }
 
@@ -136,38 +166,18 @@ public class DarcsSaxHandler extends DefaultHandler {
         }
     }
 
+    private boolean skipWhiteSpace() {
+        return DarcsChangelogTag.NAME != currentTag && DarcsChangelogTag.COMMENT != currentTag;
+    }
+
     @Override
     public void characters(char ch[], int start, int length) {
-        StringBuilder literal = new StringBuilder();
-
         for (int i = start; i < start + length; i++) {
-            if (isWhiteSpace(ch[i]) && DarcsChangelogTag.NAME != currentTag && DarcsChangelogTag.COMMENT != currentTag) {
+            if (isWhiteSpace(ch[i]) && skipWhiteSpace()) {
                 continue;
             }
 
             literal.append(ch[i]);
-        }
-
-        if (literal.length() == 0) {
-            return;
-        }
-
-        switch (currentTag) {
-            case NAME:
-                currentChangeset.setName(literal.toString());
-                break;
-            case COMMENT:
-                currentChangeset.setComment(literal.toString());
-                break;
-            case ADD_FILE:
-                currentChangeset.getAddedPaths().add(literal.toString());
-                break;
-            case REMOVE_FILE:
-                currentChangeset.getDeletedPaths().add(literal.toString());
-                break;
-            case MODIFY_FILE:
-                currentChangeset.getModifiedPaths().add(literal.toString());
-                break;
         }
     }
 
