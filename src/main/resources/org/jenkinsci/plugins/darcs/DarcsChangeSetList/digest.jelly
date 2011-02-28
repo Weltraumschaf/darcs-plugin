@@ -25,16 +25,16 @@
             <strong>Summary Of Changes &#8212; <a href="changes">View Detail</a></strong>
             
             <ol>
-                <j:forEach var="cs" items="${it.logs}" varStatus="loop">
-                    <j:set var="cslink" value="${browser.getChangeSetLink(cs)}"/>
+                <j:forEach var="changeset" items="${it.changeSets}" varStatus="loop">
+                    <j:set var="changesetLink" value="${browser.getChangeSetLink(changeset)}"/>
                     <li value="${loop.index + 1}">Patch <strong>${cs.name}</strong> &#8212;
-                        <a href="${rootURL}/${cs.author.url}/">${cs.author}</a> /
+                        <a href="${rootURL}/${changeset.author.url}/">${changeset.author}</a> /
                         <a href="changes#detail${loop.index}">${%detail}</a>
-                        <j:set var="cslink" value="${browser.getChangeSetLink(cs)}"/>
+                        <j:set var="changesetLink" value="${browser.getChangeSetLink(changeset)}"/>
                         <j:choose>
-                            <j:when test="${cslink!=null}">
+                            <j:when test="${changesetLink!=null}">
                                  / <a title="View changes summary in code browser."
-                                      href="${cslink}">${browser.descriptor.displayName}</a>
+                                      href="${changesetLink}">${browser.descriptor.displayName}</a>
                             </j:when>
                         </j:choose>
                     </li>
