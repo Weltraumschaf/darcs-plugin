@@ -28,6 +28,7 @@
                 <removed_lines num='1'/>
                 <added_lines num='9'/>
             </modify_file>
+            <move from="Baz.java" to="Bar.java"/>
         </summary>
     </patch>
     <patch author='ich@weltraumschaf.de' date='20110214203402' local_date='Mon Feb 14 21:34:02 CET 2011'

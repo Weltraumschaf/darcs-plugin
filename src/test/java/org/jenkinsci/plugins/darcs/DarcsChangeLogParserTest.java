@@ -74,8 +74,15 @@ public class DarcsChangeLogParserTest extends TestCase {
                 put("comment", "Ignore-this: 79225cd08e4f7ec7dfc7a6cb4e7f5948");
             }
         });
-        assertSummary(logs.get(1), null, null, new ArrayList<String>() {
-
+        assertSummary(logs.get(1), new ArrayList<String>() {
+            {
+                add("Bar.java");
+            }
+        }, new ArrayList<String>() {
+            {
+                add("Baz.java");
+            }
+        }, new ArrayList<String>() {
             {
                 add("Foo.java");
             }
@@ -107,7 +114,7 @@ public class DarcsChangeLogParserTest extends TestCase {
                 put("comment", "Ignore-this: 40e46e42b5023572d7e45607df47cab1");
             }
         });
-        assertSummary(logs.get(3), null, null, new ArrayList() {
+        assertSummary(logs.get(3), null, null, new ArrayList<String>() {
             {
                 add("Bar.java");
             }
@@ -123,7 +130,7 @@ public class DarcsChangeLogParserTest extends TestCase {
                 put("comment", "Ignore-this: 85d0cdf2679dfcab72469629d6a80945");
             }
         });
-        assertSummary(logs.get(4), null, null, new ArrayList() {
+        assertSummary(logs.get(4), null, null, new ArrayList<String>() {
             {
                 add("Foo.java");
             }
@@ -139,7 +146,7 @@ public class DarcsChangeLogParserTest extends TestCase {
                 put("comment", "Ignore-this: 751c6c8a858104b5b15833496fce9a2");
             }
         });
-        assertSummary(logs.get(5), null, null, new ArrayList() {
+        assertSummary(logs.get(5), null, null, new ArrayList<String>() {
 
             {
                 add("Baz.java");
@@ -156,7 +163,7 @@ public class DarcsChangeLogParserTest extends TestCase {
                 put("comment", "Ignore-this: e2eb7de380585ad9e4cb9515d8b21621");
             }
         });
-        assertSummary(logs.get(6), new ArrayList() {
+        assertSummary(logs.get(6), new ArrayList<String>() {
             {
                 add("bar/baz");
             }
@@ -176,13 +183,13 @@ public class DarcsChangeLogParserTest extends TestCase {
                 put("comment", "Ignore-this: 391a1ff64b0f64546446368f2d45fbc8");
             }
         });
-        assertSummary(logs.get(7), new ArrayList() {
+        assertSummary(logs.get(7), new ArrayList<String>() {
             {
                 add("Bar.java");
                 add("Baz.java");
                 add("Foo.java");
             }
-        }, new ArrayList() {
+        }, new ArrayList<String>() {
             {
                 add("foo/bar");
             }
