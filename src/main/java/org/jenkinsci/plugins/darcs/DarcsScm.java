@@ -140,14 +140,13 @@ public class DarcsScm extends SCM implements Serializable {
 
     @Override
     protected PollingResult compareRemoteRevisionWith(AbstractProject<?, ?> ap, Launcher launcher, FilePath fp, TaskListener listener, SCMRevisionState localRevisionState) throws IOException, InterruptedException {
-        PrintStream output = listener.getLogger();
         final Change change;
         final DarcsRevisionState remote = getRevisionState(launcher, listener, source);
 
-        output.printf("Getting current remote revision...");
-        output.println(remote);
-        output.printf("Baseline is %s.\n", localRevisionState);
-
+        listener.getLogger().printf("Current remote revision is %s. Baseline is %s.\n", 
+									remote.getChanges().digest(), 
+									((DarcsRevisionState)localRevisionState).getChanges().digest());
+        
         if ((SCMRevisionState.NONE == localRevisionState)
             // appears that other instances of None occur - its not a singleton.
             // so do a (fugly) class check.
