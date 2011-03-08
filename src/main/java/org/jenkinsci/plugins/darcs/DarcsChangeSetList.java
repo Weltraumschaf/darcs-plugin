@@ -35,43 +35,79 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
      */
     private String digest;
 
-    public DarcsChangeSetList(List<DarcsChangeSet> logs) {
-        this(null, logs);
+    /**
+     * Constructs without build.
+     * 
+     * @param changes 
+     */
+    public DarcsChangeSetList(List<DarcsChangeSet> changes) {
+        this(null, changes);
     }
     
-    public DarcsChangeSetList(AbstractBuild build, List<DarcsChangeSet> logs) {
+    /**
+     * Constructs with build and changes.
+     * 
+     * @param build
+     * @param changes 
+     */
+    public DarcsChangeSetList(AbstractBuild build, List<DarcsChangeSet> changes) {
         super(build);
-        this.changeSets = Collections.unmodifiableList(logs);
+        this.changeSets = Collections.unmodifiableList(changes);
 
-        for (DarcsChangeSet log : logs) {
+        for (DarcsChangeSet log : changes) {
             log.setParent(this);
         }
     }
 
+    /**
+     * Returns whether the change set list is empty or not.
+     * 
+     * @return 
+     */
     @Override
     public boolean isEmptySet() {
         return getChangeSets().isEmpty();
     }
 
+    /**
+     * Returns an iterator for the list.
+     * 
+     * @return 
+     */
     public Iterator<DarcsChangeSet> iterator() {
         return getChangeSets().iterator();
     }
 
+    /**
+     * Returns the count of change sets.
+     * 
+     * @return 
+     */
     public int size() {
         return getChangeSets().size();
     }
 
+    /**
+     * Returns the change set list.
+     * 
+     * @return 
+     */
     public List<DarcsChangeSet> getChangeSets() {
         return changeSets;
     }
 
+    /**
+     * Returns the kind as string.
+     * 
+     * @return 
+     */
     @Override
     public String getKind() {
         return "darcs";
     }
 
     /**
-     * Calculates md5 digest over all changesets hashes
+     * Calculates md5 digest over all changesets darcs hashes.
      *
      * Inspired by http://www.stratos.me/2008/05/java-string-calculate-md5/
      * 
@@ -119,6 +155,12 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
         return digest;
     }
 
+    /**
+     * Compares over the digest of the change set list.
+     * 
+     * @param other
+     * @return 
+     */
     @Override
     public boolean equals(Object other) {
         boolean result = false;
@@ -131,6 +173,11 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
         return result;
     }
 
+    /**
+     * Returns the hash code for the digest string.
+     * 
+     * @return 
+     */
     @Override
     public int hashCode() {
         return digest().hashCode();
