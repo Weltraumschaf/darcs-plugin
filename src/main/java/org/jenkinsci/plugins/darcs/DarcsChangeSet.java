@@ -260,10 +260,9 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
      */
     @Override
     public List<String> getAffectedPaths() {
-        if (affectedPaths == null) {
-            List<String> r = new ArrayList<String>(added.size() +
-                                                   modified.size() +
-                                                   deleted.size());
+        if (null == affectedPaths) {
+            int size = added.size() + modified.size() + deleted.size();
+            List<String> r = new ArrayList<String>(size);
             r.addAll(added);
             r.addAll(deleted);
             r.addAll(modified);
