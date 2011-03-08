@@ -28,7 +28,6 @@ import hudson.model.TaskListener;
 import hudson.remoting.VirtualChannel;
 import hudson.scm.ChangeLogParser;
 import hudson.scm.PollingResult;
-//import hudson.scm.PollingResult.Change;
 import hudson.scm.PollingResult.Change;
 import hudson.scm.RepositoryBrowsers;
 import hudson.scm.SCM;
@@ -37,8 +36,6 @@ import hudson.scm.SCMDescriptor;
 import hudson.util.FormValidation;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-
-import java.io.PrintStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -128,36 +125,48 @@ public class DarcsScm extends SCM implements Serializable {
      */
     @Override
     public DarcsRevisionState calcRevisionsFromBuild(AbstractBuild<?, ?> build, Launcher launcher, TaskListener listener) throws IOException, InterruptedException {
-        PrintStream output = listener.getLogger();
-        output.println("Getting local revision...");
         DarcsRevisionState local = getRevisionState(launcher,
                                                     listener,
                                                     build.getWorkspace().getRemote());
-        output.println(local);
-
+		listener.getLogger()
+				.println("[poll] Local revision state is " + local);
+		
         return local;
     }
 
     @Override
-    protected PollingResult compareRemoteRevisionWith(AbstractProject<?, ?> ap, Launcher launcher, FilePath fp, TaskListener listener, SCMRevisionState localRevisionState) throws IOException, InterruptedException {
-        final Change change;
-        final DarcsRevisionState remote = getRevisionState(launcher, listener, source);
+    protected PollingResult compareRemoteRevisionWith(AbstractProject<?, ?> project, Launcher launcher, FilePath fp, TaskListener listener, SCMRevisionState localRevisionState) throws IOException, InterruptedException {
+		final AbstractBuild lastBuild = project.getLastBuild();
 
-        listener.getLogger().printf("Current remote revision is %s. Baseline is %s.\n", 
-									remote.getChanges().digest(), 
-									((DarcsRevisionState)localRevisionState).getChanges().digest());
+        if (null != lastBuild) {
+            listener.getLogger()
+					.println("[poll] Last Build : #" + lastBuild.getNumber());
+        } else {
+            // If we've never been built before, well, gotta build!
+            listener.getLogger()
+					.println("[poll] No previous build, so forcing an initial build.");
+			
+            return PollingResult.BUILD_NOW;
+        }
+		
+        final Change change;
+        final DarcsRevisionState remoteRevisionState = getRevisionState(launcher, listener, source);
+
+        listener.getLogger().printf("[poll] Current remote revision is %s. Baseline is %s.\n", 
+									remoteRevisionState, 
+									localRevisionState);
         
         if ((SCMRevisionState.NONE == localRevisionState)
             // appears that other instances of None occur - its not a singleton.
             // so do a (fugly) class check.
             || (localRevisionState.getClass() != DarcsRevisionState.class)
-            || (!remote.equals(localRevisionState))) {
+            || (!remoteRevisionState.equals(localRevisionState))) {
             change = Change.SIGNIFICANT;
         } else {
             change = Change.NONE;
         }
 
-        return new PollingResult(localRevisionState, remote, change);
+        return new PollingResult(localRevisionState, remoteRevisionState, change);
     }
 
     /**
@@ -169,7 +178,7 @@ public class DarcsScm extends SCM implements Serializable {
      * @return
      * @throws InterruptedException
      */
-    private DarcsRevisionState getRevisionState(Launcher launcher, TaskListener listener, String repo) throws InterruptedException {
+    protected DarcsRevisionState getRevisionState(Launcher launcher, TaskListener listener, String repo) throws InterruptedException {
         DarcsRevisionState rev = null;
 
         if (null == launcher) {
@@ -183,7 +192,7 @@ public class DarcsScm extends SCM implements Serializable {
                                     getDescriptor().getDarcsExe());
 
         try {
-            byte[] changes          = cmd.allChanges(repo).toByteArray();
+            byte[]			changes = cmd.allChanges(repo).toByteArray();
             XMLReader       xr      = XMLReaderFactory.createXMLReader();
             DarcsSaxHandler handler = new DarcsSaxHandler();
 

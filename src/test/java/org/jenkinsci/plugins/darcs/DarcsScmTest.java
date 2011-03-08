@@ -10,6 +10,8 @@
 
 package org.jenkinsci.plugins.darcs;
 
+import hudson.model.TaskListener;
+
 //import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.junit.Ignore;
@@ -19,12 +21,18 @@ import org.junit.Ignore;
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsScmTest extends TestCase {
+	
     public DarcsScmTest(String testName) {
         super(testName);
     }
 
-    @Ignore("not ready yet")
-    public void testImplementSome() {
-
+    @Ignore("Incomplete!")
+    public void testGetRevisionState() {
+		DarcsScm sut = new DarcsScm("");
+		try {
+			sut.getRevisionState(null, TaskListener.NULL, "");
+		} catch (Exception e) {
+			fail("Excpetion throwed: " + e);
+		}
     }
 }
