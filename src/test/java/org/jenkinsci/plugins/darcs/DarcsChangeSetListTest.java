@@ -46,7 +46,7 @@ public class DarcsChangeSetListTest extends TestCase {
         list.add(createChangeSet("1"));
         list.add(createChangeSet("2"));
         list.add(createChangeSet("3"));
-        sut = new DarcsChangeSetList(null, list);
+        sut = new DarcsChangeSetList(list);
         assertFalse(sut.isEmptySet());
         assertEquals(3, sut.size());
     }
@@ -57,16 +57,16 @@ public class DarcsChangeSetListTest extends TestCase {
         DarcsChangeSet cs3 = createChangeSet("3");
 
         List<DarcsChangeSet> list = new ArrayList<DarcsChangeSet>();
-        list.add(createChangeSet("1"));
-        list.add(createChangeSet("2"));
-        list.add(createChangeSet("3"));
-        DarcsChangeSetList sut = new DarcsChangeSetList(null, list);
+        list.add(cs1);
+        list.add(cs2);
+        list.add(cs3);
+        DarcsChangeSetList sut = new DarcsChangeSetList(list);
         assertEquals(Util.getDigestOf(cs1.getHash() + cs2.getHash() + cs3.getHash()),
                 sut.digest());
     }
 
     public void testGetKind() {
-        DarcsChangeSetList sut = new DarcsChangeSetList(null, new ArrayList<DarcsChangeSet>());
+        DarcsChangeSetList sut = new DarcsChangeSetList(new ArrayList<DarcsChangeSet>());
         assertEquals("darcs", sut.getKind());
     }
 
@@ -75,18 +75,18 @@ public class DarcsChangeSetListTest extends TestCase {
         DarcsChangeSet cs2 = createChangeSet("2");
         DarcsChangeSet cs3 = createChangeSet("3");
         List<DarcsChangeSet> list1 = new ArrayList<DarcsChangeSet>(),
-                list2 = new ArrayList<DarcsChangeSet>(),
-                list3 = new ArrayList<DarcsChangeSet>();
+                             list2 = new ArrayList<DarcsChangeSet>(),
+                             list3 = new ArrayList<DarcsChangeSet>();
         list1.add(cs1);
         list1.add(cs2);
-        DarcsChangeSetList sut1 = new DarcsChangeSetList(null, list1);
+        DarcsChangeSetList sut1 = new DarcsChangeSetList(list1);
         list2.add(cs1);
         list2.add(cs2);
-        DarcsChangeSetList sut2 = new DarcsChangeSetList(null, list2);
+        DarcsChangeSetList sut2 = new DarcsChangeSetList(list2);
         list3.add(cs1);
         list3.add(cs2);
         list3.add(cs3);
-        DarcsChangeSetList sut3 = new DarcsChangeSetList(null, list3);
+        DarcsChangeSetList sut3 = new DarcsChangeSetList(list3);
 
         // equals to itself
         assertTrue(sut1.equals(sut1));

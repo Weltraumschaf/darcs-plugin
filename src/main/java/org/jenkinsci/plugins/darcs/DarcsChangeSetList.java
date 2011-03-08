@@ -35,6 +35,10 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
      */
     private String digest;
 
+    public DarcsChangeSetList(List<DarcsChangeSet> logs) {
+        this(null, logs);
+    }
+    
     public DarcsChangeSetList(AbstractBuild build, List<DarcsChangeSet> logs) {
         super(build);
         this.changeSets = Collections.unmodifiableList(logs);
