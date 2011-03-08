@@ -52,6 +52,10 @@ public class DarcsChangeSetListTest extends TestCase {
     }
 
     public void testDigest() {
+        DarcsChangeSetList sut;
+        sut = new DarcsChangeSetList(new ArrayList<DarcsChangeSet>());
+        assertEquals(Util.getDigestOf(""), sut.digest());
+        
         DarcsChangeSet cs1 = createChangeSet("1");
         DarcsChangeSet cs2 = createChangeSet("2");
         DarcsChangeSet cs3 = createChangeSet("3");
@@ -60,7 +64,7 @@ public class DarcsChangeSetListTest extends TestCase {
         list.add(cs1);
         list.add(cs2);
         list.add(cs3);
-        DarcsChangeSetList sut = new DarcsChangeSetList(list);
+        sut = new DarcsChangeSetList(list);
         assertEquals(Util.getDigestOf(cs1.getHash() + cs2.getHash() + cs3.getHash()),
                 sut.digest());
     }
