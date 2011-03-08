@@ -128,23 +128,23 @@ public class DarcsScm extends SCM implements Serializable {
         DarcsRevisionState local = getRevisionState(launcher,
                                                     listener,
                                                     build.getWorkspace().getRemote());
-		listener.getLogger()
-				.println("[poll] Local revision state is " + local);
+        listener.getLogger()
+                .println("[poll] Local revision state is " + local);
 		
         return local;
     }
 
     @Override
     protected PollingResult compareRemoteRevisionWith(AbstractProject<?, ?> project, Launcher launcher, FilePath fp, TaskListener listener, SCMRevisionState localRevisionState) throws IOException, InterruptedException {
-		final AbstractBuild lastBuild = project.getLastBuild();
+        final AbstractBuild lastBuild = project.getLastBuild();
 
         if (null != lastBuild) {
             listener.getLogger()
-					.println("[poll] Last Build : #" + lastBuild.getNumber());
+                    .println("[poll] Last Build : #" + lastBuild.getNumber());
         } else {
             // If we've never been built before, well, gotta build!
             listener.getLogger()
-					.println("[poll] No previous build, so forcing an initial build.");
+                    .println("[poll] No previous build, so forcing an initial build.");
 			
             return PollingResult.BUILD_NOW;
         }
@@ -152,9 +152,9 @@ public class DarcsScm extends SCM implements Serializable {
         final Change change;
         final DarcsRevisionState remoteRevisionState = getRevisionState(launcher, listener, source);
 
-        listener.getLogger().printf("[poll] Current remote revision is %s. Baseline is %s.\n", 
-									remoteRevisionState, 
-									localRevisionState);
+        listener.getLogger()
+                .printf("[poll] Current remote revision is %s. Baseline is %s.\n", 
+                        remoteRevisionState, localRevisionState);
         
         if ((SCMRevisionState.NONE == localRevisionState)
             // appears that other instances of None occur - its not a singleton.
@@ -192,7 +192,7 @@ public class DarcsScm extends SCM implements Serializable {
                                     getDescriptor().getDarcsExe());
 
         try {
-            byte[]			changes = cmd.allChanges(repo).toByteArray();
+            byte[]          changes = cmd.allChanges(repo).toByteArray();
             XMLReader       xr      = XMLReaderFactory.createXMLReader();
             DarcsSaxHandler handler = new DarcsSaxHandler();
 
