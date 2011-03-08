@@ -82,7 +82,7 @@ public class DarcsRevisionState extends SCMRevisionState {
 
     @Override
     public String toString() {
-        return "<RevisionState: " + getChanges().digest() + ">";
+        return getChanges().digest();
     }
 
     @Override
