@@ -120,10 +120,14 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
             MessageDigest algorithm = MessageDigest.getInstance("MD5");
             algorithm.reset();
 
-            for (DarcsChangeSet cs : this) {
-                algorithm.update(cs.getHash().getBytes());
+            if (isEmptySet()) {
+                algorithm.update("".getBytes());
+            } else {
+                for (DarcsChangeSet cs : this) {
+                    algorithm.update(cs.getHash().getBytes());
+                }
             }
-
+            
             byte[] md5 = algorithm.digest();
             String tmp = "";
 
@@ -137,6 +141,7 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
                 res.append(tmp);
             }
         } catch (NoSuchAlgorithmException ex) {
+            res.append("");
         }
 
         return res.toString();
