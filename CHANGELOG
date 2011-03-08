@@ -31,3 +31,7 @@ Changelog
 - Implemented revision state and polling.
 - Fixed add/remove dir tag recognition
 - Fixed comment/name parsing
+
+0.3.3
+-----
+- Betetr revision state logging

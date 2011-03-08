@@ -3,6 +3,7 @@ Darcs Plugin for Jenkins CI
 
 Todo
 ----
+- Fix polling
 - write more unittests
     - BrowserChooser
 - input validation for code browsers URL
