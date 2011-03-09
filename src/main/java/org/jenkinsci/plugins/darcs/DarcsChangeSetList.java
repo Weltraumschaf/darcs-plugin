@@ -187,4 +187,9 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
     public int hashCode() {
         return digest().hashCode();
     }
+
+    @Override
+    public String toString() {
+        return "DarcsChangeSetList{changeSets=" + changeSets + ", digest=" + digest + '}';
+    }
 }

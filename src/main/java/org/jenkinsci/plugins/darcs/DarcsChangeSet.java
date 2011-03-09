@@ -343,4 +343,16 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
     protected void setParent(ChangeLogSet parent) {
         super.setParent(parent);
     }
+
+    @Override
+    public String toString() {
+        return "DarcsChangeSet{" + 
+               "hash=" + hash + 
+               ", name=" +  name + 
+               ", author=" + author + 
+               ", date=" + date + 
+               ", localDate=" + localDate + 
+               ", inverted=" + inverted + 
+               '}';
+    }
 }
