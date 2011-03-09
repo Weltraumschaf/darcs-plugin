@@ -130,7 +130,8 @@ public class DarcsScm extends SCM implements Serializable {
                                                     build.getWorkspace().getRemote());
         listener.getLogger()
                 .println("[poll] Local revision state is " + local);
-		
+//        listener.getLogger()
+//                .println(((DarcsRevisionState)local).getChanges());
         return local;
     }
 
@@ -153,16 +154,30 @@ public class DarcsScm extends SCM implements Serializable {
         final DarcsRevisionState remoteRevisionState = getRevisionState(launcher, listener, source);
 
         listener.getLogger()
-                .printf("[poll] Current remote revision is %s. Baseline is %s.\n", 
+                .printf("[poll] Current remote revision is %s. Local revision is %s.\n", 
                         remoteRevisionState, localRevisionState);
+//        listener.getLogger()
+//                .println(((DarcsRevisionState)localRevisionState).getChanges());
         
-        if ((SCMRevisionState.NONE == localRevisionState)
+        if (SCMRevisionState.NONE == localRevisionState) {
+            listener.getLogger()
+                    .println("[poll] SCMRevisionState.NONE == localRevisionState");
+            change = Change.SIGNIFICANT;
+        } else if (localRevisionState.getClass() != DarcsRevisionState.class) {
             // appears that other instances of None occur - its not a singleton.
             // so do a (fugly) class check.
-            || (localRevisionState.getClass() != DarcsRevisionState.class)
-            || (!remoteRevisionState.equals(localRevisionState))) {
+            listener.getLogger()
+                    .println("[poll] localRevisionState.getClass() != DarcsRevisionState.class");
+            change = Change.SIGNIFICANT;
+        } else if (!remoteRevisionState.equals(localRevisionState)) {
+            listener.getLogger()
+                    .printf("[poll] !remoteRevisionState.equals(localRevisionState): remote{%s} vs. local{%s}",
+                            remoteRevisionState.getChanges().size(),
+                            ((DarcsRevisionState)localRevisionState).getChanges().size());
             change = Change.SIGNIFICANT;
         } else {
+            listener.getLogger()
+                    .println("[poll] Change.NONE");
             change = Change.NONE;
         }
 
