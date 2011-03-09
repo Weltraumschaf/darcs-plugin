@@ -12,9 +12,10 @@ package org.jenkinsci.plugins.darcs;
 import hudson.scm.ChangeLogSet;
 import hudson.model.AbstractBuild;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Collections;
-import java.util.Iterator;
+import java.util.Comparator;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -52,7 +53,14 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
      */
     public DarcsChangeSetList(AbstractBuild build, List<DarcsChangeSet> changes) {
         super(build);
-        this.changeSets = Collections.unmodifiableList(changes);
+        
+        // we want the changesets allways in same order for digesting
+        Collections.sort(changes, new Comparator<DarcsChangeSet>() {
+            public int compare(DarcsChangeSet a, DarcsChangeSet b) {
+                return a.getHash().compareTo(b.getHash());
+            }
+        });
+        changeSets = Collections.unmodifiableList(changes);
 
         for (DarcsChangeSet log : changes) {
             log.setParent(this);
