@@ -14,6 +14,7 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CoderResult;
+import java.nio.charset.CodingErrorAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,17 +34,23 @@ import java.util.List;
  *
  * @author Ralph Lange <Ralph.Lange@gmx.de>
  */
+
 public class DarcsXmlSanitizer {
 
     static final List<String> addlCharsets =
             Arrays.asList("ISO-8859-1", "UTF-16");
     List<CharsetDecoder> decoders = new ArrayList<CharsetDecoder>();
-
+    private enum State {OUTSIDE, IN_NAME, IN_COMMENT};
+    
     public DarcsXmlSanitizer() {
         decoders.add(Charset.forName("UTF-8").newDecoder());
         for (String cs : addlCharsets) {
             decoders.add(Charset.forName(cs).newDecoder());
         }
+        // last resort: UTF-8 with replacement
+        decoders.add(Charset.forName("UTF-8").newDecoder()
+                .onMalformedInput(CodingErrorAction.REPLACE)
+                .onUnmappableCharacter(CodingErrorAction.REPLACE));
     }
 
     /**
@@ -107,35 +114,38 @@ public class DarcsXmlSanitizer {
     }
 
     public String cleanse(byte[] input, String encoding) {
-        CharsetDecoder dec_utf8 = decoders.get(0);
         ByteBuffer in;
         CharBuffer cb = CharBuffer.allocate(input.length);
         CoderResult result;
+        State state = State.OUTSIDE;
         int curr_pos = 0;
-        int next_name, next_comm, next, end;
+        int next_name, next_comm;
+        int next = 0;
 
         while (curr_pos < input.length) {
-            next_name = positionAfterNext(input, curr_pos, "<name>".getBytes());
-            next_comm = positionAfterNext(input, curr_pos, "<comment>".getBytes());
-
-            if (next_name < next_comm) {
-                next = next_name;
-                end = positionBeforeNext(input, next, "</name>".getBytes());
-            } else {
-                next = next_comm;
-                end = positionBeforeNext(input, next, "</comment>".getBytes());
+            switch (state) {
+                case OUTSIDE:
+                    next_name = positionAfterNext(input, curr_pos, "<name>".getBytes());
+                    next_comm = positionAfterNext(input, curr_pos, "<comment>".getBytes());
+                    if (next_name < next_comm) {
+                        next = next_name;
+                        state = State.IN_NAME;
+                    } else {
+                        next = next_comm;
+                        state = State.IN_COMMENT;
+                    }
+                    break;
+                case IN_NAME:
+                    next = positionBeforeNext(input, next, "</name>".getBytes());
+                    state = State.OUTSIDE;
+                    break;
+                case IN_COMMENT:
+                    next = positionBeforeNext(input, next, "</comment>".getBytes());
+                    state = State.OUTSIDE;
+                    break;
             }
 
             in = ByteBuffer.wrap(input, curr_pos, next - curr_pos);
-            dec_utf8.reset();
-            dec_utf8.decode(in, cb, true);
-            dec_utf8.flush(cb);
-            curr_pos += next - curr_pos;
-
-            if (curr_pos >= input.length)
-                break;
-
-            in = ByteBuffer.wrap(input, curr_pos, end - curr_pos);
             in.mark();
             cb.mark();
             for (CharsetDecoder dec : decoders) {
@@ -150,7 +160,7 @@ public class DarcsXmlSanitizer {
                     break;
                 }
             }
-            curr_pos += end - curr_pos;
+            curr_pos += next - curr_pos;
         }
         return cb.flip().toString();
     }
