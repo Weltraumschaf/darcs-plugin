@@ -26,6 +26,10 @@ public class DarcsRevisionState extends SCMRevisionState {
      */
     private final DarcsChangeSetList changes;
 
+    public DarcsRevisionState() {
+        this(new DarcsChangeSetList());
+    }
+    
     public DarcsRevisionState(DarcsChangeSetList changes) {
         super();
         this.changes = changes;

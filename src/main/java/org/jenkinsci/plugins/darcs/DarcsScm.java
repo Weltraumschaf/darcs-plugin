@@ -39,6 +39,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
@@ -129,23 +130,29 @@ public class DarcsScm extends SCM implements Serializable {
                                                     listener,
                                                     build.getWorkspace().getRemote());
         listener.getLogger()
-                .println("[poll] Local revision state is " + local);
-//        listener.getLogger()
-//                .println(((DarcsRevisionState)local).getChanges());
+                .println("[poll] Calculate revison from build " + local);
+
         return local;
     }
 
     @Override
-    protected PollingResult compareRemoteRevisionWith(AbstractProject<?, ?> project, Launcher launcher, FilePath fp, TaskListener listener, SCMRevisionState localRevisionState) throws IOException, InterruptedException {
-        final AbstractBuild lastBuild = project.getLastBuild();
-
-        if (null != lastBuild) {
-            listener.getLogger()
-                    .println("[poll] Last Build : #" + lastBuild.getNumber());
+    protected PollingResult compareRemoteRevisionWith(AbstractProject<?,?> project, Launcher launcher, FilePath workspace, TaskListener listener, SCMRevisionState baseline) throws IOException, InterruptedException {
+        final PrintStream logger = listener.getLogger();        
+        final DarcsRevisionState localRevisionState;
+        
+        if (baseline instanceof DarcsRevisionState) {
+            localRevisionState = (DarcsRevisionState)baseline;
+        } else if (project.getLastBuild() != null) {
+            localRevisionState = (DarcsRevisionState)calcRevisionsFromBuild(project.getLastBuild(), launcher, listener);
+        } else {
+            localRevisionState = new DarcsRevisionState();
+        }
+        
+        if (null != project.getLastBuild()) {
+            logger.println("[poll] Last Build : #" + project.getLastBuild().getNumber());
         } else {
             // If we've never been built before, well, gotta build!
-            listener.getLogger()
-                    .println("[poll] No previous build, so forcing an initial build.");
+            logger.println("[poll] No previous build, so forcing an initial build.");
 			
             return PollingResult.BUILD_NOW;
         }
@@ -153,31 +160,33 @@ public class DarcsScm extends SCM implements Serializable {
         final Change change;
         final DarcsRevisionState remoteRevisionState = getRevisionState(launcher, listener, source);
 
-        listener.getLogger()
-                .printf("[poll] Current remote revision is %s. Local revision is %s.\n", 
+        logger.printf("[poll] Current remote revision is %s. Local revision is %s.\n", 
                         remoteRevisionState, localRevisionState);
-//        listener.getLogger()
-//                .println(((DarcsRevisionState)localRevisionState).getChanges());
         
         if (SCMRevisionState.NONE == localRevisionState) {
-            listener.getLogger()
-                    .println("[poll] SCMRevisionState.NONE == localRevisionState");
+            logger.println("[poll] Does not have a local revision state.");
             change = Change.SIGNIFICANT;
         } else if (localRevisionState.getClass() != DarcsRevisionState.class) {
             // appears that other instances of None occur - its not a singleton.
             // so do a (fugly) class check.
-            listener.getLogger()
-                    .println("[poll] localRevisionState.getClass() != DarcsRevisionState.class");
+            logger.println("[poll] local revision state is not of type darcs.");
             change = Change.SIGNIFICANT;
         } else if (!remoteRevisionState.equals(localRevisionState)) {
-            listener.getLogger()
-                    .printf("[poll] !remoteRevisionState.equals(localRevisionState): remote{%s} vs. local{%s}",
-                            remoteRevisionState.getChanges().size(),
-                            ((DarcsRevisionState)localRevisionState).getChanges().size());
+            logger.println("[poll] Local revision state differs from remote.");
+            
+            if (remoteRevisionState.getChanges().size() < ((DarcsRevisionState)localRevisionState).getChanges().size()) {
+                logger.printf("[poll] Remote repo has less patches than local: remote(%s) vs. local(%s). Will wipe workspace %s...\n",
+                              remoteRevisionState.getChanges().size(),
+                              ((DarcsRevisionState)localRevisionState).getChanges().size(),
+                              project.getLastBuild().getWorkspace().getRemote());
+                
+                project.getLastBuild()
+                       .getWorkspace()
+                       .deleteRecursive();
+            }
+            
             change = Change.SIGNIFICANT;
         } else {
-            listener.getLogger()
-                    .println("[poll] Change.NONE");
             change = Change.NONE;
         }
 
@@ -265,6 +274,7 @@ public class DarcsScm extends SCM implements Serializable {
 
             public Boolean invoke(File ws, VirtualChannel channel) throws IOException {
                 File file = new File(ws, "_darcs");
+                
                 return file.exists();
             }
         });

@@ -12,6 +12,7 @@ package org.jenkinsci.plugins.darcs;
 import hudson.scm.ChangeLogSet;
 import hudson.model.AbstractBuild;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Collections;
@@ -36,6 +37,10 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
      */
     private String digest;
 
+    public DarcsChangeSetList() {
+        this(new ArrayList<DarcsChangeSet>());
+    }
+    
     /**
      * Constructs without build.
      * 

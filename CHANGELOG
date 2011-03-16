@@ -36,3 +36,4 @@ Changelog
 -----
 - Betetr revision state logging.
 - ChangeSets in the ChangeSetList are sorted by darcs hash for digest calculation.
+- Fixed issue 4: Check polling when patches are removed
