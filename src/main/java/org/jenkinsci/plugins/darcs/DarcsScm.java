@@ -195,6 +195,7 @@ public class DarcsScm extends SCM implements Serializable {
      */
     protected DarcsRevisionState getRevisionState(Launcher launcher, TaskListener listener, String repo) throws InterruptedException {
         DarcsRevisionState rev = null;
+        DarcsXmlSanitizer sani = new DarcsXmlSanitizer();
 
         if (null == launcher) {
             /* Create a launcher on master
@@ -213,7 +214,7 @@ public class DarcsScm extends SCM implements Serializable {
 
             xr.setContentHandler(handler);
             xr.setErrorHandler(handler);
-            xr.parse(new InputSource(new ByteArrayInputStream(changes)));
+            xr.parse(new InputSource(sani.cleanse(changes)));
 
             rev = new DarcsRevisionState(new DarcsChangeSetList(null, handler.getChangeSets()));
         } catch (Exception e) {
