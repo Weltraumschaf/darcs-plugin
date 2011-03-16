@@ -53,7 +53,7 @@ public class DarcsXmlSanitizerTest {
         try {
             byte[] input = "foo <name>abcdefg</name> bar <comment>abcdefg</comment> foobar".getBytes("US-ASCII");
             String output = "foo <name>abcdefg</name> bar <comment>abcdefg</comment> foobar";
-            String result = sani.cleanse(input, "US-ASCII");
+            String result = sani.cleanse(input);
             assertEquals(output, result);
         } catch (UnsupportedEncodingException e) {
             System.out.println("Unsupported encoding exception" + e);
@@ -62,7 +62,7 @@ public class DarcsXmlSanitizerTest {
         try {
             byte[] input = "foo <name>äöüÄÖÜß</name> bar <comment>äöüÄÖÜß</comment> foobar".getBytes("UTF-8");
             String output = "foo <name>äöüÄÖÜß</name> bar <comment>äöüÄÖÜß</comment> foobar";
-            String result = sani.cleanse(input, "UTF-8");
+            String result = sani.cleanse(input);
             assertEquals(output, result);
         } catch (UnsupportedEncodingException e) {
             System.out.println("Unsupported encoding exception" + e);
@@ -71,7 +71,7 @@ public class DarcsXmlSanitizerTest {
         try {
             byte[] input = "foo <name>äöüÄÖÜß</name> bar <comment>äöüÄÖÜß</comment> foobar".getBytes("ISO-8859-1");
             String output = "foo <name>äöüÄÖÜß</name> bar <comment>äöüÄÖÜß</comment> foobar";
-            String result = sani.cleanse(input, "ISO-8859-1");
+            String result = sani.cleanse(input);
             assertEquals(output, result);
         } catch (UnsupportedEncodingException e) {
             System.out.println("Unsupported encoding exception" + e);
@@ -84,7 +84,7 @@ public class DarcsXmlSanitizerTest {
             System.arraycopy(inp_a, 0, input, 0, inp_a.length);
             System.arraycopy(inp_b, 0, input, inp_a.length, inp_b.length);
             String output = "foo <name>äöüÄÖÜß</name> bar <comment>äöüÄÖÜß</comment> foobar";
-            String result = sani.cleanse(input, "ISO-8859-1");
+            String result = sani.cleanse(input);
             assertEquals(output, result);
         } catch (UnsupportedEncodingException e) {
             System.out.println("Unsupported encoding exception" + e);
