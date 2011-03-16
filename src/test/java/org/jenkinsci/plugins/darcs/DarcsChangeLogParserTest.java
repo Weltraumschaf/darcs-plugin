@@ -46,7 +46,7 @@ public class DarcsChangeLogParserTest extends TestCase {
         List<DarcsChangeSet> logs = list.getChangeSets();
         assertEquals(10, logs.size());
         int i = 0;
-        assertPatch(logs.get(i), true, new HashMap<String, String>() {
+        assertPatch(logs.get(i), false, new HashMap<String, String>() {
             {
                 put("plainAuthor", "ich@weltraumschaf.de");
                 put("name", "inital files added");
@@ -62,11 +62,7 @@ public class DarcsChangeLogParserTest extends TestCase {
                 add("Baz.java");
                 add("Foo.java");
             }
-        }, new ArrayList<String>() {
-            {
-                add("foo/bar");
-            }
-        }, null);
+        }, null, null);
         i++;
         
         assertPatch(logs.get(i), false, new HashMap<String, String>() {
@@ -79,18 +75,14 @@ public class DarcsChangeLogParserTest extends TestCase {
                 put("comment", "Ignore-this: e2eb7de380585ad9e4cb9515d8b21621");
             }
         });
-        assertSummary(logs.get(i), new ArrayList<String>() {
-            {
-                add("bar/baz");
-            }
-        }, null, new ArrayList() {
+        assertSummary(logs.get(i), null, null, new ArrayList() {
             {
                 add("Bar.java");
             }
         });
         i++;
         
-        assertPatch(logs.get(i), true, new HashMap<String, String>() {
+        assertPatch(logs.get(i), false, new HashMap<String, String>() {
             {
                 put("plainAuthor", "ich@weltraumschaf.de");
                 put("name", "Implemented class Baz");
@@ -168,15 +160,7 @@ public class DarcsChangeLogParserTest extends TestCase {
                 put("comment", "Ignore-this: 79225cd08e4f7ec7dfc7a6cb4e7f5948");
             }
         });
-        assertSummary(logs.get(i), new ArrayList<String>() {
-            {
-                add("Bar.java");
-            }
-        }, new ArrayList<String>() {
-            {
-                add("Baz.java");
-            }
-        }, new ArrayList<String>() {
+        assertSummary(logs.get(i), null, null, new ArrayList<String>() {
             {
                 add("Foo.java");
             }

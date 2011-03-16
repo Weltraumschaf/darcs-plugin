@@ -1,6 +1,6 @@
 <changelog>
 <patch author='ich@weltraumschaf.de' date='20110224143546' local_date='Thu Feb 24 15:35:46 CET 2011' inverted='False' hash='20110224143546-7677a-359f8967374ac52adc87dedac6f4ad458a7b6446.gz'>
-	<name>German Umlauts in ISO8859-15 encoding: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</name>
+	<name>German Umlauts in ISO8859-15 encoding: äöüÄÖÜß</name>
 	<comment>Ignore-this: 7c74b888addef772a93a63b69a144836</comment>
     <summary>
     <modify_file>
@@ -36,12 +36,6 @@
 	<name>Implemented value in class Foo</name>
 	<comment>Ignore-this: 79225cd08e4f7ec7dfc7a6cb4e7f5948</comment>
     <summary>
-    <add_file>
-    Bar.java
-    </add_file>
-    <remove_file>
-    Baz.java
-    </remove_file>
     <modify_file>
     Foo.java<removed_lines num='1'/><added_lines num='9'/>
     </modify_file>
@@ -74,7 +68,7 @@
     </modify_file>
     </summary>
 </patch>
-<patch author='ich@weltraumschaf.de' date='20110214201618' local_date='Mon Feb 14 21:16:18 CET 2011' inverted='True' hash='20110214201618-7677a-631eee269c4a252d953fa2f61b1127874bbc57d4.gz'>
+<patch author='ich@weltraumschaf.de' date='20110214201618' local_date='Mon Feb 14 21:16:18 CET 2011' inverted='False' hash='20110214201618-7677a-631eee269c4a252d953fa2f61b1127874bbc57d4.gz'>
 	<name>Implemented class Baz</name>
 	<comment>Ignore-this: 751c6c8a858104b5b15833496fce9a2</comment>
     <summary>
@@ -90,12 +84,9 @@
     <modify_file>
     Bar.java<added_lines num='7'/>
     </modify_file>
-    <add_directory>
-    bar/baz
-    </add_directory>
     </summary>
 </patch>
-<patch author='ich@weltraumschaf.de' date='20110214201356' local_date='Mon Feb 14 21:13:56 CET 2011' inverted='True' hash='20110214201356-7677a-15b1d7313611ef85de46d8daf57123a365d5b800.gz'>
+<patch author='ich@weltraumschaf.de' date='20110214201356' local_date='Mon Feb 14 21:13:56 CET 2011' inverted='False' hash='20110214201356-7677a-15b1d7313611ef85de46d8daf57123a365d5b800.gz'>
 	<name>inital files added</name>
 	<comment>Ignore-this: 391a1ff64b0f64546446368f2d45fbc8</comment>
     <summary>
@@ -108,9 +99,6 @@
     <add_file>
     Foo.java
     </add_file>
-    <remove_directory>
-    foo/bar
-    </remove_directory>
     </summary>
 </patch>
 </changelog>

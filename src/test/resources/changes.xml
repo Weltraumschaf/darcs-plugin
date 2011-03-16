@@ -27,7 +27,7 @@
 	<name>Implemented class Foo</name>
 	<comment>Ignore-this: 85d0cdf2679dfcab72469629d6a80945</comment>
 </patch>
-<patch author='ich@weltraumschaf.de' date='20110214201618' local_date='Mon Feb 14 21:16:18 CET 2011' inverted='True' hash='20110214201618-7677a-631eee269c4a252d953fa2f61b1127874bbc57d4.gz'>
+<patch author='ich@weltraumschaf.de' date='20110214201618' local_date='Mon Feb 14 21:16:18 CET 2011' inverted='False' hash='20110214201618-7677a-631eee269c4a252d953fa2f61b1127874bbc57d4.gz'>
 	<name>Implemented class Baz</name>
 	<comment>Ignore-this: 751c6c8a858104b5b15833496fce9a2</comment>
 </patch>
@@ -35,7 +35,7 @@
 	<name>Implemented class Bar</name>
 	<comment>Ignore-this: e2eb7de380585ad9e4cb9515d8b21621</comment>
 </patch>
-<patch author='ich@weltraumschaf.de' date='20110214201356' local_date='Mon Feb 14 21:13:56 CET 2011' inverted='True' hash='20110214201356-7677a-15b1d7313611ef85de46d8daf57123a365d5b800.gz'>
+<patch author='ich@weltraumschaf.de' date='20110214201356' local_date='Mon Feb 14 21:13:56 CET 2011' inverted='False' hash='20110214201356-7677a-15b1d7313611ef85de46d8daf57123a365d5b800.gz'>
 	<name>inital files added</name>
 	<comment>Ignore-this: 391a1ff64b0f64546446368f2d45fbc8</comment>
 </patch>
