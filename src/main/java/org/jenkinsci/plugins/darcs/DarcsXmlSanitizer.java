@@ -9,6 +9,10 @@
  */
 package org.jenkinsci.plugins.darcs;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -56,7 +60,7 @@ public class DarcsXmlSanitizer {
     /**
      * Knuth-Morris-Pratt pattern matching algorithm
      */
-    private static int positionOfNext(byte[] data, int start, byte[] pattern) {
+    private static int positionBeforeNext(byte[] data, int start, byte[] pattern) {
         int[] failure = computeFailure(pattern);
         int j = 0;
         if (0 == data.length || start >= data.length) {
@@ -76,19 +80,9 @@ public class DarcsXmlSanitizer {
         return -1;
     }
 
-    private static int positionBeforeNext(byte[] data, int start, byte[] pattern) {
-        int pos = positionOfNext(data, start, pattern);
-        if (-1 == pos) {
-            pos = data.length;
-        }
-        return pos;
-    }
-
     private static int positionAfterNext(byte[] data, int start, byte[] pattern) {
-        int pos = positionOfNext(data, start, pattern);
-        if (-1 == pos) {
-            pos = data.length;
-        } else {
+        int pos = positionBeforeNext(data, start, pattern);
+        if (-1 != pos) {
             pos += pattern.length;
         }
         return pos;
@@ -113,7 +107,7 @@ public class DarcsXmlSanitizer {
         return failure;
     }
 
-    public String cleanse(byte[] input, String encoding) {
+    public String cleanse(byte[] input) {
         ByteBuffer in;
         CharBuffer cb = CharBuffer.allocate(input.length);
         CoderResult result;
@@ -127,21 +121,29 @@ public class DarcsXmlSanitizer {
                 case OUTSIDE:
                     next_name = positionAfterNext(input, curr_pos, "<name>".getBytes());
                     next_comm = positionAfterNext(input, curr_pos, "<comment>".getBytes());
-                    if (next_name < next_comm) {
+                    if (-1 != next_name && next_name < next_comm) {
                         next = next_name;
                         state = State.IN_NAME;
                     } else {
                         next = next_comm;
                         state = State.IN_COMMENT;
                     }
+                    if (-1 == next) {
+                        next = input.length;
+                        state = State.OUTSIDE;
+                    }
                     break;
                 case IN_NAME:
                     next = positionBeforeNext(input, next, "</name>".getBytes());
-                    state = State.OUTSIDE;
+                    if (-1 != next) {
+                        state = State.OUTSIDE;
+                    }
                     break;
                 case IN_COMMENT:
                     next = positionBeforeNext(input, next, "</comment>".getBytes());
-                    state = State.OUTSIDE;
+                    if (-1 != next) {
+                        state = State.OUTSIDE;
+                    }
                     break;
             }
 
@@ -162,6 +164,46 @@ public class DarcsXmlSanitizer {
             }
             curr_pos += next - curr_pos;
         }
-        return cb.flip().toString();
+        cb.flip();
+        return cb.toString();
+    }
+
+    private byte[] readFile(File file) throws IOException {
+        // Taken from www.exampledepot.com
+        // Get the size of the file
+        long length = file.length();
+
+        // You cannot create an array using a long type.
+        // It needs to be an int type.
+        // Before converting to an int type, check
+        // to ensure that file is not larger than Integer.MAX_VALUE.
+        if (length > Integer.MAX_VALUE) {
+            throw new IOException("File is too large " + file.getName());
+        }
+
+        // Create the byte array to hold the data
+        byte[] bytes = new byte[(int) length];
+
+        // Read in the bytes
+        InputStream is = new FileInputStream(file);
+        int offset = 0;
+        int numRead = 0;
+        while (offset < bytes.length
+                && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
+            offset += numRead;
+        }
+
+        // Ensure all the bytes have been read in
+        if (offset < bytes.length) {
+            throw new IOException("Could not completely read file " + file.getName());
+        }
+
+        // Close the input stream and return bytes
+        is.close();
+        return bytes;
+    }
+
+    public String cleanse(File file) throws IOException {
+        return cleanse(readFile(file));
     }
 }
