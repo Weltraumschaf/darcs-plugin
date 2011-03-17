@@ -3,13 +3,11 @@ Darcs Plugin for Jenkins CI
 
 Todo
 ----
-- Fix polling
 - write more unittests
     - BrowserChooser
 - input validation for code browsers URL
 - write more javadoc
 - improve the changeset index view
-- fix issue with invalid characters / mixed encoding in changelog XML
 
 Installation
 -----------
