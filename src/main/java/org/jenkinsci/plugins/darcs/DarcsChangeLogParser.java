@@ -13,8 +13,9 @@ import hudson.model.AbstractBuild;
 import hudson.scm.ChangeLogParser;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.StringReader;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.xml.sax.InputSource;
@@ -26,6 +27,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * Parses the output of darcs log.
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
+ * @author Ralph Lange <Ralph.Lange@gmx.de>
  */
 public class DarcsChangeLogParser extends ChangeLogParser {
 
@@ -50,15 +52,16 @@ public class DarcsChangeLogParser extends ChangeLogParser {
     @Override
     public DarcsChangeSetList parse(AbstractBuild build, File changelogFile)
     throws IOException, SAXException {
-        LOGGER.info("Parsing changelog file " + changelogFile.toString());
+        LOGGER.log(Level.INFO, "Parsing changelog file {0}", changelogFile.toString());
 
-        XMLReader       xmlReader  = XMLReaderFactory.createXMLReader();
-        DarcsSaxHandler handler    = new DarcsSaxHandler();
-        FileReader      fileReader = new FileReader(changelogFile);
+        XMLReader         xmlReader = XMLReaderFactory.createXMLReader();
+        DarcsSaxHandler   handler   = new DarcsSaxHandler();
+        DarcsXmlSanitizer sani      = new DarcsXmlSanitizer();
+        StringReader      input     = new StringReader(sani.cleanse(changelogFile));
 
         xmlReader.setContentHandler(handler);
         xmlReader.setErrorHandler(handler);
-        xmlReader.parse(new InputSource(fileReader));
+        xmlReader.parse(new InputSource(input));
 
         return new DarcsChangeSetList(build, handler.getChangeSets());
     }

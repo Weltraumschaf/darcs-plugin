@@ -34,7 +34,6 @@ import hudson.scm.SCM;
 import hudson.scm.SCMRevisionState;
 import hudson.scm.SCMDescriptor;
 import hudson.util.FormValidation;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -42,6 +41,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -204,6 +204,7 @@ public class DarcsScm extends SCM implements Serializable {
      */
     protected DarcsRevisionState getRevisionState(Launcher launcher, TaskListener listener, String repo) throws InterruptedException {
         DarcsRevisionState rev = null;
+        DarcsXmlSanitizer sani = new DarcsXmlSanitizer();
 
         if (null == launcher) {
             /* Create a launcher on master
@@ -219,10 +220,11 @@ public class DarcsScm extends SCM implements Serializable {
             byte[]          changes = cmd.allChanges(repo).toByteArray();
             XMLReader       xr      = XMLReaderFactory.createXMLReader();
             DarcsSaxHandler handler = new DarcsSaxHandler();
+            StringReader    input   = new StringReader(sani.cleanse(changes));
 
             xr.setContentHandler(handler);
             xr.setErrorHandler(handler);
-            xr.parse(new InputSource(new ByteArrayInputStream(changes)));
+            xr.parse(new InputSource(input));
 
             rev = new DarcsRevisionState(new DarcsChangeSetList(null, handler.getChangeSets()));
         } catch (Exception e) {

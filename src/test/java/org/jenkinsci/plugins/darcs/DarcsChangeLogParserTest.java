@@ -32,7 +32,7 @@ public class DarcsChangeLogParserTest extends TestCase {
         DarcsChangeSetList list  = null;
 
         try {
-            URL resource = getClass().getResource("/changes.xml");
+            URL resource = getClass().getResource("/changes-summary.xml");
             list = sut.parse(null, new File(resource.toURI()));
         } catch (Exception e) {
             fail(e.toString());
@@ -42,11 +42,11 @@ public class DarcsChangeLogParserTest extends TestCase {
             fail("list must not be null!");
         }
 
-        assertEquals(8, list.size());
+        assertEquals(10, list.size());
         List<DarcsChangeSet> logs = list.getChangeSets();
-        assertEquals(8, logs.size());
+        assertEquals(10, logs.size());
         int i = 0;
-        assertPatch(logs.get(i), true, new HashMap<String, String>() {
+        assertPatch(logs.get(i), false, new HashMap<String, String>() {
             {
                 put("plainAuthor", "ich@weltraumschaf.de");
                 put("name", "inital files added");
@@ -62,11 +62,7 @@ public class DarcsChangeLogParserTest extends TestCase {
                 add("Baz.java");
                 add("Foo.java");
             }
-        }, new ArrayList<String>() {
-            {
-                add("foo/bar");
-            }
-        }, null);
+        }, null, null);
         i++;
         
         assertPatch(logs.get(i), false, new HashMap<String, String>() {
@@ -79,18 +75,14 @@ public class DarcsChangeLogParserTest extends TestCase {
                 put("comment", "Ignore-this: e2eb7de380585ad9e4cb9515d8b21621");
             }
         });
-        assertSummary(logs.get(i), new ArrayList<String>() {
-            {
-                add("bar/baz");
-            }
-        }, null, new ArrayList() {
+        assertSummary(logs.get(i), null, null, new ArrayList() {
             {
                 add("Bar.java");
             }
         });
         i++;
         
-        assertPatch(logs.get(i), true, new HashMap<String, String>() {
+        assertPatch(logs.get(i), false, new HashMap<String, String>() {
             {
                 put("plainAuthor", "ich@weltraumschaf.de");
                 put("name", "Implemented class Baz");
@@ -168,15 +160,7 @@ public class DarcsChangeLogParserTest extends TestCase {
                 put("comment", "Ignore-this: 79225cd08e4f7ec7dfc7a6cb4e7f5948");
             }
         });
-        assertSummary(logs.get(i), new ArrayList<String>() {
-            {
-                add("Bar.java");
-            }
-        }, new ArrayList<String>() {
-            {
-                add("Baz.java");
-            }
-        }, new ArrayList<String>() {
+        assertSummary(logs.get(i), null, null, new ArrayList<String>() {
             {
                 add("Foo.java");
             }
@@ -201,7 +185,41 @@ public class DarcsChangeLogParserTest extends TestCase {
             }
         });
         i++;
-        
+
+        assertPatch(logs.get(i), false, new HashMap<String, String>() {
+            {
+                put("plainAuthor", "ich@weltraumschaf.de");
+                put("name", "German Umlauts in UTF-8 encoding: äöüÄÖÜß");
+                put("date", "20110224141706");
+                put("localDate", "Thu Feb 24 15:17:06 CET 2011");
+                put("hash", "20110224141706-7677a-b79e15c79bd5776b3e669a7338e181b4bd303609.gz");
+                put("comment", "Ignore-this: 77565bbaae7ec954f242fd414ca70033");
+            }
+        });
+        assertSummary(logs.get(i), null, null, new ArrayList<String>() {
+            {
+                add("Foo.java");
+            }
+        });
+        i++;
+
+        assertPatch(logs.get(i), false, new HashMap<String, String>() {
+            {
+                put("plainAuthor", "ich@weltraumschaf.de");
+                put("name", "German Umlauts in ISO8859-15 encoding: äöüÄÖÜß");
+                put("date", "20110224143546");
+                put("localDate", "Thu Feb 24 15:35:46 CET 2011");
+                put("hash", "20110224143546-7677a-359f8967374ac52adc87dedac6f4ad458a7b6446.gz");
+                put("comment", "Ignore-this: 7c74b888addef772a93a63b69a144836");
+            }
+        });
+        assertSummary(logs.get(i), null, null, new ArrayList<String>() {
+            {
+                add("Foo.java");
+            }
+        });
+        i++;
+
     }
 
     private void assertPatch(DarcsChangeSet cs, boolean isInverted, Map<String, String> expected) {
