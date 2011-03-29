@@ -15,7 +15,7 @@
     <packaging>hpi</packaging>
     <name>Jenkins Darcs plugin</name>
     <description>This plugin integrates the Darcs SCM into Jenkis</description>
-    <url>http://weltraumschaf.github.com/darcs-plugin</url>
+    <url>http://wiki.jenkins-ci.org/display/JENKINS/Darcs+Plugin</url>
 
     <organization>
         <name>weltraumschaf.de</name>
@@ -52,13 +52,13 @@
     
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/Weltraumschaf/darcs-plugin/issues</url>
+        <url>https://github.com/jenkinsci/darcs-plugin/issues</url>
     </issueManagement>
 
     <scm>
-        <connection>scm:git:git://github.com/Weltraumschaf/darcs-plugin.git</connection>
-        <developerConnection>scm:git:git@github.com:Weltraumschaf/darcs-plugin.git</developerConnection>
-        <url>https://github.com/Weltraumschaf/darcs-plugin/</url>
+        <connection>scm:git:git://github.com/jenkinsci/darcs-plugin.git</connection>
+        <developerConnection>scm:git:git@github.com:jenkinsci/darcs-plugin.git</developerConnection>
+        <url>https://github.com/jenkinsci/darcs-plugin/</url>
     </scm>
 
     <properties>
@@ -133,7 +133,7 @@
     <distributionManagement>
         <site>
             <id>github-project-site</id>
-            <url>gitsite:git@github.com/Weltraumschaf/darcs-plugin</url>
+            <url>gitsite:git@github.com/jenkinsci/darcs-plugin</url>
         </site>
     </distributionManagement>
 
