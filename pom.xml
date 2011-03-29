@@ -27,11 +27,18 @@
             <id>weltraumschaf</id>
             <name>Sven Strittmatter</name>
             <email>ich@weltraumschaf.de</email>
+            <roles>
+                <role>Project owner</role>
+                <role>Project developer</role>
+            </roles>
         </developer>
         <developer>
             <id>ralphlange</id>
             <name>Ralph Lange</name>
             <email>ralph.lange@gmx.de</email>
+            <roles>
+                <role>Project developer</role>
+            </roles>
         </developer>
     </developers>
 
