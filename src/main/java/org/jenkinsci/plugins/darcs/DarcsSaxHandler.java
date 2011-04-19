@@ -139,7 +139,8 @@ public class DarcsSaxHandler extends DefaultHandler {
                 currentChangeset.setName(literal.toString());
                 break;
             case COMMENT:
-                currentChangeset.setComment(literal.toString());
+                String comment = stripIgnoreThisFromComment(literal.toString());
+                currentChangeset.setComment(comment);
                 break;
             case ADD_FILE:
             case ADD_DIRECTORY:
@@ -154,6 +155,30 @@ public class DarcsSaxHandler extends DefaultHandler {
         currentTag = null;
     }
 
+    /**
+     * Strips out strings like Ignore-this: 606c40ef0d257da9b7a916e7f1c594aa.
+     * 
+     * It is asumed that the after the colon a single white space character occures and the
+     * whole string with the hash occureas at the beginning og an commit message and ends with 
+     * two new lines.
+     *
+     * @param comment
+     * @return 
+     */
+    public static String stripIgnoreThisFromComment(String comment) {
+        if (comment.startsWith("Ignore-this:")) {
+            int end = comment.indexOf("\n\n");
+            
+            if (-1 == end) {
+                return "";
+            }
+            
+            return comment.substring(end + 2);
+        }
+        
+        return comment;
+    }
+    
     private boolean isWhiteSpace(char c) {
         switch (c) {
             case '\n':
