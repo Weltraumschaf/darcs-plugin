@@ -37,6 +37,7 @@ public class DarcsWeb extends DarcsRepositoryBrowser {
 
     @Extension
     public static class DescriptorImpl extends Descriptor<RepositoryBrowser<?>> {
+        
         private static final Pattern URI_PATTERN = Pattern.compile(".+/cgi-bin/darcsweb.cgi");
 
         public String getDisplayName() {
@@ -54,7 +55,9 @@ public class DarcsWeb extends DarcsRepositoryBrowser {
          * @throws ServletException
          */
         public FormValidation doCheck(@QueryParameter final String value) throws IOException, ServletException {
+            
             return new FormValidation.URLCheck() {
+            
                 @Override
                 protected FormValidation check() throws IOException, ServletException {
                     String uri = Util.fixEmpty(value);
