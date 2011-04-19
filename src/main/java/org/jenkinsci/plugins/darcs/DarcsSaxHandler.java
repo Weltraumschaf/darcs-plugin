@@ -158,27 +158,30 @@ public class DarcsSaxHandler extends DefaultHandler {
     /**
      * Strips out strings like Ignore-this: 606c40ef0d257da9b7a916e7f1c594aa.
      * 
-     * It is asumed that the after the colon a single white space character occures and the
-     * whole string with the hash occureas at the beginning og an commit message and ends with 
-     * two new lines.
-     *
-     * @param comment
-     * @return 
+     * It is asumed that after the hash a single line break occures.
+	 *
+     * @param String comment
+     * @return boolean
      */
     public static String stripIgnoreThisFromComment(String comment) {
         if (comment.startsWith("Ignore-this:")) {
-            int end = comment.indexOf("\n\n");
+            int end = comment.indexOf("\n");
             
             if (-1 == end) {
                 return "";
             }
             
-            return comment.substring(end + 2);
+            return comment.substring(end + 1);
         }
         
         return comment;
     }
     
+	/**
+	 * 
+	 * @param char c
+	 * @return boolean
+	 */
     private boolean isWhiteSpace(char c) {
         switch (c) {
             case '\n':

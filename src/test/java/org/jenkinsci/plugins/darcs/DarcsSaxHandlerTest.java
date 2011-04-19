@@ -32,6 +32,8 @@ public class DarcsSaxHandlerTest extends TestCase {
         assertEquals("", 
                      DarcsSaxHandler.stripIgnoreThisFromComment("Ignore-this: 606c40ef0d257da9b7a916e7f1c594aa"));
         assertEquals("this is a test patch", 
+                     DarcsSaxHandler.stripIgnoreThisFromComment("Ignore-this: fe9a0bb6ebadda018ea88c252a033ec8\nthis is a test patch"));
+        assertEquals("\nthis is a test patch", 
                      DarcsSaxHandler.stripIgnoreThisFromComment("Ignore-this: fe9a0bb6ebadda018ea88c252a033ec8\n\nthis is a test patch"));
     }
     
