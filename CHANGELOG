@@ -41,3 +41,8 @@ Changelog
 0.3.4
 -----
 - Implemented XML sanitizing for mixed character encoding in Darcs XML output (Issue 1).
+
+0.3.5
+-----
+- URI input form validation for Darcsweb and Darcsden code browsers.
+- Stripping of 'Ignore-this: ...' from patch comments.

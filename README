@@ -5,7 +5,6 @@ Todo
 ----
 - write more unittests
     - BrowserChooser
-- input validation for code browsers URL
 - write more javadoc
 - improve the changeset index view
 
