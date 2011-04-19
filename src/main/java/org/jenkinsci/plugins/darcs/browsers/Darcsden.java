@@ -15,6 +15,7 @@ import org.jenkinsci.plugins.darcs.DarcsChangeSet;
 import java.io.IOException;
 import java.net.URL;
 import java.net.MalformedURLException;
+import java.util.regex.Pattern;
 import javax.servlet.ServletException;
 
 import hudson.Extension;
@@ -36,6 +37,9 @@ import org.kohsuke.stapler.StaplerRequest;
 public final class Darcsden extends DarcsRepositoryBrowser {
     @Extension
     public static class DescriptorImpl extends Descriptor<RepositoryBrowser<?>> {
+        
+        private static final Pattern URI_PATTERN = Pattern.compile("http://darcsden.com/.+");
+        
         public String getDisplayName() {
             return "Darcsden";
         }
@@ -50,11 +54,22 @@ public final class Darcsden extends DarcsRepositoryBrowser {
          * @throws IOException
          * @throws ServletException
          */
-        public FormValidation doCheck(@QueryParameter final String value) throws IOException, ServletException {
+        public FormValidation doCheck(@QueryParameter final String value) throws IOException, ServletException {    
+            
             return new FormValidation.URLCheck() {
+            
                 @Override
                 protected FormValidation check() throws IOException, ServletException {
-
+                    String uri = Util.fixEmpty(value);
+                    
+                    if (null == uri) {// nothing entered yet
+                        return FormValidation.ok();
+                    }
+                    
+                    if ( ! URI_PATTERN.matcher(uri).matches()) {
+                        return FormValidation.errorWithMarkup("The URI should look like <tt>http://darcsden.com/...</tt>!");
+                    }
+                    
                     return FormValidation.ok();
                 }
             }.check();
