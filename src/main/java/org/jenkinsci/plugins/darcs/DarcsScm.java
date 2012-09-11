@@ -76,25 +76,34 @@ public class DarcsScm extends SCM implements Serializable {
      */
     private final String source;
     /**
+     * Local directory with repo
+     */
+    private final String localDir;
+    /**
      * Whether to wipe the checked out repo.
      */
     private final boolean clean;
     DarcsRepositoryBrowser browser;
 
     public DarcsScm(String source) {
-        this(source, false, null);
+        this(source, ".", false, null);
     }
 
     @DataBoundConstructor
-    public DarcsScm(String source, boolean clean, DarcsRepositoryBrowser browser) {
-        this.source  = source;
-        this.clean   = clean;
-        this.browser = browser;
+    public DarcsScm(String source, String localDir, boolean clean, DarcsRepositoryBrowser browser) {
+        this.source   = source;
+        this.localDir  = localDir;
+        this.clean    = clean;
+        this.browser  = browser;
     }
 
     public String getSource() {
         return source;
     }
+
+    public String getLocalDir() {
+		return localDir;
+	}
 
     public boolean isClean() {
         return clean;
@@ -126,9 +135,10 @@ public class DarcsScm extends SCM implements Serializable {
      */
     @Override
     public DarcsRevisionState calcRevisionsFromBuild(AbstractBuild<?, ?> build, Launcher launcher, TaskListener listener) throws IOException, InterruptedException {
+        FilePath localPath = new FilePath(build.getWorkspace(), localDir);
         DarcsRevisionState local = getRevisionState(launcher,
                                                     listener,
-                                                    build.getWorkspace().getRemote());
+                                                    localPath.getRemote());
         listener.getLogger()
                 .println("[poll] Calculate revison from build " + local);
 
@@ -257,7 +267,8 @@ public class DarcsScm extends SCM implements Serializable {
 
         try {
             FileOutputStream fos          = new FileOutputStream(changeLog);
-            ByteArrayOutputStream changes = cmd.lastSummarizedChanges(workspace.getRemote(), numPatches);
+            FilePath localPath = new FilePath(workspace, localDir);
+            ByteArrayOutputStream changes = cmd.lastSummarizedChanges(localPath.getRemote(), numPatches);
 
             changes.writeTo(fos);
             fos.close();
@@ -270,7 +281,8 @@ public class DarcsScm extends SCM implements Serializable {
 
     @Override
     public boolean checkout(AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, BuildListener listener, File changelogFile) throws IOException, InterruptedException {
-        boolean existsRepoinWorkspace = workspace.act(new FileCallable<Boolean>() {
+        FilePath localPath = new FilePath(workspace, localDir);
+        boolean existsRepoinWorkspace = localPath.act(new FileCallable<Boolean>() {
 
             private static final long serialVersionUID = 1L;
 
@@ -305,7 +317,8 @@ public class DarcsScm extends SCM implements Serializable {
                                         build.getEnvironment(listener),
                                         getDescriptor().getDarcsExe());
 
-            return cmd.countChanges(workspace.getRemote());
+            FilePath localPath = new FilePath(workspace, localDir);
+            return cmd.countChanges(localPath.getRemote());
         } catch (Exception e) {
             listener.error("Failed to count patches in workspace repo:\n", e.toString());
             return 0;
@@ -334,7 +347,8 @@ public class DarcsScm extends SCM implements Serializable {
             DarcsCmd cmd = new DarcsCmd(launcher,
                                         build.getEnvironment(listener),
                                         getDescriptor().getDarcsExe());
-            cmd.pull(workspace.getRemote(), source);
+            FilePath localPath = new FilePath(workspace, localDir);
+            cmd.pull(localPath.getRemote(), source);
         } catch (Exception e) {
             listener.error("Failed to pull: " + e.toString());
 
@@ -363,7 +377,8 @@ public class DarcsScm extends SCM implements Serializable {
         LOGGER.log(Level.INFO, "Getting repo from: {0}", source);
 
         try {
-            workspace.deleteRecursive();
+            FilePath localPath = new FilePath(workspace, localDir);
+            localPath.deleteRecursive();
         } catch (IOException e) {
             e.printStackTrace(listener.error("Failed to clean the workspace"));
             return false;
@@ -373,7 +388,8 @@ public class DarcsScm extends SCM implements Serializable {
             DarcsCmd cmd = new DarcsCmd(launcher,
                                         build.getEnvironment(listener),
                                         getDescriptor().getDarcsExe());
-            cmd.get(workspace.getRemote(), source);
+            FilePath localPath = new FilePath(workspace, localDir);
+            cmd.get(localPath.getRemote(), source);
         } catch (Exception e) {
             e.printStackTrace(listener.error("Failed to get repo from " + source));
 

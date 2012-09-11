@@ -12,7 +12,11 @@
     <f:entry title="${%Repository URL}" help="/plugin/darcs/help.html">
         <f:textbox field="source"/>
     </f:entry>
-    
+
+    <f:entry title="${%Local module directory}" help="/plugin/darcs/local.html">
+        <f:textbox field="localDir"/>
+    </f:entry>
+
     <f:advanced>
         <f:entry title="${%Clean Build}" help="/plugin/darcs/clean.html">
             <f:checkbox name="darcs.clean" checked="${instance.clean}"/>
