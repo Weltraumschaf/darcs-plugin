@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 import javax.servlet.ServletException;
 
 import hudson.Extension;
+import hudson.Util;
 import hudson.model.Descriptor;
 import hudson.scm.RepositoryBrowser;
 import hudson.util.FormValidation;
@@ -36,7 +37,8 @@ public class DarcsWeb extends DarcsRepositoryBrowser {
 
     @Extension
     public static class DescriptorImpl extends Descriptor<RepositoryBrowser<?>> {
-//        private static final Pattern URL_PATTERN = Pattern.compile(".+/cgi-bin/darcsweb.cgi");
+        
+        private static final Pattern URI_PATTERN = Pattern.compile(".+/cgi-bin/darcsweb.cgi");
 
         public String getDisplayName() {
             return "Darcsweb";
@@ -53,10 +55,33 @@ public class DarcsWeb extends DarcsRepositoryBrowser {
          * @throws ServletException
          */
         public FormValidation doCheck(@QueryParameter final String value) throws IOException, ServletException {
+            
             return new FormValidation.URLCheck() {
+            
                 @Override
                 protected FormValidation check() throws IOException, ServletException {
-
+                    String uri = Util.fixEmpty(value);
+                    
+                    if (null == uri) {// nothing entered yet
+                        return FormValidation.ok();
+                    }
+                    
+                    if ( ! uri.startsWith("http://") && ! uri.startsWith("https://")) {
+                        return FormValidation.errorWithMarkup("The URI should start either with <tt>http://</tt> or <tt>https://</tt>!");
+                    }
+                    
+                    if ( ! URI_PATTERN.matcher(uri).matches()) {
+                        return FormValidation.errorWithMarkup("The URI should look like <tt>http://.../cgi-bin/darcsweb.cgi</tt>!");
+                    }
+                    
+                    try {
+                        if ( ! findText(open(new URL(uri)), "Crece desde el pueblo el futuro / crece desde el pie")) {
+                            return FormValidation.error("This is a valid URI but it doesn't look like DarcsWeb!");
+                        }
+                    } catch (IOException e) {
+                        handleIOException(uri, e);
+                    }
+                    
                     return FormValidation.ok();
                 }
             }.check();
