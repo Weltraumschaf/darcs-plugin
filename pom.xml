@@ -9,7 +9,7 @@
 
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>darcs</artifactId>
-    <version>0.3.6</version>
+    <version>0.3.7-SNAPSHOT</version>
     <packaging>hpi</packaging>
     <name>Jenkins Darcs plugin</name>
     <description>This plugin integrates the Darcs SCM into Jenkis</description>
