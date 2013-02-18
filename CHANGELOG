@@ -46,3 +46,8 @@ Changelog
 -----
 - URI input form validation for Darcsweb and Darcsden code browsers.
 - Stripping of 'Ignore-this: ...' from patch comments.
+
+0.3.6
+-----
+- Add config option for local path.
+- Set core dependnecy to LTS 1.480.
