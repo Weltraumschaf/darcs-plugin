@@ -139,7 +139,8 @@ public class DarcsSaxHandler extends DefaultHandler {
                 currentChangeset.setName(literal.toString());
                 break;
             case COMMENT:
-                currentChangeset.setComment(literal.toString());
+                String comment = stripIgnoreThisFromComment(literal.toString());
+                currentChangeset.setComment(comment);
                 break;
             case ADD_FILE:
             case ADD_DIRECTORY:
@@ -154,6 +155,33 @@ public class DarcsSaxHandler extends DefaultHandler {
         currentTag = null;
     }
 
+    /**
+     * Strips out strings like Ignore-this: 606c40ef0d257da9b7a916e7f1c594aa.
+     * 
+     * It is asumed that after the hash a single line break occures.
+	 *
+     * @param String comment
+     * @return boolean
+     */
+    public static String stripIgnoreThisFromComment(String comment) {
+        if (comment.startsWith("Ignore-this:")) {
+            int end = comment.indexOf("\n");
+            
+            if (-1 == end) {
+                return "";
+            }
+            
+            return comment.substring(end + 1);
+        }
+        
+        return comment;
+    }
+    
+	/**
+	 * 
+	 * @param char c
+	 * @return boolean
+	 */
     private boolean isWhiteSpace(char c) {
         switch (c) {
             case '\n':
