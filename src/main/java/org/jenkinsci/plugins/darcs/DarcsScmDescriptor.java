@@ -16,7 +16,6 @@ import hudson.Launcher;
 import hudson.Util;
 import hudson.model.Hudson;
 import hudson.model.TaskListener;
-import hudson.scm.RepositoryBrowsers;
 import hudson.scm.SCM;
 import hudson.scm.SCMDescriptor;
 import hudson.util.FormValidation;
@@ -24,7 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.servlet.ServletException;
 import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.darcs.browsers.DarcsRepositoryBrowser;
 import org.kohsuke.stapler.QueryParameter;
@@ -42,20 +40,42 @@ import org.kohsuke.stapler.framework.io.ByteBuffer;
 public class DarcsScmDescriptor extends SCMDescriptor<DarcsScm> {
 
     private static final Logger LOGGER = Logger.getLogger(DarcsScmDescriptor.class.getName());
+    private static final String DISPLAY_NAME = "Darcs";
+    private static final String DEFAULT_EXE = "darcs";
 
+    /**
+     * The executable.
+     *
+     * May be null.
+     */
     private String darcsExe;
 
+    /**
+     * Dedicated constructor.
+     */
     public DarcsScmDescriptor() {
         super(DarcsScm.class, DarcsRepositoryBrowser.class);
         load();
     }
 
+    /**
+     * Returns the display name.
+     *
+     * @return display name string
+     */
     public String getDisplayName() {
-        return "Darcs";
+        return DISPLAY_NAME;
     }
 
+    /**
+     * Returns the executable.
+     *
+     * @return if {@link #darcsExe} is {@code null} {@link #DEFAULT_EXE} will be returned
+     */
     public String getDarcsExe() {
-        return (null == darcsExe) ? "darcs" : darcsExe;
+        return null == darcsExe
+               ? DEFAULT_EXE
+               : darcsExe;
     }
 
     @Override
@@ -71,17 +91,21 @@ public class DarcsScmDescriptor extends SCMDescriptor<DarcsScm> {
         return true;
     }
 
-    public FormValidation doDarcsExeCheck(@QueryParameter final String value) throws IOException, ServletException {
+    /**
+     * Validated the given executable string if it is a valid Darcs executable.
+     *
+     * @param value string from the plugin configuration field
+     * @return validation object which indicates validation state
+     */
+    public FormValidation doDarcsExeCheck(@QueryParameter final String value) {
         return FormValidation.validateExecutable(value, new FormValidation.FileValidator() {
             @Override
             public FormValidation validate(final File exe) {
                 try {
-                    ByteBuffer baos = new ByteBuffer();
-                    Launcher launcher = Hudson.getInstance()
-                            .createLauncher(TaskListener.NULL);
-                    Launcher.ProcStarter proc = launcher.launch()
-                            .cmds(exe, "--version")
-                            .stdout(baos);
+                    final Launcher launcher = Hudson.getInstance().createLauncher(TaskListener.NULL);
+                    final Launcher.ProcStarter proc = launcher.launch()
+                                                              .cmds(exe, "--version")
+                                                              .stdout(new ByteBuffer());
 
                     if (proc.join() == 0) {
                         return FormValidation.ok();
