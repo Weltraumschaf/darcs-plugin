@@ -238,7 +238,6 @@ public class DarcsScm extends SCM implements Serializable {
      */
     protected DarcsRevisionState getRevisionState(final Launcher launcher, final TaskListener listener, final String repo) throws InterruptedException {
         DarcsRevisionState rev = null;
-        final DarcsXmlSanitizer sani = new DarcsXmlSanitizer();
         final DarcsCmd cmd;
 
         if (null == launcher) {
@@ -254,7 +253,7 @@ public class DarcsScm extends SCM implements Serializable {
             byte[] changes = cmd.allChanges(repo).toByteArray();
             XMLReader xr = XMLReaderFactory.createXMLReader();
             DarcsSaxHandler handler = new DarcsSaxHandler();
-            StringReader input = new StringReader(sani.cleanse(changes));
+            StringReader input = new StringReader(XML_SANITIZER.cleanse(changes));
 
             xr.setContentHandler(handler);
             xr.setErrorHandler(handler);
