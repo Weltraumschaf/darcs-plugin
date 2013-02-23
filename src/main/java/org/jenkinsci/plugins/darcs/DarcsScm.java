@@ -85,7 +85,7 @@ public class DarcsScm extends SCM implements Serializable {
     /**
      * Used repository browser.
      */
-    DarcsRepositoryBrowser browser;
+    private final DarcsRepositoryBrowser browser;
 
     /**
      * Convenience constructor.
