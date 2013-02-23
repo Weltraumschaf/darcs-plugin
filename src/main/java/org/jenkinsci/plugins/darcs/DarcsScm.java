@@ -423,12 +423,12 @@ public class DarcsScm extends SCM implements Serializable {
 
     @Override
     public ChangeLogParser createChangeLogParser() {
-        return new DarcsChangeLogParser();
+        return CHANGELOG_PARSER;
     }
 
     @Override
     public DarcsScmDescriptor getDescriptor() {
-        return new DarcsScmDescriptor();
+        return (DarcsScmDescriptor) super.getDescriptor();
     }
 
 }
