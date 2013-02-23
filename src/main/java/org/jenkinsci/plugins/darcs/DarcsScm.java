@@ -58,9 +58,18 @@ public class DarcsScm extends SCM implements Serializable {
     private static final long serialVersionUID = 2L;
     private static final Logger LOGGER = Logger.getLogger(DarcsScm.class.getName());
     /**
+     * Reused parser.
+     */
+    private static final DarcsChangeLogParser CHANGELOG_PARSER = new DarcsChangeLogParser();
+    /**
+     * Reused log sanitizer.
+     */
+    private static final DarcsXmlSanitizer XML_SANITIZER = new DarcsXmlSanitizer();
+    /**
      * Default local directory is current directory.
      */
     private static final String DEFAULT_LOCAL_DIR = ".";
+
     /**
      * Source repository URL from which we pull.
      */
