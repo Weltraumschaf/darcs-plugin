@@ -60,13 +60,7 @@ public class DarcsScmDescriptor extends SCMDescriptor<DarcsScm> {
 
     @Override
     public SCM newInstance(StaplerRequest req, JSONObject formData) throws FormException {
-        DarcsScm scm = req.bindJSON(DarcsScm.class, formData);
-        scm.browser = RepositoryBrowsers.createInstance(DarcsRepositoryBrowser.class,
-                req,
-                formData,
-                "browser");
-
-        return scm;
+        return super.newInstance(req, formData);
     }
 
     @Override
