@@ -66,11 +66,6 @@ public class DarcsScm extends SCM implements Serializable {
      */
     private static final DarcsXmlSanitizer XML_SANITIZER = new DarcsXmlSanitizer();
     /**
-     * Default local directory is current directory.
-     */
-    private static final String DEFAULT_LOCAL_DIR = ".";
-
-    /**
      * Source repository URL from which we pull.
      */
     private final String source;
@@ -95,7 +90,7 @@ public class DarcsScm extends SCM implements Serializable {
      * @param source repository URL from which we pull
      */
     public DarcsScm(final String source) {
-        this(source, DEFAULT_LOCAL_DIR, false, null);
+        this(source, "", false, null);
     }
 
     /**
@@ -159,7 +154,7 @@ public class DarcsScm extends SCM implements Serializable {
 
     @Override
     public DarcsRevisionState calcRevisionsFromBuild(final AbstractBuild<?, ?> build, final Launcher launcher, final TaskListener listener) throws IOException, InterruptedException {
-        final FilePath localPath = new FilePath(build.getWorkspace(), localDir);
+        final FilePath localPath = createLocalPath(build.getWorkspace());
         final DarcsRevisionState local = getRevisionState(launcher, listener, localPath.getRemote());
         listener.getLogger()
                 .println("[poll] Calculate revison from build " + local);
@@ -237,7 +232,6 @@ public class DarcsScm extends SCM implements Serializable {
      * @throws InterruptedException
      */
     protected DarcsRevisionState getRevisionState(final Launcher launcher, final TaskListener listener, final String repo) throws InterruptedException {
-        DarcsRevisionState rev = null;
         final DarcsCmd cmd;
 
         if (null == launcher) {
@@ -248,6 +242,8 @@ public class DarcsScm extends SCM implements Serializable {
         } else {
             cmd = new DarcsCmd(launcher, EnvVars.masterEnvVars, getDescriptor().getDarcsExe());
         }
+
+        DarcsRevisionState rev = null;
 
         try {
             byte[] changes = cmd.allChanges(repo).toByteArray();
@@ -289,8 +285,8 @@ public class DarcsScm extends SCM implements Serializable {
                 getDescriptor().getDarcsExe());
 
         try {
-            FileOutputStream fos = new FileOutputStream(changeLog);
-            FilePath localPath = new FilePath(workspace, localDir);
+            final FileOutputStream fos = new FileOutputStream(changeLog);
+            final FilePath localPath = createLocalPath(workspace);
             ByteArrayOutputStream changes = cmd.lastSummarizedChanges(localPath.getRemote(), numPatches);
 
             changes.writeTo(fos);
@@ -304,13 +300,12 @@ public class DarcsScm extends SCM implements Serializable {
 
     @Override
     public boolean checkout(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener, final File changelogFile) throws IOException, InterruptedException {
-        final FilePath localPath = new FilePath(workspace, localDir); // FIXME NPE
+        final FilePath localPath = createLocalPath(workspace);
         final boolean existsRepoinWorkspace = localPath.act(new FileCallable<Boolean>() {
             private static final long serialVersionUID = 1L;
 
             public Boolean invoke(File ws, VirtualChannel channel) throws IOException {
-                File file = new File(ws, "_darcs");
-
+                final File file = new File(ws, "_darcs");
                 return file.exists();
             }
         });
@@ -339,7 +334,7 @@ public class DarcsScm extends SCM implements Serializable {
                     build.getEnvironment(listener),
                     getDescriptor().getDarcsExe());
 
-            final FilePath localPath = new FilePath(workspace, localDir);
+            final FilePath localPath = createLocalPath(workspace);
             return cmd.countChanges(localPath.getRemote());
         } catch (Exception e) {
             listener.error("Failed to count patches in workspace repo:%n", e.toString());
@@ -368,7 +363,7 @@ public class DarcsScm extends SCM implements Serializable {
             final DarcsCmd cmd = new DarcsCmd(launcher,
                     build.getEnvironment(listener),
                     getDescriptor().getDarcsExe());
-            final FilePath localPath = new FilePath(workspace, localDir);
+            final FilePath localPath = createLocalPath(workspace);
             cmd.pull(localPath.getRemote(), source);
         } catch (Exception e) {
             listener.error("Failed to pull: " + e.toString());
@@ -398,7 +393,7 @@ public class DarcsScm extends SCM implements Serializable {
         LOGGER.log(Level.INFO, "Getting repo from: {0}", source);
 
         try {
-            FilePath localPath = new FilePath(workspace, localDir);
+            FilePath localPath = createLocalPath(workspace);
             localPath.deleteRecursive();
         } catch (IOException e) {
             e.printStackTrace(listener.error("Failed to clean the workspace"));
@@ -406,10 +401,8 @@ public class DarcsScm extends SCM implements Serializable {
         }
 
         try {
-            DarcsCmd cmd = new DarcsCmd(launcher,
-                    build.getEnvironment(listener),
-                    getDescriptor().getDarcsExe());
-            FilePath localPath = new FilePath(workspace, localDir);
+            final DarcsCmd cmd = new DarcsCmd(launcher, build.getEnvironment(listener), getDescriptor().getDarcsExe());
+            final FilePath localPath = createLocalPath(workspace);
             cmd.get(localPath.getRemote(), source);
         } catch (Exception e) {
             e.printStackTrace(listener.error("Failed to get repo from " + source));
@@ -428,6 +421,14 @@ public class DarcsScm extends SCM implements Serializable {
     @Override
     public DarcsScmDescriptor getDescriptor() {
         return (DarcsScmDescriptor) super.getDescriptor();
+    }
+
+    private FilePath createLocalPath(final FilePath base) {
+        if (null != localDir && !localDir.isEmpty()) {
+            return new FilePath(base, localDir);
+        }
+
+        return base;
     }
 
 }
