@@ -12,14 +12,10 @@ package org.jenkinsci.plugins.darcs;
 import org.jenkinsci.plugins.darcs.browsers.DarcsRepositoryBrowser;
 
 import hudson.EnvVars;
-import hudson.Extension;
 import hudson.FilePath;
 import hudson.FilePath.FileCallable;
 import hudson.Launcher;
 import hudson.Launcher.LocalLauncher;
-import hudson.Launcher.ProcStarter;
-import hudson.Util;
-import hudson.model.Hudson;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
@@ -28,11 +24,8 @@ import hudson.remoting.VirtualChannel;
 import hudson.scm.ChangeLogParser;
 import hudson.scm.PollingResult;
 import hudson.scm.PollingResult.Change;
-import hudson.scm.RepositoryBrowsers;
 import hudson.scm.SCM;
 import hudson.scm.SCMRevisionState;
-import hudson.scm.SCMDescriptor;
-import hudson.util.FormValidation;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -44,14 +37,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.servlet.ServletException;
-
-import net.sf.json.JSONObject;
 
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.framework.io.ByteBuffer;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -431,81 +418,8 @@ public class DarcsScm extends SCM implements Serializable {
     }
 
     @Override
-    public DescriptorImpl getDescriptor() {
-        return DescriptorImpl.DESCRIPTOR;
+    public DarcsScmDescriptor getDescriptor() {
+        return new DarcsScmDescriptor();
     }
 
-    /**
-     * Inner class of the SCM descriptor.
-     *
-     * Contains the global configuration options as fields.
-     */
-    public static final class DescriptorImpl extends SCMDescriptor<DarcsScm> {
-
-        @Extension
-        public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
-        private String darcsExe;
-
-        private DescriptorImpl() {
-            super(DarcsScm.class, DarcsRepositoryBrowser.class);
-            load();
-        }
-
-        public String getDisplayName() {
-            return "Darcs";
-        }
-
-        public String getDarcsExe() {
-            return (null == darcsExe) ? "darcs" : darcsExe;
-        }
-
-        @Override
-        public SCM newInstance(StaplerRequest req, JSONObject formData) throws FormException {
-            DarcsScm scm = req.bindJSON(DarcsScm.class, formData);
-            scm.browser = RepositoryBrowsers.createInstance(DarcsRepositoryBrowser.class,
-                    req,
-                    formData,
-                    "browser");
-
-            return scm;
-        }
-
-        @Override
-        public boolean configure(final StaplerRequest req, final JSONObject formData) throws FormException {
-            darcsExe = Util.fixEmpty(req.getParameter("darcs.darcsExe").trim());
-            save();
-
-            return true;
-        }
-
-        public FormValidation doDarcsExeCheck(@QueryParameter final String value) throws IOException, ServletException {
-            return FormValidation.validateExecutable(value, new FormValidation.FileValidator() {
-                @Override
-                public FormValidation validate(final File exe) {
-                    try {
-                        ByteBuffer baos = new ByteBuffer();
-                        Launcher launcher = Hudson.getInstance()
-                                .createLauncher(TaskListener.NULL);
-                        ProcStarter proc = launcher.launch()
-                                .cmds(exe, "--version")
-                                .stdout(baos);
-
-                        if (proc.join() == 0) {
-                            return FormValidation.ok();
-                        } else {
-                            return FormValidation.warning("Could not locate the executable in path");
-                        }
-                    } catch (IOException e) {
-                        // failed
-                        LOGGER.log(Level.WARNING, e.toString());
-                    } catch (InterruptedException e) {
-                        // failed
-                        LOGGER.log(Level.WARNING, e.toString());
-                    }
-
-                    return FormValidation.error("Unable to check darcs version");
-                }
-            });
-        }
-    }
 }
