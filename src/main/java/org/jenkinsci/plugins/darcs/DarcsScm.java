@@ -7,7 +7,6 @@
  * this stuff. If we meet some day, and you think this stuff is worth it,
  * you can buy me a beer in return.
  */
-
 package org.jenkinsci.plugins.darcs;
 
 import org.jenkinsci.plugins.darcs.browsers.DarcsRepositoryBrowser;
@@ -69,42 +68,80 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 public class DarcsScm extends SCM implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
     private static final Logger LOGGER = Logger.getLogger(DarcsScm.class.getName());
+    /**
+     * Default local directory is current directory.
+     */
+    private static final String DEFAULT_LOCAL_DIR = ".";
     /**
      * Source repository URL from which we pull.
      */
     private final String source;
     /**
-     * Local directory with repo
+     * Local directory with repository.
      */
     private final String localDir;
     /**
-     * Whether to wipe the checked out repo.
+     * Whether to wipe the checked out repository.
      */
     private final boolean clean;
+    /**
+     * Used repository browser.
+     */
     DarcsRepositoryBrowser browser;
 
-    public DarcsScm(String source) {
-        this(source, ".", false, null);
+    /**
+     * Convenience constructor.
+     *
+     * Sets local directory to {@link #DEFAULT_LOCAL_DIR}, clean to {@code false} and browser to {@code null}.
+     *
+     * @param source repository URL from which we pull
+     */
+    public DarcsScm(final String source) {
+        this(source, DEFAULT_LOCAL_DIR, false, null);
     }
 
+    /**
+     * Dedicated constructor.
+     *
+     * @param source repository URL from which we pull
+     * @param localDir Local directory in the workspace
+     * @param clean {@code true} cleans the workspace, {@code false} not
+     * @param browser the browser used to browse the repository
+     */
     @DataBoundConstructor
-    public DarcsScm(String source, String localDir, boolean clean, DarcsRepositoryBrowser browser) {
-        this.source   = source;
-        this.localDir  = localDir;
-        this.clean    = clean;
-        this.browser  = browser;
+    public DarcsScm(final String source, final String localDir, final boolean clean, final DarcsRepositoryBrowser browser) {
+        super();
+        this.source = source;
+        this.clean = clean;
+        this.browser = browser;
+        this.localDir = localDir;
     }
 
+    /**
+     * Get the repositories source URL.
+     *
+     * @return URL as string
+     */
     public String getSource() {
         return source;
     }
 
+    /**
+     * Get the local directory in the workspace.
+     *
+     * @return relative path as string
+     */
     public String getLocalDir() {
-		return localDir;
-	}
+        return localDir;
+    }
 
+    /**
+     * Whether to clean the workspace or not.
+     *
+     * @return {@code true} if clean is performed, {@code false} else
+     */
     public boolean isClean() {
         return clean;
     }
@@ -125,11 +162,9 @@ public class DarcsScm extends SCM implements Serializable {
     }
 
     @Override
-    public DarcsRevisionState calcRevisionsFromBuild(AbstractBuild<?, ?> build, Launcher launcher, TaskListener listener) throws IOException, InterruptedException {
-        FilePath localPath = new FilePath(build.getWorkspace(), localDir);
-        DarcsRevisionState local = getRevisionState(launcher,
-                                                    listener,
-                                                    localPath.getRemote());
+    public DarcsRevisionState calcRevisionsFromBuild(final AbstractBuild<?, ?> build, final Launcher launcher, final TaskListener listener) throws IOException, InterruptedException {
+        final FilePath localPath = new FilePath(build.getWorkspace(), localDir);
+        final DarcsRevisionState local = getRevisionState(launcher, listener, localPath.getRemote());
         listener.getLogger()
                 .println("[poll] Calculate revison from build " + local);
 
@@ -137,14 +172,14 @@ public class DarcsScm extends SCM implements Serializable {
     }
 
     @Override
-    protected PollingResult compareRemoteRevisionWith(AbstractProject<?,?> project, Launcher launcher, FilePath workspace, TaskListener listener, SCMRevisionState baseline) throws IOException, InterruptedException {
+    protected PollingResult compareRemoteRevisionWith(final AbstractProject<?, ?> project, final Launcher launcher, final FilePath workspace, final TaskListener listener, final SCMRevisionState baseline) throws IOException, InterruptedException {
         final PrintStream logger = listener.getLogger();
         final DarcsRevisionState localRevisionState;
 
         if (baseline instanceof DarcsRevisionState) {
-            localRevisionState = (DarcsRevisionState)baseline;
+            localRevisionState = (DarcsRevisionState) baseline;
         } else if (project.getLastBuild() != null) {
-            localRevisionState = (DarcsRevisionState)calcRevisionsFromBuild(project.getLastBuild(), launcher, listener);
+            localRevisionState = calcRevisionsFromBuild(project.getLastBuild(), launcher, listener);
         } else {
             localRevisionState = new DarcsRevisionState();
         }
@@ -161,8 +196,8 @@ public class DarcsScm extends SCM implements Serializable {
         final Change change;
         final DarcsRevisionState remoteRevisionState = getRevisionState(launcher, listener, source);
 
-        logger.printf("[poll] Current remote revision is %s. Local revision is %s.\n",
-                        remoteRevisionState, localRevisionState);
+        logger.printf("[poll] Current remote revision is %s. Local revision is %s.%n",
+                remoteRevisionState, localRevisionState);
 
         if (SCMRevisionState.NONE == localRevisionState) {
             logger.println("[poll] Does not have a local revision state.");
@@ -175,15 +210,17 @@ public class DarcsScm extends SCM implements Serializable {
         } else if (!remoteRevisionState.equals(localRevisionState)) {
             logger.println("[poll] Local revision state differs from remote.");
 
-            if (remoteRevisionState.getChanges().size() < ((DarcsRevisionState)localRevisionState).getChanges().size()) {
-                logger.printf("[poll] Remote repo has less patches than local: remote(%s) vs. local(%s). Will wipe workspace %s...\n",
-                              remoteRevisionState.getChanges().size(),
-                              ((DarcsRevisionState)localRevisionState).getChanges().size(),
-                              project.getLastBuild().getWorkspace().getRemote());
+            if (remoteRevisionState.getChanges().size() < ((DarcsRevisionState) localRevisionState).getChanges().size()) {
+                final FilePath ws = project.getLastBuild().getWorkspace();
 
-                project.getLastBuild()
-                       .getWorkspace()
-                       .deleteRecursive();
+                logger.printf("[poll] Remote repo has less patches than local: remote(%s) vs. local(%s). Will wipe workspace %s...%n",
+                        remoteRevisionState.getChanges().size(),
+                        ((DarcsRevisionState) localRevisionState).getChanges().size(),
+                        (null != ws) ? ws.getRemote() : "null");
+
+                if (null != ws) {
+                    ws.deleteRecursive();
+                }
             }
 
             change = Change.SIGNIFICANT;
@@ -203,25 +240,25 @@ public class DarcsScm extends SCM implements Serializable {
      * @return
      * @throws InterruptedException
      */
-    protected DarcsRevisionState getRevisionState(Launcher launcher, TaskListener listener, String repo) throws InterruptedException {
+    protected DarcsRevisionState getRevisionState(final Launcher launcher, final TaskListener listener, final String repo) throws InterruptedException {
         DarcsRevisionState rev = null;
-        DarcsXmlSanitizer sani = new DarcsXmlSanitizer();
+        final DarcsXmlSanitizer sani = new DarcsXmlSanitizer();
+        final DarcsCmd cmd;
 
         if (null == launcher) {
             /* Create a launcher on master
              * todo better grab a launcher on 'any slave'
              */
-            launcher = new LocalLauncher(listener);
+            cmd = new DarcsCmd(new LocalLauncher(listener), EnvVars.masterEnvVars, getDescriptor().getDarcsExe());
+        } else {
+            cmd = new DarcsCmd(launcher, EnvVars.masterEnvVars, getDescriptor().getDarcsExe());
         }
 
-        DarcsCmd cmd = new DarcsCmd(launcher, EnvVars.masterEnvVars,
-                                    getDescriptor().getDarcsExe());
-
         try {
-            byte[]          changes = cmd.allChanges(repo).toByteArray();
-            XMLReader       xr      = XMLReaderFactory.createXMLReader();
+            byte[] changes = cmd.allChanges(repo).toByteArray();
+            XMLReader xr = XMLReaderFactory.createXMLReader();
             DarcsSaxHandler handler = new DarcsSaxHandler();
-            StringReader    input   = new StringReader(sani.cleanse(changes));
+            StringReader input = new StringReader(sani.cleanse(changes));
 
             xr.setContentHandler(handler);
             xr.setErrorHandler(handler);
@@ -246,18 +283,18 @@ public class DarcsScm extends SCM implements Serializable {
      * @param changeLog
      * @throws InterruptedException
      */
-    private void createChangeLog(Launcher launcher, int numPatches, FilePath workspace, File changeLog, BuildListener listener) throws InterruptedException {
+    private void createChangeLog(final Launcher launcher, final int numPatches, final FilePath workspace, final File changeLog, final BuildListener listener) throws InterruptedException {
         if (0 == numPatches) {
             LOGGER.info("Creating empty changelog.");
             createEmptyChangeLog(changeLog, listener, "changelog");
             return;
         }
 
-        DarcsCmd cmd = new DarcsCmd(launcher, EnvVars.masterEnvVars,
-                                    getDescriptor().getDarcsExe());
+        final DarcsCmd cmd = new DarcsCmd(launcher, EnvVars.masterEnvVars,
+                getDescriptor().getDarcsExe());
 
         try {
-            FileOutputStream fos          = new FileOutputStream(changeLog);
+            FileOutputStream fos = new FileOutputStream(changeLog);
             FilePath localPath = new FilePath(workspace, localDir);
             ByteArrayOutputStream changes = cmd.lastSummarizedChanges(localPath.getRemote(), numPatches);
 
@@ -271,10 +308,9 @@ public class DarcsScm extends SCM implements Serializable {
     }
 
     @Override
-    public boolean checkout(AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, BuildListener listener, File changelogFile) throws IOException, InterruptedException {
-        FilePath localPath = new FilePath(workspace, localDir); // FIXME NPE
-        boolean existsRepoinWorkspace = localPath.act(new FileCallable<Boolean>() {
-
+    public boolean checkout(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener, final File changelogFile) throws IOException, InterruptedException {
+        final FilePath localPath = new FilePath(workspace, localDir); // FIXME NPE
+        final boolean existsRepoinWorkspace = localPath.act(new FileCallable<Boolean>() {
             private static final long serialVersionUID = 1L;
 
             public Boolean invoke(File ws, VirtualChannel channel) throws IOException {
@@ -292,32 +328,32 @@ public class DarcsScm extends SCM implements Serializable {
     }
 
     /**
-     * Counts the patches in a repo.
+     * Counts the patches in a repository.
      *
      * @param build
      * @param launcher
      * @param workspace
      * @param listener
-     * @return int
+     * @return
      * @throws InterruptedException
      * @throws IOException
      */
-    private int countPatches(AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, BuildListener listener) {
+    private int countPatches(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener) {
         try {
             DarcsCmd cmd = new DarcsCmd(launcher,
-                                        build.getEnvironment(listener),
-                                        getDescriptor().getDarcsExe());
+                    build.getEnvironment(listener),
+                    getDescriptor().getDarcsExe());
 
-            FilePath localPath = new FilePath(workspace, localDir);
+            final FilePath localPath = new FilePath(workspace, localDir);
             return cmd.countChanges(localPath.getRemote());
         } catch (Exception e) {
-            listener.error("Failed to count patches in workspace repo:\n", e.toString());
+            listener.error("Failed to count patches in workspace repo:%n", e.toString());
             return 0;
         }
     }
 
     /**
-     * Pulls all patches from a remote repo in the workspace repo.
+     * Pulls all patches from a remote repository in the workspace repository.
      *
      * @param build
      * @param launcher
@@ -328,17 +364,16 @@ public class DarcsScm extends SCM implements Serializable {
      * @throws InterruptedException
      * @throws IOException
      */
-    private boolean pullRepo(AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, BuildListener listener, File changelogFile) throws InterruptedException, IOException {
+    private boolean pullRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener, final File changelogFile) throws InterruptedException, IOException {
         LOGGER.log(Level.INFO, "Pulling repo from: {0}", source);
-        int preCnt = 0, postCnt = 0;
-        preCnt = countPatches(build, launcher, workspace, listener);
+        final int preCnt = countPatches(build, launcher, workspace, listener);
         LOGGER.log(Level.INFO, "Count of patches pre pulling is {0}", preCnt);
 
         try {
-            DarcsCmd cmd = new DarcsCmd(launcher,
-                                        build.getEnvironment(listener),
-                                        getDescriptor().getDarcsExe());
-            FilePath localPath = new FilePath(workspace, localDir);
+            final DarcsCmd cmd = new DarcsCmd(launcher,
+                    build.getEnvironment(listener),
+                    getDescriptor().getDarcsExe());
+            final FilePath localPath = new FilePath(workspace, localDir);
             cmd.pull(localPath.getRemote(), source);
         } catch (Exception e) {
             listener.error("Failed to pull: " + e.toString());
@@ -346,7 +381,7 @@ public class DarcsScm extends SCM implements Serializable {
             return false;
         }
 
-        postCnt = countPatches(build, launcher, workspace, listener);
+        final int postCnt = countPatches(build, launcher, workspace, listener);
         LOGGER.log(Level.INFO, "Count of patches post pulling is {0}", preCnt);
         createChangeLog(launcher, postCnt - preCnt, workspace, changelogFile, listener);
 
@@ -354,7 +389,7 @@ public class DarcsScm extends SCM implements Serializable {
     }
 
     /**
-     * Gets a fresh copy of a remote repo.
+     * Gets a fresh copy of a remote repository.
      *
      * @param build
      * @param launcher
@@ -364,7 +399,7 @@ public class DarcsScm extends SCM implements Serializable {
      * @return boolean
      * @throws InterruptedException
      */
-    private boolean getRepo(AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, BuildListener listener, File changeLog) throws InterruptedException {
+    private boolean getRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener, final File changeLog) throws InterruptedException {
         LOGGER.log(Level.INFO, "Getting repo from: {0}", source);
 
         try {
@@ -377,8 +412,8 @@ public class DarcsScm extends SCM implements Serializable {
 
         try {
             DarcsCmd cmd = new DarcsCmd(launcher,
-                                        build.getEnvironment(listener),
-                                        getDescriptor().getDarcsExe());
+                    build.getEnvironment(listener),
+                    getDescriptor().getDarcsExe());
             FilePath localPath = new FilePath(workspace, localDir);
             cmd.get(localPath.getRemote(), source);
         } catch (Exception e) {
@@ -427,16 +462,16 @@ public class DarcsScm extends SCM implements Serializable {
         @Override
         public SCM newInstance(StaplerRequest req, JSONObject formData) throws FormException {
             DarcsScm scm = req.bindJSON(DarcsScm.class, formData);
-            scm.browser  = RepositoryBrowsers.createInstance(DarcsRepositoryBrowser.class,
-                                                             req,
-                                                             formData,
-                                                             "browser");
+            scm.browser = RepositoryBrowsers.createInstance(DarcsRepositoryBrowser.class,
+                    req,
+                    formData,
+                    "browser");
 
             return scm;
         }
 
         @Override
-        public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
+        public boolean configure(final StaplerRequest req, final JSONObject formData) throws FormException {
             darcsExe = Util.fixEmpty(req.getParameter("darcs.darcsExe").trim());
             save();
 
@@ -445,16 +480,15 @@ public class DarcsScm extends SCM implements Serializable {
 
         public FormValidation doDarcsExeCheck(@QueryParameter final String value) throws IOException, ServletException {
             return FormValidation.validateExecutable(value, new FormValidation.FileValidator() {
-
                 @Override
-                public FormValidation validate(File exe) {
+                public FormValidation validate(final File exe) {
                     try {
-                        ByteBuffer  baos     = new ByteBuffer();
-                        Launcher    launcher = Hudson.getInstance()
-                                                     .createLauncher(TaskListener.NULL);
-                        ProcStarter proc     = launcher.launch()
-                                                       .cmds(exe, "--version")
-                                                       .stdout(baos);
+                        ByteBuffer baos = new ByteBuffer();
+                        Launcher launcher = Hudson.getInstance()
+                                .createLauncher(TaskListener.NULL);
+                        ProcStarter proc = launcher.launch()
+                                .cmds(exe, "--version")
+                                .stdout(baos);
 
                         if (proc.join() == 0) {
                             return FormValidation.ok();
