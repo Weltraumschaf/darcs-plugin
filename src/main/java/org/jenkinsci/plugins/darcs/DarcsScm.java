@@ -124,15 +124,6 @@ public class DarcsScm extends SCM implements Serializable {
         return false;
     }
 
-    /**
-     *
-     * @param build
-     * @param launcher
-     * @param listener
-     * @return
-     * @throws IOException
-     * @throws InterruptedException
-     */
     @Override
     public DarcsRevisionState calcRevisionsFromBuild(AbstractBuild<?, ?> build, Launcher launcher, TaskListener listener) throws IOException, InterruptedException {
         FilePath localPath = new FilePath(build.getWorkspace(), localDir);
@@ -147,9 +138,9 @@ public class DarcsScm extends SCM implements Serializable {
 
     @Override
     protected PollingResult compareRemoteRevisionWith(AbstractProject<?,?> project, Launcher launcher, FilePath workspace, TaskListener listener, SCMRevisionState baseline) throws IOException, InterruptedException {
-        final PrintStream logger = listener.getLogger();        
+        final PrintStream logger = listener.getLogger();
         final DarcsRevisionState localRevisionState;
-        
+
         if (baseline instanceof DarcsRevisionState) {
             localRevisionState = (DarcsRevisionState)baseline;
         } else if (project.getLastBuild() != null) {
@@ -157,22 +148,22 @@ public class DarcsScm extends SCM implements Serializable {
         } else {
             localRevisionState = new DarcsRevisionState();
         }
-        
+
         if (null != project.getLastBuild()) {
             logger.println("[poll] Last Build : #" + project.getLastBuild().getNumber());
         } else {
             // If we've never been built before, well, gotta build!
             logger.println("[poll] No previous build, so forcing an initial build.");
-			
+
             return PollingResult.BUILD_NOW;
         }
-		
+
         final Change change;
         final DarcsRevisionState remoteRevisionState = getRevisionState(launcher, listener, source);
 
-        logger.printf("[poll] Current remote revision is %s. Local revision is %s.\n", 
+        logger.printf("[poll] Current remote revision is %s. Local revision is %s.\n",
                         remoteRevisionState, localRevisionState);
-        
+
         if (SCMRevisionState.NONE == localRevisionState) {
             logger.println("[poll] Does not have a local revision state.");
             change = Change.SIGNIFICANT;
@@ -183,18 +174,18 @@ public class DarcsScm extends SCM implements Serializable {
             change = Change.SIGNIFICANT;
         } else if (!remoteRevisionState.equals(localRevisionState)) {
             logger.println("[poll] Local revision state differs from remote.");
-            
+
             if (remoteRevisionState.getChanges().size() < ((DarcsRevisionState)localRevisionState).getChanges().size()) {
                 logger.printf("[poll] Remote repo has less patches than local: remote(%s) vs. local(%s). Will wipe workspace %s...\n",
                               remoteRevisionState.getChanges().size(),
                               ((DarcsRevisionState)localRevisionState).getChanges().size(),
                               project.getLastBuild().getWorkspace().getRemote());
-                
+
                 project.getLastBuild()
                        .getWorkspace()
                        .deleteRecursive();
             }
-            
+
             change = Change.SIGNIFICANT;
         } else {
             change = Change.NONE;
@@ -247,7 +238,7 @@ public class DarcsScm extends SCM implements Serializable {
     }
 
     /**
-     * Writes the changelog of the last numPatches to the changeLog file.
+     * Writes the change log of the last numPatches to the changeLog file.
      *
      * @param launcher
      * @param numPatches
@@ -281,14 +272,14 @@ public class DarcsScm extends SCM implements Serializable {
 
     @Override
     public boolean checkout(AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, BuildListener listener, File changelogFile) throws IOException, InterruptedException {
-        FilePath localPath = new FilePath(workspace, localDir);
+        FilePath localPath = new FilePath(workspace, localDir); // FIXME NPE
         boolean existsRepoinWorkspace = localPath.act(new FileCallable<Boolean>() {
 
             private static final long serialVersionUID = 1L;
 
             public Boolean invoke(File ws, VirtualChannel channel) throws IOException {
                 File file = new File(ws, "_darcs");
-                
+
                 return file.exists();
             }
         });
