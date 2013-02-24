@@ -51,3 +51,11 @@ Changelog
 -----
 - Add config option for local path.
 - Set core dependnecy to LTS 1.480.
+
+0.3.7
+-----
+
+- Bug fixing (NPE and init checkout problms with new local path feature).
+- Refactoring and code cleaning.
+- Increase test coverage
+- Increase Javadoc.
