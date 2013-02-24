@@ -10,22 +10,19 @@
 package org.jenkinsci.plugins.darcs;
 
 import hudson.scm.EditType;
-import junit.framework.TestCase;
 import org.junit.Ignore;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
-public class DarcsChangeSetTest extends TestCase {
+public class DarcsChangeSetTest {
 
-    public DarcsChangeSetTest(String testName) {
-        super(testName);
-    }
-
-    public static DarcsChangeSet createSut() {
+    private static DarcsChangeSet createSut() {
         DarcsChangeSet sut = new DarcsChangeSet();
 
         sut.getAddedPaths().add("/foo/1");
@@ -41,6 +38,7 @@ public class DarcsChangeSetTest extends TestCase {
         return sut;
     }
 
+    @Test
     @Ignore("not ready yet")
     public void testGetAffectedPaths() {
         DarcsChangeSet sut = createSut();
@@ -58,6 +56,7 @@ public class DarcsChangeSetTest extends TestCase {
         assertEquals("/baz/3", p.get(8));
     }
 
+    @Test
     @Ignore("not ready yet")
     public void testGetPaths() {
         DarcsChangeSet sut = createSut();

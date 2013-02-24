@@ -12,28 +12,21 @@ package org.jenkinsci.plugins.darcs.browsers;
 
 import org.jenkinsci.plugins.darcs.DarcsChangeSet;
 
-import junit.framework.TestCase;
 import org.junit.Ignore;
 
 import java.io.IOException;
 import java.net.URL;
 import java.net.MalformedURLException;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
  * @author sxs
  */
-public class DarcsdenTest extends TestCase {
+public class DarcsdenTest {
 
-    public DarcsdenTest(String testName) {
-        super(testName);
-    }
-
-    @Ignore("not ready yet")
-    public void testImplementSome() {
-
-    }
-
+    @Test
     public void testGetChangeSetLink() {
         try {
             String         hash = "20110214201356-7677a-15b1d7313611ef85de46d8daf57123a365d5b800.gz";
@@ -52,6 +45,7 @@ public class DarcsdenTest extends TestCase {
         }
     }
 
+    @Test
     @Ignore("not ready yet")
     public void testGetFileDiffLink() {
     }

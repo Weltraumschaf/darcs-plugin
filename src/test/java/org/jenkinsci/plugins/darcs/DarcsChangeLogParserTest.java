@@ -9,24 +9,22 @@
  */
 package org.jenkinsci.plugins.darcs;
 
-import junit.framework.TestCase;
+import static junit.framework.Assert.*;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.Test;
 
 /**
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
-public class DarcsChangeLogParserTest extends TestCase {
+public class DarcsChangeLogParserTest {
 
-    public DarcsChangeLogParserTest(String name) {
-        super(name);
-    }
-
+    @Test
     public void testParse() {
         DarcsChangeLogParser sut = new DarcsChangeLogParser();
         DarcsChangeSetList list  = null;
@@ -64,7 +62,7 @@ public class DarcsChangeLogParserTest extends TestCase {
             }
         }, null, null);
         i++;
-        
+
         assertPatch(logs.get(i), false, new HashMap<String, String>() {
             {
                 put("plainAuthor", "ich@weltraumschaf.de");
@@ -81,7 +79,7 @@ public class DarcsChangeLogParserTest extends TestCase {
             }
         });
         i++;
-        
+
         assertPatch(logs.get(i), false, new HashMap<String, String>() {
             {
                 put("plainAuthor", "ich@weltraumschaf.de");
@@ -98,7 +96,7 @@ public class DarcsChangeLogParserTest extends TestCase {
             }
         });
         i++;
-        
+
         assertPatch(logs.get(i), false, new HashMap<String, String>() {
             {
                 put("plainAuthor", "ich@weltraumschaf.de");
@@ -115,7 +113,7 @@ public class DarcsChangeLogParserTest extends TestCase {
             }
         });
         i++;
-        
+
         assertPatch(logs.get(i), false, new HashMap<String, String>() {
             {
                 put("plainAuthor", "ich@weltraumschaf.de");
@@ -132,7 +130,7 @@ public class DarcsChangeLogParserTest extends TestCase {
             }
         });
         i++;
-        
+
         assertPatch(logs.get(i), false, new HashMap<String, String>() {
             {
                 put("plainAuthor", "ich@weltraumschaf.de");
@@ -149,7 +147,7 @@ public class DarcsChangeLogParserTest extends TestCase {
             }
         });
         i++;
-        
+
         assertPatch(logs.get(i), false, new HashMap<String, String>() {
             {
                 put("plainAuthor", "ich@weltraumschaf.de");
@@ -166,7 +164,7 @@ public class DarcsChangeLogParserTest extends TestCase {
             }
         });
         i++;
-        
+
         assertPatch(logs.get(i), false, new HashMap<String, String>() {
             {
                 put("plainAuthor", "ich@weltraumschaf.de");

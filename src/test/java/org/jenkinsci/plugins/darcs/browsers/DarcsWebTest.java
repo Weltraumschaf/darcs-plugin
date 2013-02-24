@@ -12,19 +12,20 @@ package org.jenkinsci.plugins.darcs.browsers;
 
 import org.jenkinsci.plugins.darcs.DarcsChangeSet;
 
-import junit.framework.TestCase;
 import org.junit.Ignore;
 
 import java.io.IOException;
 import java.net.URL;
 import java.net.MalformedURLException;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
-public class DarcsWebTest extends TestCase {
-    
+public class DarcsWebTest {
+
     private static final String URL  = "http://www.foobar.com/";
     private static final String REPO = "arepo";
 
@@ -42,10 +43,7 @@ public class DarcsWebTest extends TestCase {
         }
     }
 
-    public DarcsWebTest(String testName) {
-        super(testName);
-    }
-
+    @Test
     public void testCreateDefaultQuery() {
         try {
             ExposingDarcsWeb sut = new ExposingDarcsWeb();
@@ -57,6 +55,7 @@ public class DarcsWebTest extends TestCase {
         }
     }
 
+    @Test
     public void testCreateDefaultQueryWithAction() {
         try {
             ExposingDarcsWeb sut = new ExposingDarcsWeb();
@@ -68,6 +67,7 @@ public class DarcsWebTest extends TestCase {
         }
     }
 
+    @Test
     @Ignore("not ready yet")
     public void testGetChangeSetLink() {
         try {
@@ -86,6 +86,7 @@ public class DarcsWebTest extends TestCase {
         }
     }
 
+    @Test
     @Ignore("not ready yet")
     public void testGetFileDiffLink() {
         try {

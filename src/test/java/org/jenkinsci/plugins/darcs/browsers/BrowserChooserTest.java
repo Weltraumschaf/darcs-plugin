@@ -12,7 +12,6 @@ package org.jenkinsci.plugins.darcs.browsers;
 
 import hudson.util.IOUtils;
 
-import junit.framework.TestCase;
 import org.junit.Ignore;
 
 import java.io.IOException;
@@ -23,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
+import org.junit.Test;
 
 import org.kohsuke.stapler.RequestImpl;
 import org.kohsuke.stapler.Stapler;
@@ -34,7 +34,7 @@ import org.mockito.Mockito;
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
-public class BrowserChooserTest extends TestCase {
+public class BrowserChooserTest {
 
     private final Stapler stapler = Mockito.mock(Stapler.class);
     private final HttpServletRequest servletRequest = Mockito.mock(HttpServletRequest.class);
@@ -44,6 +44,7 @@ public class BrowserChooserTest extends TestCase {
                                                                   Collections.EMPTY_LIST,
                                                                   null);
 
+    @Test
     @Ignore("not ready yet")
     public void testDarcsWeb() throws IOException {
         testExistingBrowser(DarcsWeb.class);

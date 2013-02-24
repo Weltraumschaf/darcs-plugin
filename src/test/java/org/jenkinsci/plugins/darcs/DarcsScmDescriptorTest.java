@@ -9,22 +9,16 @@
  */
 package org.jenkinsci.plugins.darcs;
 
-import hudson.model.TaskListener;
-
-//import junit.framework.Assert;
-import junit.framework.TestCase;
 import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
-public class DarcsScmDescriptorTest extends TestCase {
+public class DarcsScmDescriptorTest {
 
-    public DarcsScmDescriptorTest(String testName) {
-        super(testName);
-    }
-
+    @Test
     @Ignore("Incomplete!")
     public void testGetRevisionState() {
 //        DarcsScm sut = new DarcsScm("");

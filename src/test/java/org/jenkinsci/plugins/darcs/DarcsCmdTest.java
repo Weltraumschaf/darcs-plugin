@@ -10,28 +10,28 @@
 
 package org.jenkinsci.plugins.darcs;
 
-import junit.framework.TestCase;
 import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
-public class DarcsCmdTest extends TestCase {
-    public DarcsCmdTest(String testName) {
-        super(testName);
-    }
+public class DarcsCmdTest {
 
+    @Test
     @Ignore("not ready yet")
     public void testChanges() {
 
     }
 
+    @Test
     @Ignore("not ready yet")
     public void testPull() {
 
     }
 
+    @Test
     @Ignore("not ready yet")
     public void testGet() {
 

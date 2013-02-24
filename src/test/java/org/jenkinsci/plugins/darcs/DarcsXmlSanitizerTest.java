@@ -11,10 +11,6 @@
 package org.jenkinsci.plugins.darcs;
 
 import java.io.UnsupportedEncodingException;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -23,25 +19,6 @@ import static org.junit.Assert.*;
  * @author lange
  */
 public class DarcsXmlSanitizerTest {
-
-    public DarcsXmlSanitizerTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
 
     /**
      * Test of cleanse method, of class DarcsXmlSanitizer.

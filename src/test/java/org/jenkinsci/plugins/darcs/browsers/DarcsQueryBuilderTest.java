@@ -9,24 +9,23 @@
  */
 package org.jenkinsci.plugins.darcs.browsers;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
-public class DarcsQueryBuilderTest extends TestCase {
+public class DarcsQueryBuilderTest {
 
-    public DarcsQueryBuilderTest(String testName) {
-        super(testName);
-    }
-
+    @Test
     public void testEmptyQuery() {
         DarcsQueryBuilder sut = new DarcsQueryBuilder(DarcsQueryBuilder.SeparatorType.SLASHES);
         assertEquals("Test the seperator type", DarcsQueryBuilder.SeparatorType.SLASHES, sut.getType());
         assertEquals("Test empty query string.", "", sut.toString());
     }
 
+    @Test
     public void testAddToSlashedQuery() {
         DarcsQueryBuilder sut = new DarcsQueryBuilder(DarcsQueryBuilder.SeparatorType.SLASHES);
         assertEquals("Test the seperator type", DarcsQueryBuilder.SeparatorType.SLASHES, sut.getType());
@@ -34,6 +33,7 @@ public class DarcsQueryBuilderTest extends TestCase {
         assertEquals("Test a slashed query.", "/foo/bar/baz", sut.toString());
     }
 
+    @Test
     public void testAddToSemicolonedQuery() {
         DarcsQueryBuilder sut;
 
@@ -48,6 +48,7 @@ public class DarcsQueryBuilderTest extends TestCase {
         assertEquals("Test a semicoloned query.", "?foo=1;bar=2;baz=3", sut.toString());
     }
 
+    @Test
     public void testAddToAmpersandedQuery() {
         DarcsQueryBuilder sut;
 
