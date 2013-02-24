@@ -33,15 +33,12 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
+import org.xml.sax.SAXException;
 
 /**
  * Darcs is a patch based distributed version control system.
@@ -57,14 +54,7 @@ public class DarcsScm extends SCM implements Serializable {
 
     private static final long serialVersionUID = 2L;
     private static final Logger LOGGER = Logger.getLogger(DarcsScm.class.getName());
-    /**
-     * Reused parser.
-     */
-    private static final DarcsChangeLogParser CHANGELOG_PARSER = new DarcsChangeLogParser();
-    /**
-     * Reused log sanitizer.
-     */
-    private static final DarcsXmlSanitizer XML_SANITIZER = new DarcsXmlSanitizer();
+
     /**
      * Source repository URL from which we pull.
      */
@@ -81,6 +71,10 @@ public class DarcsScm extends SCM implements Serializable {
      * Used repository browser.
      */
     private final DarcsRepositoryBrowser browser;
+    /**
+     * Reused parser.
+     */
+    private final DarcsChangeLogParser changelogParser;
 
     /**
      * Convenience constructor.
@@ -89,7 +83,7 @@ public class DarcsScm extends SCM implements Serializable {
      *
      * @param source repository URL from which we pull
      */
-    public DarcsScm(final String source) {
+    public DarcsScm(final String source) throws SAXException {
         this(source, "", false, null);
     }
 
@@ -102,12 +96,13 @@ public class DarcsScm extends SCM implements Serializable {
      * @param browser the browser used to browse the repository
      */
     @DataBoundConstructor
-    public DarcsScm(final String source, final String localDir, final boolean clean, final DarcsRepositoryBrowser browser) {
+    public DarcsScm(final String source, final String localDir, final boolean clean, final DarcsRepositoryBrowser browser) throws SAXException {
         super();
         this.source = source;
         this.clean = clean;
         this.browser = browser;
         this.localDir = localDir;
+        this.changelogParser = new DarcsChangeLogParser();
     }
 
     /**
@@ -246,20 +241,11 @@ public class DarcsScm extends SCM implements Serializable {
         DarcsRevisionState rev = null;
 
         try {
-            byte[] changes = cmd.allChanges(repo).toByteArray();
-            XMLReader xr = XMLReaderFactory.createXMLReader();
-            DarcsSaxHandler handler = new DarcsSaxHandler();
-            StringReader input = new StringReader(XML_SANITIZER.cleanse(changes));
-
-            xr.setContentHandler(handler);
-            xr.setErrorHandler(handler);
-            xr.parse(new InputSource(input));
-
-            rev = new DarcsRevisionState(new DarcsChangeSetList(null, handler.getChangeSets()));
+            final ByteArrayOutputStream changes = cmd.allChanges(repo);
+            changelogParser.parse(changes);
+            rev = new DarcsRevisionState(changelogParser.parse(changes));
         } catch (Exception e) {
-            StringWriter w = new StringWriter();
-            e.printStackTrace(new PrintWriter(w));
-            LOGGER.log(Level.WARNING, "Failed to get revision state for repository: ", e);
+            LOGGER.warning(String.format("Failed to get revision state for repository: %s", e));
         }
 
         return rev;
@@ -415,7 +401,7 @@ public class DarcsScm extends SCM implements Serializable {
 
     @Override
     public ChangeLogParser createChangeLogParser() {
-        return CHANGELOG_PARSER;
+        return changelogParser;
     }
 
     @Override
