@@ -11,12 +11,16 @@ package org.jenkinsci.plugins.darcs;
 
 import static junit.framework.Assert.*;
 import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -25,23 +29,14 @@ import org.junit.Test;
 public class DarcsChangeLogParserTest {
 
     @Test
-    public void testParse() {
-        DarcsChangeLogParser sut = new DarcsChangeLogParser();
-        DarcsChangeSetList list  = null;
+    public void testParse() throws IOException, SAXException, URISyntaxException {
+        final DarcsChangeLogParser sut = new DarcsChangeLogParser();
+        final URL resource = getClass().getResource("/changes-summary.xml");
+        final DarcsChangeSetList list = sut.parse(null, new File(resource.toURI()));
 
-        try {
-            URL resource = getClass().getResource("/changes-summary.xml");
-            list = sut.parse(null, new File(resource.toURI()));
-        } catch (Exception e) {
-            fail(e.toString());
-        }
-
-        if (null == list) {
-            fail("list must not be null!");
-        }
-
+        assertNotNull(list);
         assertEquals(10, list.size());
-        List<DarcsChangeSet> logs = list.getChangeSets();
+        final List<DarcsChangeSet> logs = list.getChangeSets();
         assertEquals(10, logs.size());
         int i = 0;
         assertPatch(logs.get(i), false, new HashMap<String, String>() {
@@ -54,13 +49,7 @@ public class DarcsChangeLogParserTest {
                 put("comment", "");
             }
         });
-        assertSummary(logs.get(i), new ArrayList<String>() {
-            {
-                add("Bar.java");
-                add("Baz.java");
-                add("Foo.java");
-            }
-        }, null, null);
+        assertSummary(logs.get(i), Arrays.asList("Bar.java", "Baz.java", "Foo.java"), null, null);
         i++;
 
         assertPatch(logs.get(i), false, new HashMap<String, String>() {
@@ -73,11 +62,7 @@ public class DarcsChangeLogParserTest {
                 put("comment", "");
             }
         });
-        assertSummary(logs.get(i), null, null, new ArrayList() {
-            {
-                add("Bar.java");
-            }
-        });
+        assertSummary(logs.get(i), null, null, Arrays.asList("Bar.java"));
         i++;
 
         assertPatch(logs.get(i), false, new HashMap<String, String>() {
@@ -90,11 +75,7 @@ public class DarcsChangeLogParserTest {
                 put("comment", "");
             }
         });
-        assertSummary(logs.get(i), null, null, new ArrayList<String>() {
-            {
-                add("Baz.java");
-            }
-        });
+        assertSummary(logs.get(i), null, null, Arrays.asList("Baz.java"));
         i++;
 
         assertPatch(logs.get(i), false, new HashMap<String, String>() {
@@ -107,11 +88,7 @@ public class DarcsChangeLogParserTest {
                 put("comment", "");
             }
         });
-        assertSummary(logs.get(i), null, null, new ArrayList<String>() {
-            {
-                add("Foo.java");
-            }
-        });
+        assertSummary(logs.get(i), null, null, Arrays.asList("Foo.java"));
         i++;
 
         assertPatch(logs.get(i), false, new HashMap<String, String>() {
@@ -124,11 +101,7 @@ public class DarcsChangeLogParserTest {
                 put("comment", "");
             }
         });
-        assertSummary(logs.get(i), null, null, new ArrayList<String>() {
-            {
-                add("Bar.java");
-            }
-        });
+        assertSummary(logs.get(i), null, null, Arrays.asList("Bar.java"));
         i++;
 
         assertPatch(logs.get(i), false, new HashMap<String, String>() {
@@ -141,11 +114,7 @@ public class DarcsChangeLogParserTest {
                 put("comment", "");
             }
         });
-        assertSummary(logs.get(i), null, null, new ArrayList<String>() {
-            {
-                add("Baz.java");
-            }
-        });
+        assertSummary(logs.get(i), null, null, Arrays.asList("Baz.java"));
         i++;
 
         assertPatch(logs.get(i), false, new HashMap<String, String>() {
@@ -158,11 +127,7 @@ public class DarcsChangeLogParserTest {
                 put("comment", "");
             }
         });
-        assertSummary(logs.get(i), null, null, new ArrayList<String>() {
-            {
-                add("Foo.java");
-            }
-        });
+        assertSummary(logs.get(i), null, null, Arrays.asList("Foo.java"));
         i++;
 
         assertPatch(logs.get(i), false, new HashMap<String, String>() {
@@ -175,13 +140,7 @@ public class DarcsChangeLogParserTest {
                 put("comment", "");
             }
         });
-        assertSummary(logs.get(i), null, null, new ArrayList<String>() {
-            {
-                add("Bar.java");
-                add("Baz.java");
-                add("Foo.java");
-            }
-        });
+        assertSummary(logs.get(i), null, null, Arrays.asList("Bar.java", "Baz.java", "Foo.java"));
         i++;
 
         assertPatch(logs.get(i), false, new HashMap<String, String>() {
@@ -194,11 +153,7 @@ public class DarcsChangeLogParserTest {
                 put("comment", "");
             }
         });
-        assertSummary(logs.get(i), null, null, new ArrayList<String>() {
-            {
-                add("Foo.java");
-            }
-        });
+        assertSummary(logs.get(i), null, null, Arrays.asList("Foo.java"));
         i++;
 
         assertPatch(logs.get(i), false, new HashMap<String, String>() {
@@ -211,11 +166,7 @@ public class DarcsChangeLogParserTest {
                 put("comment", "");
             }
         });
-        assertSummary(logs.get(i), null, null, new ArrayList<String>() {
-            {
-                add("Foo.java");
-            }
-        });
+        assertSummary(logs.get(i), null, null, Arrays.asList("Foo.java"));
         i++;
 
     }
