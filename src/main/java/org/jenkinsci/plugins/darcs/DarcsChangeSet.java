@@ -7,7 +7,6 @@
  * this stuff. If we meet some day, and you think this stuff is worth it,
  * you can buy me a beer in return.
  */
-
 package org.jenkinsci.plugins.darcs;
 
 import hudson.model.User;
@@ -21,7 +20,7 @@ import java.util.List;
 import org.kohsuke.stapler.export.Exported;
 
 /**
- * Represents a change set (aka. a patch in darcs).
+ * Represents a change set (aka. a patch in Darcs).
  *
  * <p>
  * The object should be treated like an immutable object.
@@ -29,6 +28,7 @@ import org.kohsuke.stapler.export.Exported;
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsChangeSet extends ChangeLogSet.Entry {
+
     /**
      * The patch author.
      */
@@ -57,7 +57,6 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
      * The patch long comment.
      */
     private String comment;
-
     /**
      * Filles added by this patch.
      */
@@ -72,17 +71,11 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
     private List<String> modified = new ArrayList<String>();
 
     /**
-     * Filepaths affected by the patch.
-     * Lazily computed.
-     */
-    private volatile List<String> affectedPaths;
-
-    /**
      * Returns the author as User object.
      *
-     * If you want the parsed author string from darcs call getPlainAuthor().
+     * If you want the parsed author string from Darcs call getPlainAuthor().
      *
-     * @return
+     * @return a Jenkins user object
      */
     @Exported
     public User getAuthor() {
@@ -90,9 +83,9 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
     }
 
     /**
-     * Returns the plain author string used in the darcs repo.
+     * Returns the plain author string used in the Darcs repository.
      *
-     * @return
+     * @return author name
      */
     public String getPlainAuthor() {
         return author;
@@ -101,7 +94,7 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
     /**
      * Returns the patch comment.
      *
-     * @return
+     * @return comment message
      */
     @Exported
     public String getComment() {
@@ -111,8 +104,7 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
     /**
      * Returns the patch date as string.
      *
-     * @todo a date object would be better.
-     * @return
+     * @return date string in UTC
      */
     @Exported
     public String getDate() {
@@ -122,7 +114,7 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
     /**
      * Returns the unique hash string of the patch.
      *
-     * @return
+     * @return hash string
      */
     @Exported
     public String getHash() {
@@ -132,7 +124,7 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
     /**
      * Returns whether the patch is inverted or not.
      *
-     * @return
+     * @return {@code true} if it is an inverse patch, else {@code false}
      */
     @Exported
     public boolean isInverted() {
@@ -142,7 +134,7 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
     /**
      * Returns the localized date string.
      *
-     * @return
+     * @return local date string in UTC
      */
     @Exported
     public String getLocalDate() {
@@ -152,7 +144,7 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
     /**
      * Returns the patch name.
      *
-     * @return
+     * @return the patch name
      */
     @Exported
     public String getName() {
@@ -160,9 +152,11 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
     }
 
     /**
-     * Method for fullfill the interface. Delegates to getComment().
+     * Method for fulfill the interface.
      *
-     * @return
+     * Delegates to {@link #getComment()}.
+     *
+     * @return same as {@link #getComment()}
      */
     @Override
     public String getMsg() {
@@ -170,112 +164,102 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
     }
 
     /**
-     * Sets the author string from darcs.
+     * Sets the author string from Darcs.
      *
-     * Thus this object should be treated as imutable, this setter should only
-     * be called from the DarcsChangeLogParser.
+     * Thus this object should be treated as immutable, this setter should only be called from the DarcsChangeLogParser.
      *
-     * @param anAuthor
+     * @param anAuthor author name string
      */
-    public void setAuthor(String anAuthor) {
+    public void setAuthor(final String anAuthor) {
         author = anAuthor;
     }
 
     /**
      * Sets the comment string.
      *
-     * Thus this object should be treated as imutable, this setter should only
-     * be called from the DarcsChangeLogParser.
+     * Thus this object should be treated as immutable, this setter should only be called from the DarcsChangeLogParser.
      *
-     * @param aComment
+     * @param aComment patch comment message
      */
-    public void setComment(String aComment) {
+    public void setComment(final String aComment) {
         comment = aComment;
     }
 
     /**
      * Sets the date string.
      *
-     * Thus this object should be treated as imutable, this setter should only
-     * be called from the DarcsChangeLogParser.
+     * Thus this object should be treated as immutable, this setter should only be called from the DarcsChangeLogParser.
      *
-     * @param aDate
+     * @param aDate date in UTC
      */
-    public void setDate(String aDate) {
+    public void setDate(final String aDate) {
         date = aDate;
     }
 
     /**
      * Sets the hash string.
      *
-     * Thus this object should be treated as imutable, this setter should only
-     * be called from the DarcsChangeLogParser.
+     * Thus this object should be treated as immutable, this setter should only be called from the DarcsChangeLogParser.
      *
-     * @param aHash
+     * @param aHash hash string
      */
-    public void setHash(String aHash) {
+    public void setHash(final String aHash) {
         hash = aHash;
     }
 
     /**
      * Sets the inverted flag.
      *
-     * Thus this object should be treated as imutable, this setter should only
-     * be called from the DarcsChangeLogParser.
+     * Thus this object should be treated as immutable, this setter should only be called from the DarcsChangeLogParser.
      *
-     * @param isInverted
+     * @param isInverted {@code true} if it is an inverse patch, else {@code false}
      */
-    public void setInverted(boolean isInverted) {
+    public void setInverted(final boolean isInverted) {
         inverted = isInverted;
     }
 
     /**
      * Sets the localized date string.
      *
-     * Thus this object should be treated as imutable, this setter should only
-     * be called from the DarcsChangeLogParser.
+     * Thus this object should be treated as immutable, this setter should only be called from the DarcsChangeLogParser.
      *
-     * @param aLocalDate
+     * @param aLocalDate date in UTC
      */
-    public void setLocalDate(String aLocalDate) {
+    public void setLocalDate(final String aLocalDate) {
         localDate = aLocalDate;
     }
 
     /**
      * Sets the patch name.
      *
-     * Thus this object should be treated as imutable, this setter should only
-     * be called from the DarcsChangeLogParser.
+     * Thus this object should be treated as immutable, this setter should only be called from the DarcsChangeLogParser.
      *
-     * @param aName
+     * @param aName patch name
      */
-    public void setName(String aName) {
+    public void setName(final String aName) {
         name = aName;
     }
 
     /**
-     * Returns a list of all files affected by this patch.
+     * Returns a lazy computed list of all files affected by this patch.
      *
-     * @return
+     * @return the list is recalculated on each call
      */
     @Override
     public List<String> getAffectedPaths() {
-        if (null == affectedPaths) {
-            int size = added.size() + modified.size() + deleted.size();
-            List<String> r = new ArrayList<String>(size);
-            r.addAll(added);
-            r.addAll(deleted);
-            r.addAll(modified);
-            affectedPaths = r;
-        }
-
-        return affectedPaths;
+        return new ArrayList<String>() {
+            {
+                addAll(added);
+                addAll(deleted);
+                addAll(modified);
+            }
+        };
     }
 
     /**
      * Gets all the files that were added.
      *
-     * @return
+     * @return modifiable list
      */
     @Exported
     public List<String> getAddedPaths() {
@@ -285,7 +269,7 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
     /**
      * Gets all the files that were deleted.
      *
-     * @return
+     * @return modifiable list
      */
     @Exported
     public List<String> getDeletedPaths() {
@@ -295,7 +279,7 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
     /**
      * Gets all the files that were modified.
      *
-     * @return
+     * @return modifiable list
      */
     @Exported
     public List<String> getModifiedPaths() {
@@ -303,12 +287,12 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
     }
 
     /**
-     * Convenience methodfor getting affected paths by type.
+     * Convenience method for getting affected paths by type.
      *
-     * @param kind
-     * @return
+     * @param kind one of {@link EditType#ADD}, {@link EditType#EDIT}, {@link EditType#DELETE}
+     * @return list associated to the edit type
      */
-    public List<String> getPaths(EditType kind) {
+    public List<String> getPaths(final EditType kind) {
         if (kind == EditType.ADD) {
             return getAddedPaths();
         }
@@ -324,35 +308,108 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
         return null;
     }
 
+    @Override
+    protected void setParent(final ChangeLogSet parent) {
+        super.setParent(parent);
+    }
+
     /**
-     * Returns all three variations of {@link EditType}.
-     * Placed here to simplify access from views.
+     * Returns all three variations of {@link EditType}. Placed here to simplify access from views.
      *
-     * @return
+     * @return available edit types
      */
     public List<EditType> getEditTypes() {
         return Arrays.asList(EditType.ADD, EditType.EDIT, EditType.DELETE);
     }
 
-    /**
-     * See ChangeLogSet.Entry.setParent().
-     *
-     * @param parent
-     */
     @Override
-    protected void setParent(ChangeLogSet parent) {
-        super.setParent(parent);
+    public String toString() {
+        return "DarcsChangeSet{"
+                + "hash=" + hash
+                + ", name=" + name
+                + ", author=" + author
+                + ", date=" + date
+                + ", localDate=" + localDate
+                + ", inverted=" + inverted
+                + '}';
     }
 
     @Override
-    public String toString() {
-        return "DarcsChangeSet{" + 
-               "hash=" + hash + 
-               ", name=" +  name + 
-               ", author=" + author + 
-               ", date=" + date + 
-               ", localDate=" + localDate + 
-               ", inverted=" + inverted + 
-               '}';
+    public int hashCode() {
+        return Arrays.hashCode(new Object[]{
+            added,
+            author,
+            comment,
+            date,
+            deleted,
+            hash,
+            inverted,
+            localDate,
+            modified,
+            name,
+        });
     }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof DarcsChangeSet)) {
+            return false;
+        }
+
+        final DarcsChangeSet other = (DarcsChangeSet) obj;
+
+        if (!equal(added, other.added)) {
+            return false;
+        }
+
+        if (!equal(author, other.author)) {
+            return false;
+        }
+
+        if (!equal(comment, other.comment)) {
+            return false;
+        }
+
+        if (!equal(date, other.date)) {
+            return false;
+        }
+
+        if (!equal(deleted, other.deleted)) {
+            return false;
+        }
+
+        if (!equal(hash, other.hash)) {
+            return false;
+        }
+
+        if (!equal(localDate, other.localDate)) {
+            return false;
+        }
+
+        if (!equal(modified, other.modified)) {
+            return false;
+        }
+
+        if (!equal(inverted, other.inverted)) {
+            return false;
+        }
+
+        if (!equal(name, other.name)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Helper which respects {@code null} values.
+     *
+     * @param a first object to compare
+     * @param b second object to compare
+     * @return {@code true} if a and b are equal, else {@code false}
+     */
+    private static boolean equal(final Object a, final Object b) {
+        return a == b || (a != null && a.equals(b));
+    }
+
 }
