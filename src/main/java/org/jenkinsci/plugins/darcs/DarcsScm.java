@@ -406,12 +406,20 @@ public class DarcsScm extends SCM implements Serializable {
         return (DarcsScmDescriptor) super.getDescriptor();
     }
 
+    /**
+     * Creates a local path relative to the given base.
+     *
+     * If {@link #localDir} is not {@link null} and not empty a relative path to the given base is created,
+     * else the base pat itself is returned.     *
+     *
+     * @param base base of the local path
+     * @return local file path.
+     */
     private FilePath createLocalPath(final FilePath base) {
-        if (null != localDir && !localDir.isEmpty()) {
+        if (null != localDir && localDir.length() > 0) {
             return new FilePath(base, localDir);
         }
 
         return base;
     }
-
 }
