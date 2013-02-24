@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
 
 /**
  *
@@ -39,46 +40,42 @@ public class DarcsChangeSetTest {
     }
 
     @Test
-    @Ignore("not ready yet")
     public void testGetAffectedPaths() {
-        DarcsChangeSet sut = createSut();
-        List<String> p = sut.getAffectedPaths();
-        assertTrue(p instanceof ArrayList);
-        assertEquals(9, p.size());
-        assertEquals("/foo/1", p.get(0));
-        assertEquals("/foo/2", p.get(1));
-        assertEquals("/foo/3", p.get(2));
-        assertEquals("/bar/1", p.get(3));
-        assertEquals("/bar/2", p.get(4));
-        assertEquals("/bar/3", p.get(5));
-        assertEquals("/baz/1", p.get(6));
-        assertEquals("/baz/2", p.get(7));
-        assertEquals("/baz/3", p.get(8));
+        final DarcsChangeSet sut = createSut();
+        final List<String> p = sut.getAffectedPaths();
+        assertThat(p.size(), is(9));
+        assertThat(p.get(0), is("/foo/1"));
+        assertThat(p.get(1), is("/foo/2"));
+        assertThat(p.get(2), is("/foo/3"));
+        assertThat(p.get(3), is("/bar/1"));
+        assertThat(p.get(4), is("/bar/2"));
+        assertThat(p.get(5), is("/bar/3"));
+        assertThat(p.get(6), is("/baz/1"));
+        assertThat(p.get(7), is("/baz/2"));
+        assertThat(p.get(8), is("/baz/3"));
     }
 
     @Test
-    @Ignore("not ready yet")
     public void testGetPaths() {
-        DarcsChangeSet sut = createSut();
-        List<String> add = sut.getPaths(EditType.ADD);
-        assertTrue(add instanceof ArrayList);
-        assertEquals(3, add.size());
-        assertEquals("/foo/1", add.get(0));
-        assertEquals("/foo/2", add.get(1));
-        assertEquals("/foo/3", add.get(2));
+        final DarcsChangeSet sut = createSut();
 
-        List<String> del = sut.getPaths(EditType.DELETE);
-        assertTrue(del instanceof ArrayList);
-        assertEquals(3, del.size());
-        assertEquals("/bar/1", del.get(0));
-        assertEquals("/bar/2", del.get(1));
-        assertEquals("/bar/3", del.get(2));
+        final List<String> add = sut.getPaths(EditType.ADD);
+        assertThat(add.size(), is(3));
+        assertThat(add.get(0), is("/foo/1"));
+        assertThat(add.get(1), is("/foo/2"));
+        assertThat(add.get(2), is("/foo/3"));
 
-        List<String> mod = sut.getPaths(EditType.EDIT);
-        assertTrue(del instanceof ArrayList);
-        assertEquals(3, del.size());
-        assertEquals("/baz/1", mod.get(0));
-        assertEquals("/baz/2", mod.get(1));
-        assertEquals("/baz/3", mod.get(2));
+        final List<String> del = sut.getPaths(EditType.DELETE);
+        assertThat(del.size(), is(3));
+        assertThat(del.get(0), is("/bar/1"));
+        assertThat(del.get(1), is("/bar/2"));
+        assertThat(del.get(2), is("/bar/3"));
+
+        final List<String> mod = sut.getPaths(EditType.EDIT);
+        assertThat(del.size(), is(3));
+        assertThat(mod.get(0), is("/baz/1"));
+        assertThat(mod.get(1), is("/baz/2"));
+        assertThat(mod.get(2), is("/baz/3"));
     }
+
 }
