@@ -34,7 +34,6 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -226,7 +225,7 @@ public class DarcsScm extends SCM implements Serializable {
      * @return
      * @throws InterruptedException
      */
-    protected DarcsRevisionState getRevisionState(final Launcher launcher, final TaskListener listener, final String repo) throws InterruptedException {
+    private DarcsRevisionState getRevisionState(final Launcher launcher, final TaskListener listener, final String repo) throws InterruptedException {
         final DarcsCmd cmd;
 
         if (null == launcher) {
@@ -280,7 +279,7 @@ public class DarcsScm extends SCM implements Serializable {
         } catch (Exception e) {
             StringWriter w = new StringWriter();
             e.printStackTrace(new PrintWriter(w));
-            LOGGER.log(Level.WARNING, "Failed to get log from repository: ", e);
+            LOGGER.warning(String.format("Failed to get log from repository: %s", w));
         }
     }
 
@@ -341,9 +340,9 @@ public class DarcsScm extends SCM implements Serializable {
      * @throws IOException
      */
     private boolean pullRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener, final File changelogFile) throws InterruptedException, IOException {
-        LOGGER.log(Level.INFO, "Pulling repo from: {0}", source);
+        LOGGER.info(String.format("Pulling repo from: %d", source));
         final int preCnt = countPatches(build, launcher, workspace, listener);
-        LOGGER.log(Level.INFO, "Count of patches pre pulling is {0}", preCnt);
+        LOGGER.info(String.format("Count of patches pre pulling is %d", preCnt));
 
         try {
             final DarcsCmd cmd = new DarcsCmd(launcher,
@@ -353,12 +352,11 @@ public class DarcsScm extends SCM implements Serializable {
             cmd.pull(localPath.getRemote(), source);
         } catch (Exception e) {
             listener.error("Failed to pull: " + e.toString());
-
             return false;
         }
 
         final int postCnt = countPatches(build, launcher, workspace, listener);
-        LOGGER.log(Level.INFO, "Count of patches post pulling is {0}", preCnt);
+        LOGGER.info(String.format("Count of patches post pulling is %d", preCnt));
         createChangeLog(launcher, postCnt - preCnt, workspace, changelogFile, listener);
 
         return true;
@@ -376,10 +374,10 @@ public class DarcsScm extends SCM implements Serializable {
      * @throws InterruptedException
      */
     private boolean getRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener, final File changeLog) throws InterruptedException {
-        LOGGER.log(Level.INFO, "Getting repo from: {0}", source);
+        LOGGER.info(String.format("Getting repo from: %s", source));
 
         try {
-            FilePath localPath = createLocalPath(workspace);
+            final FilePath localPath = createLocalPath(workspace);
             localPath.deleteRecursive();
         } catch (IOException e) {
             e.printStackTrace(listener.error("Failed to clean the workspace"));
@@ -392,7 +390,6 @@ public class DarcsScm extends SCM implements Serializable {
             cmd.get(localPath.getRemote(), source);
         } catch (Exception e) {
             e.printStackTrace(listener.error("Failed to get repo from " + source));
-
             return false;
         }
 
