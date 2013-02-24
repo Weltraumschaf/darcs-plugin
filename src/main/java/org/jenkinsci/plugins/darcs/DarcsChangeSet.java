@@ -331,6 +331,9 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
                 + ", date=" + date
                 + ", localDate=" + localDate
                 + ", inverted=" + inverted
+                + ", added=" + added
+                + ", modified=" + modified
+                + ", deleted=" + deleted
                 + '}';
     }
 

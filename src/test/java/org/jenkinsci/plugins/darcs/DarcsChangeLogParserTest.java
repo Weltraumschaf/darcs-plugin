@@ -37,9 +37,9 @@ public class DarcsChangeLogParserTest {
         final DarcsChangeSetList list = sut.parse(null, new File(resource.toURI()));
 
         assertNotNull(list);
-        assertEquals(10, list.size());
+        assertThat(list.size(), is(11));
         final List<DarcsChangeSet> logs = list.getChangeSets();
-        assertEquals(10, logs.size());
+        assertThat(logs.size(), is(11));
 
         int i = 0;
         DarcsChangeSet expected;
@@ -162,6 +162,18 @@ public class DarcsChangeLogParserTest {
         expected.setComment("");
         expected.setInverted(false);
         expected.getModifiedPaths().addAll(Arrays.asList("Foo.java"));
+        assertThat(logs.get(i), is(equalTo(expected)));
+
+        i++;
+        expected = new DarcsChangeSet();
+        expected.setAuthor("ich@weltraumschaf.de");
+        expected.setName("Remove Bar.java");
+        expected.setDate("20130224203531");
+        expected.setLocalDate("Sun Feb 24 21:35:31 CET 2011");
+        expected.setHash("20130224203531-7677a-1b935a82ba6408ffa9add3642ab52f233ff4ef54.gz");
+        expected.setComment("This is a comment.");
+        expected.setInverted(false);
+        expected.getDeletedPaths().addAll(Arrays.asList("Bar.java"));
         assertThat(logs.get(i), is(equalTo(expected)));
     }
 
