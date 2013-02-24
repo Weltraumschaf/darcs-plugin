@@ -13,9 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -25,7 +23,7 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
-public class DarcsSaxHandler extends DefaultHandler {
+class DarcsSaxHandler extends DefaultHandler {
 
     private static final Logger LOGGER = Logger.getLogger(DarcsSaxHandler.class.getName());
 
@@ -117,6 +115,11 @@ public class DarcsSaxHandler extends DefaultHandler {
         return ready;
     }
 
+    /**
+     * Get the list of parsed change sets.
+     *
+     * @return may be an empty list, but never {@code null}
+     */
     public List<DarcsChangeSet> getChangeSets() {
         return changeSets;
     }
@@ -137,7 +140,7 @@ public class DarcsSaxHandler extends DefaultHandler {
     }
 
     @Override
-    public void startElement(String uri, String name, String qName, Attributes atts) {
+    public void startElement(final String uri, final String name, final String qName, final Attributes atts) {
         if (DarcsChangelogTag.MODIFY_FILE == currentTag) {
             currentChangeSet.getModifiedPaths().add(literalBuffer.toString());
         }
@@ -165,7 +168,7 @@ public class DarcsSaxHandler extends DefaultHandler {
     }
 
     @Override
-    public void endElement(String uri, String name, String qName) {
+    public void endElement(final String uri, final String name, final String qName) {
         recognizeTag(qName);
 
         switch (currentTag) {
@@ -200,7 +203,7 @@ public class DarcsSaxHandler extends DefaultHandler {
      * @param String comment
      * @return boolean
      */
-    static String stripIgnoreThisFromComment(String comment) {
+    static String stripIgnoreThisFromComment(final String comment) {
         if (comment.startsWith("Ignore-this:")) {
             int end = comment.indexOf("\n");
 
@@ -219,7 +222,7 @@ public class DarcsSaxHandler extends DefaultHandler {
      * @param char c
      * @return boolean
      */
-    private boolean isWhiteSpace(char c) {
+    private boolean isWhiteSpace(final char c) {
         switch (c) {
             case '\n':
             case '\r':
@@ -236,7 +239,7 @@ public class DarcsSaxHandler extends DefaultHandler {
     }
 
     @Override
-    public void characters(char ch[], int start, int length) {
+    public void characters(final char ch[], final int start, final int length) {
         for (int i = start; i < start + length; i++) {
             if (isWhiteSpace(ch[i]) && skipWhiteSpace()) {
                 continue;
@@ -247,17 +250,17 @@ public class DarcsSaxHandler extends DefaultHandler {
     }
 
     @Override
-    public void error(SAXParseException saxpe) {
-        LOGGER.log(Level.WARNING, saxpe.toString());
+    public void error(final SAXParseException saxpe) {
+        LOGGER.warning(saxpe.toString());
     }
 
     @Override
-    public void fatalError(SAXParseException saxpe) {
-        LOGGER.log(Level.WARNING, saxpe.toString());
+    public void fatalError(final SAXParseException saxpe) {
+        LOGGER.warning(saxpe.toString());
     }
 
     @Override
-    public void warning(SAXParseException saxpe) {
-        LOGGER.log(Level.WARNING, saxpe.toString());
+    public void warning(final SAXParseException saxpe) {
+        LOGGER.warning(saxpe.toString());
     }
 }
