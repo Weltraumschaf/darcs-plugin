@@ -16,13 +16,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * creates test fixtures.
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
-public class Helper {
+final class Helper {
+
+    /**
+     * Hidden because pure static helper class.
+     */
+    private Helper() {
+        super();
+    }
 
     static DarcsChangeSet createChangeSet(String suffix) {
-        DarcsChangeSet cs = new DarcsChangeSet();
+        final DarcsChangeSet cs = new DarcsChangeSet();
         cs.setAuthor("author" + suffix);
         cs.setDate("date" + suffix);
         cs.setLocalDate("local_date" + suffix);
@@ -33,10 +41,10 @@ public class Helper {
     }
 
     static DarcsChangeSetList createChangeSetList(int count) {
-        List<DarcsChangeSet> list = new ArrayList<DarcsChangeSet>();
+        final List<DarcsChangeSet> list = new ArrayList<DarcsChangeSet>();
 
         for (int i = 0; i < count; i++) {
-            DarcsChangeSet cs = Helper.createChangeSet(Integer.toString(i));
+            final DarcsChangeSet cs = Helper.createChangeSet(Integer.toString(i));
             list.add(cs);
         }
 

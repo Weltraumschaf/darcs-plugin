@@ -45,11 +45,11 @@ public class DarcsChangeSetListTest {
         sut = new DarcsChangeSetList(new ArrayList<DarcsChangeSet>());
         assertEquals(Util.getDigestOf(""), sut.digest());
 
-        final DarcsChangeSet cs1 = Helper.createChangeSet("1"),
-                             cs2 = Helper.createChangeSet("2"),
-                             cs3 = Helper.createChangeSet("3");
+        final DarcsChangeSet cs1 = Helper.createChangeSet("1");
+        final DarcsChangeSet cs2 = Helper.createChangeSet("2");
+        final DarcsChangeSet cs3 = Helper.createChangeSet("3");
 
-        List<DarcsChangeSet> list = new ArrayList<DarcsChangeSet>();
+        final List<DarcsChangeSet> list = new ArrayList<DarcsChangeSet>();
         list.add(cs1);
         list.add(cs2);
         list.add(cs3);
@@ -60,11 +60,12 @@ public class DarcsChangeSetListTest {
 
     @Test
     public void testDigestOnOrderOfPatches() {
-        final DarcsChangeSet cs1 = Helper.createChangeSet("1"),
-                             cs2 = Helper.createChangeSet("2"),
-                             cs3 = Helper.createChangeSet("3");
-        final List<DarcsChangeSet> list1 = new ArrayList<DarcsChangeSet>(),
-                                   list2 = new ArrayList<DarcsChangeSet>();
+        final DarcsChangeSet cs1 = Helper.createChangeSet("1");
+        final DarcsChangeSet cs2 = Helper.createChangeSet("2");
+        final DarcsChangeSet cs3 = Helper.createChangeSet("3");
+        final List<DarcsChangeSet> list1 = new ArrayList<DarcsChangeSet>();
+        final List<DarcsChangeSet> list2 = new ArrayList<DarcsChangeSet>();
+
         list1.add(cs1);
         list1.add(cs2);
         list1.add(cs3);
@@ -72,14 +73,14 @@ public class DarcsChangeSetListTest {
         list2.add(cs2);
         list2.add(cs1);
 
-        final DarcsChangeSetList sut1 = new DarcsChangeSetList(list1),
-                                 sut2 = new DarcsChangeSetList(list2);
+        final DarcsChangeSetList sut1 = new DarcsChangeSetList(list1);
+        final DarcsChangeSetList sut2 = new DarcsChangeSetList(list2);
         assertEquals(sut1.digest(), sut2.digest());
     }
 
     @Test
     public void testGetKind() {
-        DarcsChangeSetList sut = new DarcsChangeSetList(new ArrayList<DarcsChangeSet>());
+        final DarcsChangeSetList sut = new DarcsChangeSetList(new ArrayList<DarcsChangeSet>());
         assertEquals("darcs", sut.getKind());
     }
 
@@ -88,9 +89,10 @@ public class DarcsChangeSetListTest {
         final DarcsChangeSet cs1 = Helper.createChangeSet("1");
         final DarcsChangeSet cs2 = Helper.createChangeSet("2");
         final DarcsChangeSet cs3 = Helper.createChangeSet("3");
-        final List<DarcsChangeSet> list1 = new ArrayList<DarcsChangeSet>(),
-                                   list2 = new ArrayList<DarcsChangeSet>(),
-                                   list3 = new ArrayList<DarcsChangeSet>();
+        final List<DarcsChangeSet> list1 = new ArrayList<DarcsChangeSet>();
+        final List<DarcsChangeSet> list2 = new ArrayList<DarcsChangeSet>();
+        final List<DarcsChangeSet> list3 = new ArrayList<DarcsChangeSet>();
+
         list1.add(cs1);
         list1.add(cs2);
         final DarcsChangeSetList sut1 = new DarcsChangeSetList(list1);
@@ -120,9 +122,10 @@ public class DarcsChangeSetListTest {
         final DarcsChangeSet cs1 = Helper.createChangeSet("1");
         final DarcsChangeSet cs2 = Helper.createChangeSet("2");
         final DarcsChangeSet cs3 = Helper.createChangeSet("3");
-        final List<DarcsChangeSet> list1 = new ArrayList<DarcsChangeSet>(),
-                                   list2 = new ArrayList<DarcsChangeSet>(),
-                                   list3 = new ArrayList<DarcsChangeSet>();
+        final List<DarcsChangeSet> list1 = new ArrayList<DarcsChangeSet>();
+        final List<DarcsChangeSet> list2 = new ArrayList<DarcsChangeSet>();
+        final List<DarcsChangeSet> list3 = new ArrayList<DarcsChangeSet>();
+
         list1.add(cs1);
         list1.add(cs2);
         final DarcsChangeSetList sut1 = new DarcsChangeSetList(list1);

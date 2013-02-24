@@ -51,9 +51,14 @@ import org.xml.sax.SAXException;
  */
 public class DarcsScm extends SCM implements Serializable {
 
+    /**
+     * Serial version UID.
+     */
     private static final long serialVersionUID = 2L;
+    /**
+     * Logging facility.
+     */
     private static final Logger LOGGER = Logger.getLogger(DarcsScm.class.getName());
-
     /**
      * Source repository URL from which we pull.
      */
@@ -73,7 +78,7 @@ public class DarcsScm extends SCM implements Serializable {
     /**
      * Reused parser.
      */
-    private final DarcsChangeLogParser changelogParser;
+    private final transient DarcsChangeLogParser changelogParser;
 
     /**
      * Convenience constructor.
@@ -95,7 +100,8 @@ public class DarcsScm extends SCM implements Serializable {
      * @param browser the browser used to browse the repository
      */
     @DataBoundConstructor
-    public DarcsScm(final String source, final String localDir, final boolean clean, final DarcsRepositoryBrowser browser) throws SAXException {
+    public DarcsScm(final String source, final String localDir, final boolean clean, final DarcsRepositoryBrowser browser)
+        throws SAXException {
         super();
         this.source = source;
         this.clean = clean;
@@ -147,7 +153,8 @@ public class DarcsScm extends SCM implements Serializable {
     }
 
     @Override
-    public DarcsRevisionState calcRevisionsFromBuild(final AbstractBuild<?, ?> build, final Launcher launcher, final TaskListener listener) throws IOException, InterruptedException {
+    public DarcsRevisionState calcRevisionsFromBuild(final AbstractBuild<?, ?> build, final Launcher launcher,
+        final TaskListener listener) throws IOException, InterruptedException {
         final FilePath localPath = createLocalPath(build.getWorkspace());
         final DarcsRevisionState local = getRevisionState(launcher, listener, localPath.getRemote());
         listener.getLogger()
@@ -157,7 +164,9 @@ public class DarcsScm extends SCM implements Serializable {
     }
 
     @Override
-    protected PollingResult compareRemoteRevisionWith(final AbstractProject<?, ?> project, final Launcher launcher, final FilePath workspace, final TaskListener listener, final SCMRevisionState baseline) throws IOException, InterruptedException {
+    protected PollingResult compareRemoteRevisionWith(final AbstractProject<?, ?> project, final Launcher launcher,
+        final FilePath workspace, final TaskListener listener, final SCMRevisionState baseline)
+        throws IOException, InterruptedException {
         final PrintStream logger = listener.getLogger();
         final DarcsRevisionState localRevisionState;
 
@@ -195,10 +204,12 @@ public class DarcsScm extends SCM implements Serializable {
         } else if (!remoteRevisionState.equals(localRevisionState)) {
             logger.println("[poll] Local revision state differs from remote.");
 
-            if (remoteRevisionState.getChanges().size() < ((DarcsRevisionState) localRevisionState).getChanges().size()) {
+            if (remoteRevisionState.getChanges().size()
+                < ((DarcsRevisionState) localRevisionState).getChanges().size()) {
                 final FilePath ws = project.getLastBuild().getWorkspace();
 
-                logger.printf("[poll] Remote repo has less patches than local: remote(%s) vs. local(%s). Will wipe workspace %s...%n",
+                logger.printf("[poll] Remote repo has less patches than local: remote(%s) vs. local(%s). Will wipe "
+                        + "workspace %s...%n",
                         remoteRevisionState.getChanges().size(),
                         ((DarcsRevisionState) localRevisionState).getChanges().size(),
                         (null != ws) ? ws.getRemote() : "null");
@@ -225,7 +236,8 @@ public class DarcsScm extends SCM implements Serializable {
      * @return
      * @throws InterruptedException
      */
-    private DarcsRevisionState getRevisionState(final Launcher launcher, final TaskListener listener, final String repo) throws InterruptedException {
+    private DarcsRevisionState getRevisionState(final Launcher launcher, final TaskListener listener, final String repo)
+        throws InterruptedException {
         final DarcsCmd cmd;
 
         if (null == launcher) {
@@ -259,7 +271,8 @@ public class DarcsScm extends SCM implements Serializable {
      * @param changeLog
      * @throws InterruptedException
      */
-    private void createChangeLog(final Launcher launcher, final int numPatches, final FilePath workspace, final File changeLog, final BuildListener listener) throws InterruptedException {
+    private void createChangeLog(final Launcher launcher, final int numPatches, final FilePath workspace,
+        final File changeLog, final BuildListener listener) throws InterruptedException {
         if (0 == numPatches) {
             LOGGER.info("Creating empty changelog.");
             createEmptyChangeLog(changeLog, listener, "changelog");
@@ -268,23 +281,31 @@ public class DarcsScm extends SCM implements Serializable {
 
         final DarcsCmd cmd = new DarcsCmd(launcher, EnvVars.masterEnvVars,
                 getDescriptor().getDarcsExe());
+        FileOutputStream fos = null;
 
         try {
-            final FileOutputStream fos = new FileOutputStream(changeLog);
+            fos = new FileOutputStream(changeLog);
             final FilePath localPath = createLocalPath(workspace);
-            ByteArrayOutputStream changes = cmd.lastSummarizedChanges(localPath.getRemote(), numPatches);
-
+            final ByteArrayOutputStream changes = cmd.lastSummarizedChanges(localPath.getRemote(), numPatches);
             changes.writeTo(fos);
-            fos.close();
         } catch (Exception e) {
-            StringWriter w = new StringWriter();
+            final StringWriter w = new StringWriter();
             e.printStackTrace(new PrintWriter(w));
             LOGGER.warning(String.format("Failed to get log from repository: %s", w));
+        } finally {
+            if (null != fos) {
+                try {
+                    fos.close();
+                } catch (IOException ex) {
+                    throw new InterruptedException(String.format("Failed to close file output stream!%n%s", ex));
+                }
+            }
         }
     }
 
     @Override
-    public boolean checkout(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener, final File changelogFile) throws IOException, InterruptedException {
+    public boolean checkout(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace,
+        final BuildListener listener, final File changelogFile) throws IOException, InterruptedException {
         final FilePath localPath = createLocalPath(workspace);
         final boolean existsRepoinWorkspace = localPath.act(new FileCallable<Boolean>() {
             private static final long serialVersionUID = 1L;
@@ -313,9 +334,10 @@ public class DarcsScm extends SCM implements Serializable {
      * @throws InterruptedException
      * @throws IOException
      */
-    private int countPatches(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener) {
+    private int countPatches(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace,
+        final BuildListener listener) {
         try {
-            DarcsCmd cmd = new DarcsCmd(launcher,
+            final DarcsCmd cmd = new DarcsCmd(launcher,
                     build.getEnvironment(listener),
                     getDescriptor().getDarcsExe());
 
@@ -339,8 +361,9 @@ public class DarcsScm extends SCM implements Serializable {
      * @throws InterruptedException
      * @throws IOException
      */
-    private boolean pullRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener, final File changelogFile) throws InterruptedException, IOException {
-        LOGGER.info(String.format("Pulling repo from: %d", source));
+    private boolean pullRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace,
+        final BuildListener listener, final File changelogFile) throws InterruptedException, IOException {
+        LOGGER.info(String.format("Pulling repo from: %s", source));
         final int preCnt = countPatches(build, launcher, workspace, listener);
         LOGGER.info(String.format("Count of patches pre pulling is %d", preCnt));
 
@@ -373,7 +396,8 @@ public class DarcsScm extends SCM implements Serializable {
      * @return boolean
      * @throws InterruptedException
      */
-    private boolean getRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener, final File changeLog) throws InterruptedException {
+    private boolean getRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace,
+        final BuildListener listener, final File changeLog) throws InterruptedException {
         LOGGER.info(String.format("Getting repo from: %s", source));
 
         try {

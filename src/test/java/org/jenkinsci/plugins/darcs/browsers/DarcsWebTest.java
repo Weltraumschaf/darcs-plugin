@@ -29,24 +29,10 @@ public class DarcsWebTest {
     private static final String URL  = "http://www.foobar.com/";
     private static final String REPO = "arepo";
 
-    public class ExposingDarcsWeb extends DarcsWeb {
-        public ExposingDarcsWeb() throws MalformedURLException {
-            super(new URL(URL), REPO);
-        }
-
-        public DarcsQueryBuilder exposedCreateDefaultQuery() {
-            return createDefaultQuery();
-        }
-
-        public DarcsQueryBuilder exposedCreateDefaultQuery(String action) {
-            return createDefaultQuery(action);
-        }
-    }
-
     @Test
     public void testCreateDefaultQuery() {
         try {
-            ExposingDarcsWeb sut = new ExposingDarcsWeb();
+            final ExposingDarcsWeb sut = new ExposingDarcsWeb();
             assertEquals("Query",
                          "?r=" + sut.repo,
                          sut.exposedCreateDefaultQuery().toString());
@@ -58,7 +44,7 @@ public class DarcsWebTest {
     @Test
     public void testCreateDefaultQueryWithAction() {
         try {
-            ExposingDarcsWeb sut = new ExposingDarcsWeb();
+            final ExposingDarcsWeb sut = new ExposingDarcsWeb();
             assertEquals("Query",
                          "?r=" + sut.repo + ";a=foobar",
                          sut.exposedCreateDefaultQuery("foobar").toString());
@@ -71,9 +57,9 @@ public class DarcsWebTest {
     @Ignore("not ready yet")
     public void testGetChangeSetLink() {
         try {
-            String         hash = "1234-the-commit-hash.gz";
-            DarcsChangeSet cs   = new DarcsChangeSet();
-            DarcsWeb       sut  = new DarcsWeb(new URL(URL), REPO);
+            final String         hash = "1234-the-commit-hash.gz";
+            final DarcsChangeSet cs   = new DarcsChangeSet();
+            final DarcsWeb       sut  = new DarcsWeb(new URL(URL), REPO);
 
             cs.setHash(hash);
             assertEquals("",
@@ -90,10 +76,10 @@ public class DarcsWebTest {
     @Ignore("not ready yet")
     public void testGetFileDiffLink() {
         try {
-            String         hash = "1234-the-commit-hash.gz";
-            String         file = "a/file/name";
-            DarcsChangeSet cs   = new DarcsChangeSet();
-            DarcsWeb       sut  = new DarcsWeb(new URL(URL), REPO);
+            final String         hash = "1234-the-commit-hash.gz";
+            final String         file = "a/file/name";
+            final DarcsChangeSet cs   = new DarcsChangeSet();
+            final DarcsWeb       sut  = new DarcsWeb(new URL(URL), REPO);
 
             cs.setHash(hash);
             assertEquals("",
@@ -105,4 +91,19 @@ public class DarcsWebTest {
             fail("Can not create URI!");
         }
     }
+
+    private static class ExposingDarcsWeb extends DarcsWeb {
+        public ExposingDarcsWeb() throws MalformedURLException {
+            super(new URL(URL), REPO);
+        }
+
+        public DarcsQueryBuilder exposedCreateDefaultQuery() {
+            return createDefaultQuery();
+        }
+
+        public DarcsQueryBuilder exposedCreateDefaultQuery(String action) {
+            return createDefaultQuery(action);
+        }
+    }
+
 }

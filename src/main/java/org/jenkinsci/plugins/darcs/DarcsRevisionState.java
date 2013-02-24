@@ -62,7 +62,7 @@ public class DarcsRevisionState extends SCMRevisionState {
             return false;
         }
 
-        DarcsRevisionState other = (DarcsRevisionState) obj;
+        final DarcsRevisionState other = (DarcsRevisionState) obj;
         return getChanges().equals(other.getChanges());
     }
 

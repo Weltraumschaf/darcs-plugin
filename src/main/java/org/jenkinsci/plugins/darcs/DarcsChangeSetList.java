@@ -27,7 +27,15 @@ import java.security.NoSuchAlgorithmException;
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
+
+    /**
+     * Kind description string.
+     */
     private static final String KIND = "darcs";
+    /**
+     * Used to mask bytes.
+     */
+    private static final int BYTE_MASK = 0xFF;
 
     /**
      * Set of the changes.
@@ -144,7 +152,7 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
             final byte[] md5 = algorithm.digest();
 
             for (int i = 0; i < md5.length; i++) {
-                final String tmp = (Integer.toHexString(0xFF & md5[i]));
+                final String tmp = (Integer.toHexString(BYTE_MASK & md5[i]));
 
                 if (tmp.length() == 1) {
                     res.append("0");

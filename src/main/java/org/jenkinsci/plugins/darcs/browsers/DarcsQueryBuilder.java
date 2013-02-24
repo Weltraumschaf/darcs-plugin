@@ -10,44 +10,78 @@
 package org.jenkinsci.plugins.darcs.browsers;
 
 /**
- * Helper class to build up URL queries.
+ * Helper class to build URL queries.
+ *
+ * Queries are constructed by partial strings combined by separator characters.
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
-public class DarcsQueryBuilder {
+final class DarcsQueryBuilder {
 
     /**
      * Types for queries.
      */
-    public enum SeparatorType {
-        SLASHES, // seperates everything with slash, REST like
-        SEMICOLONS, // starts wit ? and then seperates with ;
-        AMPERSANDS  // starts wit ? and then seperates with &
+    enum SeparatorType {
+        /**
+         * Separates everything with slash, REST like.
+         */
+        SLASHES,
+        /**
+         * Starts wit {@literal ?} and then separates with {@literal ;}.
+         */
+        SEMICOLONS,
+        /**
+         * Starts wit {@literal ?} and then separates with {@literal &}.
+         */
+        AMPERSANDS;
     }
 
     /**
-     * Buffers the builded query string
+     * Buffers the builded query string.
      */
     private final StringBuilder buf = new StringBuilder();
     /**
-     * The seperatot type for the query.
+     * The separator type for the query.
      */
     private final SeparatorType type;
 
-    DarcsQueryBuilder(SeparatorType t) {
+    /**
+     * Does not add a first string.
+     *
+     * @param t separator type
+     */
+    DarcsQueryBuilder(final SeparatorType t) {
         this(t, null);
     }
 
-    DarcsQueryBuilder(SeparatorType t, String s) {
-        this.type = t;
+    /**
+     * Dedicated constructor.
+     *
+     * @param t separator type
+     * @param s first string of query
+     */
+    DarcsQueryBuilder(final SeparatorType t, final String s) {
+        super();
+        type = t;
         add(s);
     }
 
+    /**
+     * Get the separator type.
+     *
+     * @return type of separation
+     */
     public SeparatorType getType() {
         return this.type;
     }
 
-    public DarcsQueryBuilder add(String s) {
+    /**
+     * Add a string part.
+     *
+     * @param s partial string
+     * @return return itself
+     */
+    public DarcsQueryBuilder add(final String s) {
         if (null == s) {
             // nothing to add
             return this;
@@ -74,6 +108,8 @@ public class DarcsQueryBuilder {
                 }
 
                 break;
+            default:
+                throw new IllegalStateException(String.format("Unsupported separator type %s", type));
         }
 
         buf.append(s);
@@ -85,4 +121,5 @@ public class DarcsQueryBuilder {
     public String toString() {
         return buf.toString();
     }
+
 }

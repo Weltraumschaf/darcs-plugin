@@ -34,9 +34,10 @@ public class DarcsRevisionStateTest {
 
     @Test
     public void testEquals() {
-        DarcsChangeSetList csl1 = Helper.createChangeSetList(3),
-                           csl2 = Helper.createChangeSetList(2);
-        DarcsRevisionState sut1, sut2;
+        final DarcsChangeSetList csl1 = Helper.createChangeSetList(3);
+        final DarcsChangeSetList csl2 = Helper.createChangeSetList(2);
+        DarcsRevisionState sut1;
+        DarcsRevisionState sut2;
 
         sut1 = new DarcsRevisionState(csl1);
         sut2 = new DarcsRevisionState(csl1);

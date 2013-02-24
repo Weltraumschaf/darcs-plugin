@@ -20,14 +20,14 @@ public class DarcsQueryBuilderTest {
 
     @Test
     public void testEmptyQuery() {
-        DarcsQueryBuilder sut = new DarcsQueryBuilder(DarcsQueryBuilder.SeparatorType.SLASHES);
+        final DarcsQueryBuilder sut = new DarcsQueryBuilder(DarcsQueryBuilder.SeparatorType.SLASHES);
         assertEquals("Test the seperator type", DarcsQueryBuilder.SeparatorType.SLASHES, sut.getType());
         assertEquals("Test empty query string.", "", sut.toString());
     }
 
     @Test
     public void testAddToSlashedQuery() {
-        DarcsQueryBuilder sut = new DarcsQueryBuilder(DarcsQueryBuilder.SeparatorType.SLASHES);
+        final DarcsQueryBuilder sut = new DarcsQueryBuilder(DarcsQueryBuilder.SeparatorType.SLASHES);
         assertEquals("Test the seperator type", DarcsQueryBuilder.SeparatorType.SLASHES, sut.getType());
         sut.add("foo").add("bar").add("baz");
         assertEquals("Test a slashed query.", "/foo/bar/baz", sut.toString());

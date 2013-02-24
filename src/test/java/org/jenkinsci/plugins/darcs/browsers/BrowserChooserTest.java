@@ -101,7 +101,7 @@ public class BrowserChooserTest {
      * @return
      */
     DarcsRepositoryBrowser createBrowserFromJson(final JSONObject json) {
-        DarcsRepositoryBrowser browser = staplerRequest.bindJSON(DarcsRepositoryBrowser.class,
+        final DarcsRepositoryBrowser browser = staplerRequest.bindJSON(DarcsRepositoryBrowser.class,
                                                                  json.getJSONObject("browser"));
 
         return browser;

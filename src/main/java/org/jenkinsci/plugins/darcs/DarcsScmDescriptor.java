@@ -39,8 +39,17 @@ import org.kohsuke.stapler.framework.io.ByteBuffer;
 @Extension
 public class DarcsScmDescriptor extends SCMDescriptor<DarcsScm> {
 
+    /**
+     * Logging facility.
+     */
     private static final Logger LOGGER = Logger.getLogger(DarcsScmDescriptor.class.getName());
+    /**
+     * String displayed in the Jenkins front end.
+     */
     private static final String DISPLAY_NAME = "Darcs";
+    /**
+     * Default name of the Darcs binary.
+     */
     private static final String DEFAULT_EXE = "darcs";
 
     /**

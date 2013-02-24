@@ -26,10 +26,10 @@ import java.util.List;
 /**
  * Darcs XML Sanitizer.
  *
- * The output of "darcs changes --xml-output" might be invalid XML. Darcs treats the patch comments as binary blobs,
- * and the changes command returns them as-is inside the XML structure, without ensuring that the encoding is
- * consistent. If some of the patches in your repository were recorded on UTF-8 machines and others on e.g. ISO-8859
- * machines, the XML output will contain characters in both encodings.
+ * The output of "darcs changes --xml-output" might be invalid XML. Darcs treats the patch comments as binary blobs, and
+ * the changes command returns them as-is inside the XML structure, without ensuring that the encoding is consistent. If
+ * some of the patches in your repository were recorded on UTF-8 machines and others on e.g. ISO-8859 machines, the XML
+ * output will contain characters in both encodings.
  *
  * Some parsers (e.g. xerxes) choke on invalid characters in the XML input, so this sanitizer is designed to ensure that
  * the encoding is consistent.
@@ -41,9 +41,23 @@ class DarcsXmlSanitizer {
     private static final List<String> ADDL_CHARSETS = Arrays.asList("ISO-8859-1", "UTF-16");
     private final List<CharsetDecoder> decoders = new ArrayList<CharsetDecoder>();
 
+    /**
+     * States which indicates where in the comment string we are.
+     */
     private enum State {
 
-        OUTSIDE, IN_NAME, IN_COMMENT
+        /**
+         * Outside a name or comment tag.
+         */
+        OUTSIDE,
+        /**
+         * Inside a name tag.
+         */
+        IN_NAME,
+        /**
+         * Inside a comment tag.
+         */
+        IN_COMMENT;
     };
 
     /**
@@ -186,6 +200,8 @@ class DarcsXmlSanitizer {
                     }
 
                     break;
+                default:
+                    throw new IllegalStateException(String.format("Illegal state %s!", state));
             }
 
             final ByteBuffer in = ByteBuffer.wrap(input, currentPosition, nextPosition - currentPosition);
@@ -262,5 +278,4 @@ class DarcsXmlSanitizer {
 
         return bytes;
     }
-
 }
