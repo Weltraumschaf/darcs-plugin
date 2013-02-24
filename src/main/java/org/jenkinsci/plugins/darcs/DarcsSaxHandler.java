@@ -102,7 +102,7 @@ class DarcsSaxHandler extends DefaultHandler {
 
         static {
             for (final DarcsChangelogTag tag : DarcsChangelogTag.values()) {
-                LOOKUP.put(tag.tagName, tag);
+                LOOKUP.put(tag.getTagName().toLowerCase(), tag);
             }
         }
         /**
@@ -120,13 +120,22 @@ class DarcsSaxHandler extends DefaultHandler {
         }
 
         /**
+         * Get the tag name.
+         *
+         * @return the tag name
+         */
+        public String getTagName() {
+            return tagName;
+        }
+
+        /**
          * Returns the tag enum to a literal tag name.
          *
          * @param tagName literal tag name, part between the angle brackets
          * @return may return null, if tag name is unknown
          */
         static DarcsChangelogTag forTagName(final String tagName) {
-            if (LOOKUP.containsKey(tagName)) {
+            if (LOOKUP.containsKey(tagName.toLowerCase())) {
                 return LOOKUP.get(tagName);
             }
 
@@ -334,7 +343,7 @@ class DarcsSaxHandler extends DefaultHandler {
                 currentChangeSet.getDeletedPaths().add(literalBuffer.toString());
                 break;
             default:
-                LOGGER.warning(String.format("Unrecognized tag '%s'!", currentTag));
+                LOGGER.info(String.format("Ignored tag <%s>!", currentTag));
         }
 
         currentTag = null;
