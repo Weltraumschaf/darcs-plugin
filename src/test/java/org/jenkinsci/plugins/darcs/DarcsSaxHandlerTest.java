@@ -10,7 +10,6 @@
 
 package org.jenkinsci.plugins.darcs;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -37,10 +36,10 @@ public class DarcsSaxHandlerTest {
     }
 
     @Test
-    @Ignore("Not ready yet")
     public void testEndDocument() {
-//        DarcsSaxHandler sut = new DarcsSaxHandler();
-//        sut.endDocument();
-//        assertTrue(sut.isReady());
+        final DarcsSaxHandler sut = new DarcsSaxHandler();
+        assertFalse(sut.isReady());
+        sut.endDocument();
+        assertTrue(sut.isReady());
     }
 }

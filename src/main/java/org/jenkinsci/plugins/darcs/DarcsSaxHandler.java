@@ -10,7 +10,9 @@
 package org.jenkinsci.plugins.darcs;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,41 +21,98 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
+ * SAS based change log parser.
  *
- * @author sxs
+ * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsSaxHandler extends DefaultHandler {
 
     private static final Logger LOGGER = Logger.getLogger(DarcsSaxHandler.class.getName());
 
-    public enum DarcsChangelogTag {
-        CHANGELOG,
-        PATCH,
-        NAME,
-        COMMENT,
-        SUMMARY,
-        MODIFY_FILE,
-        ADD_FILE,
-        REMOVE_FILE,
-        MOVE_FILE,
-        ADDED_LINES,
-        REMOVED_LINES,
-        ADD_DIRECTORY,
-        REMOVE_DIRECTORY;
+    /**
+     * The tags used in the change log XML.
+     */
+    private enum DarcsChangelogTag {
+
+        CHANGELOG("changelog"),
+        PATCH("patch"),
+        NAME("name"),
+        COMMENT("comment"),
+        SUMMARY("summary"),
+        MODIFY_FILE("modify_file"),
+        ADD_FILE("add_file"),
+        REMOVE_FILE("remove_file"),
+        MOVE_FILE("move"),
+        ADDED_LINES("added_lines"),
+        REMOVED_LINES("removed_lines"),
+        ADD_DIRECTORY("add_directory"),
+        REMOVE_DIRECTORY("remove_directory");
+        /**
+         * Lookup of string literal to tag.
+         */
+        private static final Map<String, DarcsChangelogTag> LOOKUP = new HashMap<String, DarcsChangelogTag>();
+
+        static {
+            for (final DarcsChangelogTag tag : DarcsChangelogTag.values()) {
+                LOOKUP.put(tag.tagName, tag);
+            }
+        }
+        /**
+         * Literal tag name
+         */
+        private final String tagName;
+
+        private DarcsChangelogTag(final String tagName) {
+            this.tagName = tagName;
+        }
+
+        /**
+         * Returns the tag enum to a literal tag name.
+         *
+         * @param tagName literal tag name, part between the angle brackets
+         * @return may return null, if tag name is unknown
+         */
+        static DarcsChangelogTag forTagName(final String tagName) {
+            if (LOOKUP.containsKey(tagName)) {
+                return LOOKUP.get(tagName);
+            }
+
+            return null;
+        }
     }
-
+    /**
+     * The current parsed tag.
+     */
     private DarcsChangelogTag currentTag;
-    private DarcsChangeSet currentChangeset;
+    /**
+     * Current processed change set.
+     */
+    private DarcsChangeSet currentChangeSet;
+    /**
+     * Signals that parsing has ended.
+     */
     private boolean ready;
-    private List<DarcsChangeSet> changeSets;
-    private StringBuilder literal;
+    /**
+     * Change sets collected during the parse process.
+     */
+    private final List<DarcsChangeSet> changeSets = new ArrayList<DarcsChangeSet>();
+    /**
+     * Buffers scanned literals.
+     */
+    private StringBuilder literalBuffer = new StringBuilder();
 
+    /**
+     * Dedicated constructor.
+     */
     public DarcsSaxHandler() {
         super();
-        ready = false;
-        changeSets = new ArrayList<DarcsChangeSet>();
     }
 
+    /**
+     * Returns if the parsing of the XML has ended.
+     *
+     * @return {@code true} if end of document reached, else {@code false}
+     */
     public boolean isReady() {
         return ready;
     }
@@ -67,121 +126,99 @@ public class DarcsSaxHandler extends DefaultHandler {
         ready = true;
     }
 
-    private void recognizeTag(String tagName) {
-        if ("changelog".equals(tagName)) {
-            currentTag = DarcsChangelogTag.CHANGELOG;
-        } else if ("patch".equals(tagName)) {
-            currentTag = DarcsChangelogTag.PATCH;
-        } else if ("name".equals(tagName)) {
-            currentTag = DarcsChangelogTag.NAME;
-        } else if ("comment".equals(tagName)) {
-            currentTag = DarcsChangelogTag.COMMENT;
-        } else if ("summary".equals(tagName)) {
-            currentTag = DarcsChangelogTag.SUMMARY;
-        } else if ("modify_file".equals(tagName)) {
-            currentTag = DarcsChangelogTag.MODIFY_FILE;
-        } else if ("add_file".equals(tagName)) {
-            currentTag = DarcsChangelogTag.ADD_FILE;
-        } else if ("remove_file".equals(tagName)) {
-            currentTag = DarcsChangelogTag.REMOVE_FILE;
-        } else if ("move".equals(tagName)) {
-            currentTag = DarcsChangelogTag.MOVE_FILE;
-        } else if ("added_lines".equals(tagName)) {
-            currentTag = DarcsChangelogTag.ADDED_LINES;
-        } else if ("removed_lines".equals(tagName)) {
-            currentTag = DarcsChangelogTag.REMOVED_LINES;
-        } else if ("add_directory".equals(tagName)) {
-            currentTag = DarcsChangelogTag.ADD_DIRECTORY;
-        } else if ("remove_directory".equals(tagName)) {
-            currentTag = DarcsChangelogTag.REMOVE_DIRECTORY;
+    private void recognizeTag(final String tagName) {
+        final DarcsChangelogTag tag = DarcsChangelogTag.forTagName(tagName);
+
+        if (null == tag) {
+            LOGGER.warning(String.format("Unrecognized tag <%s>!", tagName));
         } else {
-            LOGGER.log(Level.WARNING, "Unrecognized tag <" + tagName + ">!");
+            currentTag = tag;
         }
     }
 
     @Override
     public void startElement(String uri, String name, String qName, Attributes atts) {
         if (DarcsChangelogTag.MODIFY_FILE == currentTag) {
-            currentChangeset.getModifiedPaths().add(literal.toString());
+            currentChangeSet.getModifiedPaths().add(literalBuffer.toString());
         }
-        
+
         recognizeTag(qName);
 
         if (DarcsChangelogTag.PATCH == currentTag) {
-            currentChangeset = new DarcsChangeSet();
-            currentChangeset.setAuthor(atts.getValue("author"));
-            currentChangeset.setDate(atts.getValue("date"));
-            currentChangeset.setLocalDate(atts.getValue("local_date"));
-            currentChangeset.setHash(atts.getValue("hash"));
+            currentChangeSet = new DarcsChangeSet();
+            currentChangeSet.setAuthor(atts.getValue("author"));
+            currentChangeSet.setDate(atts.getValue("date"));
+            currentChangeSet.setLocalDate(atts.getValue("local_date"));
+            currentChangeSet.setHash(atts.getValue("hash"));
 
             if (atts.getValue("inverted").equals("True")) {
-                currentChangeset.setInverted(true);
+                currentChangeSet.setInverted(true);
             } else if (atts.getValue("inverted").equals("False")) {
-                currentChangeset.setInverted(false);
+                currentChangeSet.setInverted(false);
             }
         } else if (DarcsChangelogTag.MOVE_FILE == currentTag) {
-            currentChangeset.getDeletedPaths().add(atts.getValue("from"));
-            currentChangeset.getAddedPaths().add(atts.getValue("to"));
+            currentChangeSet.getDeletedPaths().add(atts.getValue("from"));
+            currentChangeSet.getAddedPaths().add(atts.getValue("to"));
         }
 
-        literal = new StringBuilder();
+        literalBuffer = new StringBuilder();
     }
 
     @Override
     public void endElement(String uri, String name, String qName) {
         recognizeTag(qName);
-        
+
         switch (currentTag) {
             case PATCH:
-                changeSets.add(currentChangeset);
+                changeSets.add(currentChangeSet);
                 break;
             case NAME:
-                currentChangeset.setName(literal.toString());
+                currentChangeSet.setName(literalBuffer.toString());
                 break;
             case COMMENT:
-                String comment = stripIgnoreThisFromComment(literal.toString());
-                currentChangeset.setComment(comment);
+                String comment = stripIgnoreThisFromComment(literalBuffer.toString());
+                currentChangeSet.setComment(comment);
                 break;
             case ADD_FILE:
             case ADD_DIRECTORY:
-                currentChangeset.getAddedPaths().add(literal.toString());
+                currentChangeSet.getAddedPaths().add(literalBuffer.toString());
                 break;
             case REMOVE_FILE:
             case REMOVE_DIRECTORY:
-                currentChangeset.getDeletedPaths().add(literal.toString());
+                currentChangeSet.getDeletedPaths().add(literalBuffer.toString());
                 break;
         }
-        
+
         currentTag = null;
     }
 
     /**
-     * Strips out strings like Ignore-this: 606c40ef0d257da9b7a916e7f1c594aa.
-     * 
-     * It is asumed that after the hash a single line break occures.
-	 *
+     * Strips out strings like "Ignore-this: 606c40ef0d257da9b7a916e7f1c594aa".
+     *
+     * It is assumed that after the hash a single line break occurred.
+     *
      * @param String comment
      * @return boolean
      */
-    public static String stripIgnoreThisFromComment(String comment) {
+    static String stripIgnoreThisFromComment(String comment) {
         if (comment.startsWith("Ignore-this:")) {
             int end = comment.indexOf("\n");
-            
+
             if (-1 == end) {
                 return "";
             }
-            
+
             return comment.substring(end + 1);
         }
-        
+
         return comment;
     }
-    
-	/**
-	 * 
-	 * @param char c
-	 * @return boolean
-	 */
+
+    /**
+     *
+     * @param char c
+     * @return boolean
+     */
     private boolean isWhiteSpace(char c) {
         switch (c) {
             case '\n':
@@ -205,7 +242,7 @@ public class DarcsSaxHandler extends DefaultHandler {
                 continue;
             }
 
-            literal.append(ch[i]);
+            literalBuffer.append(ch[i]);
         }
     }
 
