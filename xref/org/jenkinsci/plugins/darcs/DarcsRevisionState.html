@@ -22,96 +22,65 @@
 <a class="jxr_linenumber" name="12" href="#12">12</a>  <strong class="jxr_keyword">import</strong> hudson.scm.SCMRevisionState;
 <a class="jxr_linenumber" name="13" href="#13">13</a>  
 <a class="jxr_linenumber" name="14" href="#14">14</a>  <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="15" href="#15">15</a>  <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="16" href="#16">16</a>  <em class="jxr_javadoccomment"> * Feedback from mailing list:</em>
-<a class="jxr_linenumber" name="17" href="#17">17</a>  <em class="jxr_javadoccomment"> * stephen.alan.connolly@gmail.com:</em>
-<a class="jxr_linenumber" name="18" href="#18">18</a>  <em class="jxr_javadoccomment"> * &lt;quote&gt;</em>
-<a class="jxr_linenumber" name="19" href="#19">19</a>  <em class="jxr_javadoccomment"> * I think you would be better served by computing the sha1 or md5 of all the hashes as strings.  Relying on Collections.hashCode is dangerous.  Relying on String.hashCode, which is just:</em>
-<a class="jxr_linenumber" name="20" href="#20">20</a>  <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="21" href="#21">21</a>  <em class="jxr_javadoccomment"> *     public int hashCode() {</em>
-<a class="jxr_linenumber" name="22" href="#22">22</a>  <em class="jxr_javadoccomment"> *         int h = hash;</em>
-<a class="jxr_linenumber" name="23" href="#23">23</a>  <em class="jxr_javadoccomment"> *         if (h == 0) {</em>
-<a class="jxr_linenumber" name="24" href="#24">24</a>  <em class="jxr_javadoccomment"> *             int off = offset;</em>
-<a class="jxr_linenumber" name="25" href="#25">25</a>  <em class="jxr_javadoccomment"> *             char val[] = value;</em>
-<a class="jxr_linenumber" name="26" href="#26">26</a>  <em class="jxr_javadoccomment"> *             int len = count;</em>
-<a class="jxr_linenumber" name="27" href="#27">27</a>  <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="28" href="#28">28</a>  <em class="jxr_javadoccomment"> *             for (int i = 0; i &lt; len; i++) {</em>
-<a class="jxr_linenumber" name="29" href="#29">29</a>  <em class="jxr_javadoccomment"> *                 h = 31*h + val[off++];</em>
-<a class="jxr_linenumber" name="30" href="#30">30</a>  <em class="jxr_javadoccomment"> *             }</em>
-<a class="jxr_linenumber" name="31" href="#31">31</a>  <em class="jxr_javadoccomment"> *             hash = h;</em>
-<a class="jxr_linenumber" name="32" href="#32">32</a>  <em class="jxr_javadoccomment"> *         }</em>
-<a class="jxr_linenumber" name="33" href="#33">33</a>  <em class="jxr_javadoccomment"> *         return h;</em>
-<a class="jxr_linenumber" name="34" href="#34">34</a>  <em class="jxr_javadoccomment"> *     }</em>
-<a class="jxr_linenumber" name="35" href="#35">35</a>  <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="36" href="#36">36</a>  <em class="jxr_javadoccomment"> * Is going to be a tad weak given that all the characters are from the set [0-9a-f-] i.e. there are only 17 out of 255.</em>
-<a class="jxr_linenumber" name="37" href="#37">37</a>  <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="38" href="#38">38</a>  <em class="jxr_javadoccomment"> * The List.hashCode speci is</em>
-<a class="jxr_linenumber" name="39" href="#39">39</a>  <em class="jxr_javadoccomment"> *     public int hashCode() {</em>
-<a class="jxr_linenumber" name="40" href="#40">40</a>  <em class="jxr_javadoccomment"> *         int hashCode = 1;</em>
-<a class="jxr_linenumber" name="41" href="#41">41</a>  <em class="jxr_javadoccomment"> *         Iterator&lt;E&gt; i = iterator();</em>
-<a class="jxr_linenumber" name="42" href="#42">42</a>  <em class="jxr_javadoccomment"> *         while (i.hasNext()) {</em>
-<a class="jxr_linenumber" name="43" href="#43">43</a>  <em class="jxr_javadoccomment"> *             E obj = i.next();</em>
-<a class="jxr_linenumber" name="44" href="#44">44</a>  <em class="jxr_javadoccomment"> *             hashCode = 31*hashCode + (obj==null ? 0 : obj.hashCode());</em>
-<a class="jxr_linenumber" name="45" href="#45">45</a>  <em class="jxr_javadoccomment"> *         }</em>
-<a class="jxr_linenumber" name="46" href="#46">46</a>  <em class="jxr_javadoccomment"> *         return hashCode;</em>
-<a class="jxr_linenumber" name="47" href="#47">47</a>  <em class="jxr_javadoccomment"> *     }</em>
-<a class="jxr_linenumber" name="48" href="#48">48</a>  <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="49" href="#49">49</a>  <em class="jxr_javadoccomment"> * Also I would recommend sorting the lists before hashing them.</em>
-<a class="jxr_linenumber" name="50" href="#50">50</a>  <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="51" href="#51">51</a>  <em class="jxr_javadoccomment"> * However, if you are looking for a short path to saying there is a difference, the Collections.sort(list1); Collections.sort(list2); if (list1.hashCode() != list2.hashCode()) check should be OK...</em>
-<a class="jxr_linenumber" name="52" href="#52">52</a>  <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="53" href="#53">53</a>  <em class="jxr_javadoccomment"> * Just remember that list1.hashCode() == list2.hashCode() does not in anyway claim that there is no change, so you will have to go down the long path anyway.</em>
-<a class="jxr_linenumber" name="54" href="#54">54</a>  <em class="jxr_javadoccomment"> * &lt;/quote&gt;</em>
-<a class="jxr_linenumber" name="55" href="#55">55</a>  <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="56" href="#56">56</a>  <em class="jxr_javadoccomment"> * kkawaguchi@cloudbees.com:</em>
-<a class="jxr_linenumber" name="57" href="#57">57</a>  <em class="jxr_javadoccomment"> * &lt;quote&gt;</em>
-<a class="jxr_linenumber" name="58" href="#58">58</a>  <em class="jxr_javadoccomment"> * There's utility code in Jenkins that computes MD5 digest of arbitrary byte stream or string. I think that seems like a good and cheap enough hashing for this kind of purpose.</em>
-<a class="jxr_linenumber" name="59" href="#59">59</a>  <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="60" href="#60">60</a>  <em class="jxr_javadoccomment"> * Javadoc</em>
-<a class="jxr_linenumber" name="61" href="#61">61</a>  <em class="jxr_javadoccomment"> * hudson.Util.getDigestOf()</em>
-<a class="jxr_linenumber" name="62" href="#62">62</a>  <em class="jxr_javadoccomment"> * public static String getDigestOf(InputStream source)</em>
-<a class="jxr_linenumber" name="63" href="#63">63</a>  <em class="jxr_javadoccomment"> *                          throws IOException</em>
-<a class="jxr_linenumber" name="64" href="#64">64</a>  <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="65" href="#65">65</a>  <em class="jxr_javadoccomment"> *    Computes MD5 digest of the given input stream.</em>
-<a class="jxr_linenumber" name="66" href="#66">66</a>  <em class="jxr_javadoccomment"> * &lt;/quote&gt;</em>
-<a class="jxr_linenumber" name="67" href="#67">67</a>  <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="68" href="#68">68</a>  <em class="jxr_javadoccomment"> * @author Sven Strittmatter &lt;ich@weltraumschaf.de&gt;</em>
-<a class="jxr_linenumber" name="69" href="#69">69</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="70" href="#70">70</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../org/jenkinsci/plugins/darcs/DarcsRevisionState.html">DarcsRevisionState</a> <strong class="jxr_keyword">extends</strong> SCMRevisionState {
-<a class="jxr_linenumber" name="71" href="#71">71</a>  
-<a class="jxr_linenumber" name="72" href="#72">72</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a href="../../../../org/jenkinsci/plugins/darcs/DarcsChangeSetList.html">DarcsChangeSetList</a> changes;
-<a class="jxr_linenumber" name="73" href="#73">73</a>  
-<a class="jxr_linenumber" name="74" href="#74">74</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../org/jenkinsci/plugins/darcs/DarcsRevisionState.html">DarcsRevisionState</a>(<a href="../../../../org/jenkinsci/plugins/darcs/DarcsChangeSetList.html">DarcsChangeSetList</a> changes) {
-<a class="jxr_linenumber" name="75" href="#75">75</a>          <strong class="jxr_keyword">super</strong>();
-<a class="jxr_linenumber" name="76" href="#76">76</a>          <strong class="jxr_keyword">this</strong>.changes = changes;
-<a class="jxr_linenumber" name="77" href="#77">77</a>      }
-<a class="jxr_linenumber" name="78" href="#78">78</a>  
-<a class="jxr_linenumber" name="79" href="#79">79</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../org/jenkinsci/plugins/darcs/DarcsChangeSetList.html">DarcsChangeSetList</a> getChanges() {
-<a class="jxr_linenumber" name="80" href="#80">80</a>          <strong class="jxr_keyword">return</strong> changes;
-<a class="jxr_linenumber" name="81" href="#81">81</a>      }
-<a class="jxr_linenumber" name="82" href="#82">82</a>  
-<a class="jxr_linenumber" name="83" href="#83">83</a>      @Override
-<a class="jxr_linenumber" name="84" href="#84">84</a>      <strong class="jxr_keyword">public</strong> String toString() {
-<a class="jxr_linenumber" name="85" href="#85">85</a>          <strong class="jxr_keyword">return</strong> <span class="jxr_string">"&lt;RevisionState: "</span> + getChanges().digest() + <span class="jxr_string">"&gt;"</span>;
-<a class="jxr_linenumber" name="86" href="#86">86</a>      }
-<a class="jxr_linenumber" name="87" href="#87">87</a>  
-<a class="jxr_linenumber" name="88" href="#88">88</a>      @Override
-<a class="jxr_linenumber" name="89" href="#89">89</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> equals(Object other) {
-<a class="jxr_linenumber" name="90" href="#90">90</a>          <strong class="jxr_keyword">boolean</strong> result = false;
-<a class="jxr_linenumber" name="91" href="#91">91</a>  
-<a class="jxr_linenumber" name="92" href="#92">92</a>          <strong class="jxr_keyword">if</strong> (other instanceof DarcsRevisionState) {
-<a class="jxr_linenumber" name="93" href="#93">93</a>              <a href="../../../../org/jenkinsci/plugins/darcs/DarcsRevisionState.html">DarcsRevisionState</a> that = (DarcsRevisionState) other;
-<a class="jxr_linenumber" name="94" href="#94">94</a>              <strong class="jxr_keyword">return</strong> getChanges().equals(that.getChanges());
-<a class="jxr_linenumber" name="95" href="#95">95</a>          }
-<a class="jxr_linenumber" name="96" href="#96">96</a>  
-<a class="jxr_linenumber" name="97" href="#97">97</a>          <strong class="jxr_keyword">return</strong> result;
-<a class="jxr_linenumber" name="98" href="#98">98</a>      }
-<a class="jxr_linenumber" name="99" href="#99">99</a>  
-<a class="jxr_linenumber" name="100" href="#100">100</a>     @Override
-<a class="jxr_linenumber" name="101" href="#101">101</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">int</strong> hashCode() {
-<a class="jxr_linenumber" name="102" href="#102">102</a>         <strong class="jxr_keyword">return</strong> changes.hashCode();
-<a class="jxr_linenumber" name="103" href="#103">103</a>     }
-<a class="jxr_linenumber" name="104" href="#104">104</a> }
+<a class="jxr_linenumber" name="15" href="#15">15</a>  <em class="jxr_javadoccomment"> * Represents the revision state of a repository.</em>
+<a class="jxr_linenumber" name="16" href="#16">16</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="17" href="#17">17</a>  <em class="jxr_javadoccomment"> * The state consists of all changes in a repository. The comparison is made over a digest from the DarcsChangeSetList.</em>
+<a class="jxr_linenumber" name="18" href="#18">18</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="19" href="#19">19</a>  <em class="jxr_javadoccomment"> * @author Sven Strittmatter &lt;ich@weltraumschaf.de&gt;</em>
+<a class="jxr_linenumber" name="20" href="#20">20</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="21" href="#21">21</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../org/jenkinsci/plugins/darcs/DarcsRevisionState.html">DarcsRevisionState</a> <strong class="jxr_keyword">extends</strong> SCMRevisionState {
+<a class="jxr_linenumber" name="22" href="#22">22</a>  
+<a class="jxr_linenumber" name="23" href="#23">23</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="24" href="#24">24</a>  <em class="jxr_javadoccomment">     * Holds all patches as DarcsChangeSet objects.</em>
+<a class="jxr_linenumber" name="25" href="#25">25</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="26" href="#26">26</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a href="../../../../org/jenkinsci/plugins/darcs/DarcsChangeSetList.html">DarcsChangeSetList</a> changes;
+<a class="jxr_linenumber" name="27" href="#27">27</a>  
+<a class="jxr_linenumber" name="28" href="#28">28</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="29" href="#29">29</a>  <em class="jxr_javadoccomment">     * Initializes object with empty change set list.</em>
+<a class="jxr_linenumber" name="30" href="#30">30</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="31" href="#31">31</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../org/jenkinsci/plugins/darcs/DarcsRevisionState.html">DarcsRevisionState</a>() {
+<a class="jxr_linenumber" name="32" href="#32">32</a>          <strong class="jxr_keyword">this</strong>(<strong class="jxr_keyword">new</strong> <a href="../../../../org/jenkinsci/plugins/darcs/DarcsChangeSetList.html">DarcsChangeSetList</a>());
+<a class="jxr_linenumber" name="33" href="#33">33</a>      }
+<a class="jxr_linenumber" name="34" href="#34">34</a>  
+<a class="jxr_linenumber" name="35" href="#35">35</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="36" href="#36">36</a>  <em class="jxr_javadoccomment">     * Dedicated constructor.</em>
+<a class="jxr_linenumber" name="37" href="#37">37</a>  <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="38" href="#38">38</a>  <em class="jxr_javadoccomment">     * @param changes list of change sets</em>
+<a class="jxr_linenumber" name="39" href="#39">39</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="40" href="#40">40</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../org/jenkinsci/plugins/darcs/DarcsRevisionState.html">DarcsRevisionState</a>(<strong class="jxr_keyword">final</strong> <a href="../../../../org/jenkinsci/plugins/darcs/DarcsChangeSetList.html">DarcsChangeSetList</a> changes) {
+<a class="jxr_linenumber" name="41" href="#41">41</a>          <strong class="jxr_keyword">super</strong>();
+<a class="jxr_linenumber" name="42" href="#42">42</a>          <strong class="jxr_keyword">this</strong>.changes = changes;
+<a class="jxr_linenumber" name="43" href="#43">43</a>      }
+<a class="jxr_linenumber" name="44" href="#44">44</a>  
+<a class="jxr_linenumber" name="45" href="#45">45</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="46" href="#46">46</a>  <em class="jxr_javadoccomment">     * Returns the current revision state change set list.</em>
+<a class="jxr_linenumber" name="47" href="#47">47</a>  <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="48" href="#48">48</a>  <em class="jxr_javadoccomment">     * @return never {@code null}</em>
+<a class="jxr_linenumber" name="49" href="#49">49</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="50" href="#50">50</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../org/jenkinsci/plugins/darcs/DarcsChangeSetList.html">DarcsChangeSetList</a> getChanges() {
+<a class="jxr_linenumber" name="51" href="#51">51</a>          <strong class="jxr_keyword">return</strong> changes;
+<a class="jxr_linenumber" name="52" href="#52">52</a>      }
+<a class="jxr_linenumber" name="53" href="#53">53</a>  
+<a class="jxr_linenumber" name="54" href="#54">54</a>      @Override
+<a class="jxr_linenumber" name="55" href="#55">55</a>      <strong class="jxr_keyword">public</strong> String toString() {
+<a class="jxr_linenumber" name="56" href="#56">56</a>          <strong class="jxr_keyword">return</strong> getChanges().digest();
+<a class="jxr_linenumber" name="57" href="#57">57</a>      }
+<a class="jxr_linenumber" name="58" href="#58">58</a>  
+<a class="jxr_linenumber" name="59" href="#59">59</a>      @Override
+<a class="jxr_linenumber" name="60" href="#60">60</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> equals(<strong class="jxr_keyword">final</strong> Object obj) {
+<a class="jxr_linenumber" name="61" href="#61">61</a>          <strong class="jxr_keyword">if</strong> (!(obj instanceof DarcsRevisionState)) {
+<a class="jxr_linenumber" name="62" href="#62">62</a>              <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="63" href="#63">63</a>          }
+<a class="jxr_linenumber" name="64" href="#64">64</a>  
+<a class="jxr_linenumber" name="65" href="#65">65</a>          <strong class="jxr_keyword">final</strong> <a href="../../../../org/jenkinsci/plugins/darcs/DarcsRevisionState.html">DarcsRevisionState</a> other = (DarcsRevisionState) obj;
+<a class="jxr_linenumber" name="66" href="#66">66</a>          <strong class="jxr_keyword">return</strong> getChanges().equals(other.getChanges());
+<a class="jxr_linenumber" name="67" href="#67">67</a>      }
+<a class="jxr_linenumber" name="68" href="#68">68</a>  
+<a class="jxr_linenumber" name="69" href="#69">69</a>      @Override
+<a class="jxr_linenumber" name="70" href="#70">70</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">int</strong> hashCode() {
+<a class="jxr_linenumber" name="71" href="#71">71</a>          <strong class="jxr_keyword">return</strong> changes.hashCode();
+<a class="jxr_linenumber" name="72" href="#72">72</a>      }
+<a class="jxr_linenumber" name="73" href="#73">73</a>  }
 </pre>
 <hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
 </html>

@@ -1,3 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pmd-cpd>
+<duplication lines="18" tokens="144">
+<file line="88" path="/Users/sxs/src/java/darcs-plugin/src/test/java/org/jenkinsci/plugins/darcs/DarcsChangeSetListTest.java"/>
+<file line="121" path="/Users/sxs/src/java/darcs-plugin/src/test/java/org/jenkinsci/plugins/darcs/DarcsChangeSetListTest.java"/>
+<codefragment>
+<![CDATA[
+    public void testHashCode() {
+        final DarcsChangeSet cs1 = Helper.createChangeSet("1");
+        final DarcsChangeSet cs2 = Helper.createChangeSet("2");
+        final DarcsChangeSet cs3 = Helper.createChangeSet("3");
+        final List<DarcsChangeSet> list1 = new ArrayList<DarcsChangeSet>();
+        final List<DarcsChangeSet> list2 = new ArrayList<DarcsChangeSet>();
+        final List<DarcsChangeSet> list3 = new ArrayList<DarcsChangeSet>();
+
+        list1.add(cs1);
+        list1.add(cs2);
+        final DarcsChangeSetList sut1 = new DarcsChangeSetList(list1);
+        list2.add(cs1);
+        list2.add(cs2);
+        final DarcsChangeSetList sut2 = new DarcsChangeSetList(list2);
+        list3.add(cs1);
+        list3.add(cs2);
+        list3.add(cs3);
+        final DarcsChangeSetList sut3 = new DarcsChangeSetList(list3);
+]]>
+</codefragment>
+</duplication>
 </pmd-cpd>
