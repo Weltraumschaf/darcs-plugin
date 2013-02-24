@@ -236,7 +236,7 @@ public class DarcsScm extends SCM implements Serializable {
      * @return
      * @throws InterruptedException
      */
-    private DarcsRevisionState getRevisionState(final Launcher launcher, final TaskListener listener, final String repo)
+    DarcsRevisionState getRevisionState(final Launcher launcher, final TaskListener listener, final String repo)
         throws InterruptedException {
         final DarcsCmd cmd;
 
