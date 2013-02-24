@@ -9,18 +9,17 @@
  */
 package org.jenkinsci.plugins.darcs;
 
-import static junit.framework.Assert.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.Test;
 import org.xml.sax.SAXException;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 /**
  *
@@ -29,7 +28,10 @@ import org.xml.sax.SAXException;
 public class DarcsChangeLogParserTest {
 
     @Test
-    public void testParse() throws IOException, SAXException, URISyntaxException {
+    public void parse_file() throws IOException, SAXException, URISyntaxException {
+        // TODO add comments
+        // TODO add removed files
+        // TODO add invrt patch
         final DarcsChangeLogParser sut = new DarcsChangeLogParser();
         final URL resource = getClass().getResource("/changes-summary.xml");
         final DarcsChangeSetList list = sut.parse(null, new File(resource.toURI()));
@@ -38,163 +40,134 @@ public class DarcsChangeLogParserTest {
         assertEquals(10, list.size());
         final List<DarcsChangeSet> logs = list.getChangeSets();
         assertEquals(10, logs.size());
+
         int i = 0;
-        assertPatch(logs.get(i), false, new HashMap<String, String>() {
-            {
-                put("plainAuthor", "ich@weltraumschaf.de");
-                put("name", "inital files added");
-                put("date", "20110214201356");
-                put("localDate", "Mon Feb 14 21:13:56 CET 2011");
-                put("hash", "20110214201356-7677a-15b1d7313611ef85de46d8daf57123a365d5b800.gz");
-                put("comment", "");
-            }
-        });
-        assertSummary(logs.get(i), Arrays.asList("Bar.java", "Baz.java", "Foo.java"), null, null);
-        i++;
+        DarcsChangeSet expected;
 
-        assertPatch(logs.get(i), false, new HashMap<String, String>() {
-            {
-                put("plainAuthor", "ich@weltraumschaf.de");
-                put("name", "Implemented class Bar");
-                put("date", "20110214201544");
-                put("localDate", "Mon Feb 14 21:15:44 CET 2011");
-                put("hash", "20110214201544-7677a-1cd5bbbc18b5e78240a80c9d1576faaa63c9f7d7.gz");
-                put("comment", "");
-            }
-        });
-        assertSummary(logs.get(i), null, null, Arrays.asList("Bar.java"));
-        i++;
+        expected = new DarcsChangeSet();
+        expected.setAuthor("ich@weltraumschaf.de");
+        expected.setName("inital files added");
+        expected.setDate("20110214201356");
+        expected.setLocalDate("Mon Feb 14 21:13:56 CET 2011");
+        expected.setHash("20110214201356-7677a-15b1d7313611ef85de46d8daf57123a365d5b800.gz");
+        expected.setComment("");
+        expected.setInverted(false);
+        expected.getAddedPaths().addAll(Arrays.asList("Bar.java", "Baz.java", "Foo.java"));
+        assertThat(logs.get(i), is(equalTo(expected)));
 
-        assertPatch(logs.get(i), false, new HashMap<String, String>() {
-            {
-                put("plainAuthor", "ich@weltraumschaf.de");
-                put("name", "Implemented class Baz");
-                put("date", "20110214201618");
-                put("localDate", "Mon Feb 14 21:16:18 CET 2011");
-                put("hash", "20110214201618-7677a-631eee269c4a252d953fa2f61b1127874bbc57d4.gz");
-                put("comment", "");
-            }
-        });
-        assertSummary(logs.get(i), null, null, Arrays.asList("Baz.java"));
         i++;
+        expected = new DarcsChangeSet();
+        expected.setAuthor("ich@weltraumschaf.de");
+        expected.setName("Implemented class Bar");
+        expected.setDate("20110214201544");
+        expected.setLocalDate("Mon Feb 14 21:15:44 CET 2011");
+        expected.setHash("20110214201544-7677a-1cd5bbbc18b5e78240a80c9d1576faaa63c9f7d7.gz");
+        expected.setComment("");
+        expected.setInverted(false);
+        expected.getModifiedPaths().addAll(Arrays.asList("Bar.java"));
+        assertThat(logs.get(i), is(equalTo(expected)));
 
-        assertPatch(logs.get(i), false, new HashMap<String, String>() {
-            {
-                put("plainAuthor", "ich@weltraumschaf.de");
-                put("name", "Implemented class Foo");
-                put("date", "20110214201649");
-                put("localDate", "Mon Feb 14 21:16:49 CET 2011");
-                put("hash", "20110214201649-7677a-9c3c62c42467fe20e75a9ab62e52441ef7cdc8ba.gz");
-                put("comment", "");
-            }
-        });
-        assertSummary(logs.get(i), null, null, Arrays.asList("Foo.java"));
         i++;
+        expected = new DarcsChangeSet();
+        expected.setAuthor("ich@weltraumschaf.de");
+        expected.setName("Implemented class Baz");
+        expected.setDate("20110214201618");
+        expected.setLocalDate("Mon Feb 14 21:16:18 CET 2011");
+        expected.setHash("20110214201618-7677a-631eee269c4a252d953fa2f61b1127874bbc57d4.gz");
+        expected.setComment("");
+        expected.setInverted(false);
+        expected.getModifiedPaths().addAll(Arrays.asList("Baz.java"));
+        assertThat(logs.get(i), is(equalTo(expected)));
 
-        assertPatch(logs.get(i), false, new HashMap<String, String>() {
-            {
-                put("plainAuthor", "ich@weltraumschaf.de");
-                put("name", "Implemented value in class Bar");
-                put("date", "20110214203334");
-                put("localDate", "Mon Feb 14 21:33:34 CET 2011");
-                put("hash", "20110214203334-7677a-3f9e4a67068618fcfde454c0c097d1f8b96301df.gz");
-                put("comment", "");
-            }
-        });
-        assertSummary(logs.get(i), null, null, Arrays.asList("Bar.java"));
+
         i++;
+        expected = new DarcsChangeSet();
+        expected.setAuthor("ich@weltraumschaf.de");
+        expected.setName("Implemented class Foo");
+        expected.setDate("20110214201649");
+        expected.setLocalDate("Mon Feb 14 21:16:49 CET 2011");
+        expected.setHash("20110214201649-7677a-9c3c62c42467fe20e75a9ab62e52441ef7cdc8ba.gz");
+        expected.setComment("");
+        expected.setInverted(false);
+        expected.getModifiedPaths().addAll(Arrays.asList("Foo.java"));
+        assertThat(logs.get(i), is(equalTo(expected)));
 
-        assertPatch(logs.get(i), false, new HashMap<String, String>() {
-            {
-                put("plainAuthor", "ich@weltraumschaf.de");
-                put("name", "Implemented value in class Baz");
-                put("date", "20110214203402");
-                put("localDate", "Mon Feb 14 21:34:02 CET 2011");
-                put("hash", "20110214203402-7677a-5eb558d8bd3df5b8edfa005479d8ff1e8139abe0.gz");
-                put("comment", "");
-            }
-        });
-        assertSummary(logs.get(i), null, null, Arrays.asList("Baz.java"));
         i++;
+        expected = new DarcsChangeSet();
+        expected.setAuthor("ich@weltraumschaf.de");
+        expected.setName("Implemented value in class Bar");
+        expected.setDate("20110214203334");
+        expected.setLocalDate("Mon Feb 14 21:33:34 CET 2011");
+        expected.setHash("20110214203334-7677a-3f9e4a67068618fcfde454c0c097d1f8b96301df.gz");
+        expected.setComment("");
+        expected.setInverted(false);
+        expected.getModifiedPaths().addAll(Arrays.asList("Bar.java"));
+        assertThat(logs.get(i), is(equalTo(expected)));
 
-        assertPatch(logs.get(i), false, new HashMap<String, String>() {
-            {
-                put("plainAuthor", "ich@weltraumschaf.de");
-                put("name", "Implemented value in class Foo");
-                put("date", "20110214203417");
-                put("localDate", "Mon Feb 14 21:34:17 CET 2011");
-                put("hash", "20110214203417-7677a-261f33e2608d68f088f15b077f7dcde2cc18a4b7.gz");
-                put("comment", "");
-            }
-        });
-        assertSummary(logs.get(i), null, null, Arrays.asList("Foo.java"));
         i++;
+        expected = new DarcsChangeSet();
+        expected.setAuthor("ich@weltraumschaf.de");
+        expected.setName("Implemented value in class Baz");
+        expected.setDate("20110214203402");
+        expected.setLocalDate("Mon Feb 14 21:34:02 CET 2011");
+        expected.setHash("20110214203402-7677a-5eb558d8bd3df5b8edfa005479d8ff1e8139abe0.gz");
+        expected.setComment("");
+        expected.setInverted(false);
+        expected.getModifiedPaths().addAll(Arrays.asList("Baz.java"));
+        assertThat(logs.get(i), is(equalTo(expected)));
 
-        assertPatch(logs.get(i), false, new HashMap<String, String>() {
-            {
-                put("plainAuthor", "ich@weltraumschaf.de");
-                put("name", "Implemented toString()");
-                put("date", "20110214203531");
-                put("localDate", "Mon Feb 14 21:35:31 CET 2011");
-                put("hash", "20110214203531-7677a-1b935a82ba6408ffa9add3642cb52f233ff4ef54.gz");
-                put("comment", "");
-            }
-        });
-        assertSummary(logs.get(i), null, null, Arrays.asList("Bar.java", "Baz.java", "Foo.java"));
         i++;
+        expected = new DarcsChangeSet();
+        expected.setAuthor("ich@weltraumschaf.de");
+        expected.setName("Implemented value in class Foo");
+        expected.setDate("20110214203417");
+        expected.setLocalDate("Mon Feb 14 21:34:17 CET 2011");
+        expected.setHash("20110214203417-7677a-261f33e2608d68f088f15b077f7dcde2cc18a4b7.gz");
+        expected.setComment("");
+        expected.setInverted(false);
+        expected.getModifiedPaths().addAll(Arrays.asList("Foo.java"));
+        assertThat(logs.get(i), is(equalTo(expected)));
 
-        assertPatch(logs.get(i), false, new HashMap<String, String>() {
-            {
-                put("plainAuthor", "ich@weltraumschaf.de");
-                put("name", "German Umlauts in UTF-8 encoding: äöüÄÖÜß");
-                put("date", "20110224141706");
-                put("localDate", "Thu Feb 24 15:17:06 CET 2011");
-                put("hash", "20110224141706-7677a-b79e15c79bd5776b3e669a7338e181b4bd303609.gz");
-                put("comment", "");
-            }
-        });
-        assertSummary(logs.get(i), null, null, Arrays.asList("Foo.java"));
         i++;
+        expected = new DarcsChangeSet();
+        expected.setAuthor("ich@weltraumschaf.de");
+        expected.setName("Implemented toString()");
+        expected.setDate("20110214203531");
+        expected.setLocalDate("Mon Feb 14 21:35:31 CET 2011");
+        expected.setHash("20110214203531-7677a-1b935a82ba6408ffa9add3642cb52f233ff4ef54.gz");
+        expected.setComment("");
+        expected.setInverted(false);
+        expected.getModifiedPaths().addAll(Arrays.asList("Bar.java", "Baz.java", "Foo.java"));
+        assertThat(logs.get(i), is(equalTo(expected)));
 
-        assertPatch(logs.get(i), false, new HashMap<String, String>() {
-            {
-                put("plainAuthor", "ich@weltraumschaf.de");
-                put("name", "German Umlauts in ISO8859-15 encoding: äöüÄÖÜß");
-                put("date", "20110224143546");
-                put("localDate", "Thu Feb 24 15:35:46 CET 2011");
-                put("hash", "20110224143546-7677a-359f8967374ac52adc87dedac6f4ad458a7b6446.gz");
-                put("comment", "");
-            }
-        });
-        assertSummary(logs.get(i), null, null, Arrays.asList("Foo.java"));
         i++;
+        expected = new DarcsChangeSet();
+        expected.setAuthor("ich@weltraumschaf.de");
+        expected.setName("German Umlauts in UTF-8 encoding: äöüÄÖÜß");
+        expected.setDate("20110224141706");
+        expected.setLocalDate("Thu Feb 24 15:17:06 CET 2011");
+        expected.setHash("20110224141706-7677a-b79e15c79bd5776b3e669a7338e181b4bd303609.gz");
+        expected.setComment("");
+        expected.setInverted(false);
+        expected.getModifiedPaths().addAll(Arrays.asList("Foo.java"));
+        assertThat(logs.get(i), is(equalTo(expected)));
 
+        i++;
+        expected = new DarcsChangeSet();
+        expected.setAuthor("ich@weltraumschaf.de");
+        expected.setName("German Umlauts in ISO8859-15 encoding: äöüÄÖÜß");
+        expected.setDate("20110224143546");
+        expected.setLocalDate("Thu Feb 24 15:35:46 CET 2011");
+        expected.setHash("20110224143546-7677a-359f8967374ac52adc87dedac6f4ad458a7b6446.gz");
+        expected.setComment("");
+        expected.setInverted(false);
+        expected.getModifiedPaths().addAll(Arrays.asList("Foo.java"));
+        assertThat(logs.get(i), is(equalTo(expected)));
     }
 
-    private void assertPatch(DarcsChangeSet cs, boolean isInverted, Map<String, String> expected) {
-        assertEquals(expected.get("plainAuthor"), cs.getPlainAuthor());
-        assertEquals(expected.get("name"), cs.getName());
-        assertEquals(expected.get("comment"), cs.getComment());
-        assertEquals(expected.get("date"), cs.getDate());
-        assertEquals(expected.get("localDate"), cs.getLocalDate());
-        assertEquals(expected.get("hash"), cs.getHash());
-        assertEquals(isInverted, cs.isInverted());
-    }
+    @Test
+    @Ignore
+    public void parse_byteArray() {
 
-    private void assertSummary(DarcsChangeSet cs, List added, List deleted, List modified) {
-        if (null != added) {
-            assertEquals("added files does not match on patch " + cs.getHash(),
-                         added, cs.getAddedPaths());
-        }
-
-        if (null != deleted) {
-            assertEquals("deleted files does not match on patch " + cs.getHash(),
-                         deleted, cs.getDeletedPaths());
-        }
-
-        if (null != modified) {
-            assertEquals("modified files does not match on patch " + cs.getHash(),
-                         modified, cs.getModifiedPaths());
-        }
     }
 }

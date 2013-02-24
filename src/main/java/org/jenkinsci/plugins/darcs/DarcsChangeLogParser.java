@@ -12,12 +12,10 @@ package org.jenkinsci.plugins.darcs;
 import hudson.model.AbstractBuild;
 import hudson.scm.ChangeLogParser;
 import java.io.ByteArrayOutputStream;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.logging.Logger;
-
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -48,10 +46,22 @@ class DarcsChangeLogParser extends ChangeLogParser {
      */
     private final XMLReader xmlReader;
 
+    /**
+     * Convenience constructor which initializes all dependencies.
+     *
+     * @throws SAXException if no default XMLReader class can be identified and instantiated.
+     */
     public DarcsChangeLogParser() throws SAXException {
         this(new DarcsSaxHandler(), new DarcsXmlSanitizer(), XMLReaderFactory.createXMLReader());
     }
 
+    /**
+     * Dedicated constructor.
+     *
+     * @param handler implementation of a SAX parser
+     * @param sani sanitize to clean comments
+     * @param xmlReader reader to handle the XML input
+     */
     public DarcsChangeLogParser(final DarcsSaxHandler handler, final DarcsXmlSanitizer sani, final XMLReader xmlReader) {
         super();
         this.handler = handler;
@@ -74,7 +84,8 @@ class DarcsChangeLogParser extends ChangeLogParser {
      * @throws SAXException on parse errors
      */
     @Override
-    public DarcsChangeSetList parse(final AbstractBuild build, final File changelogFile) throws IOException, SAXException {
+    public DarcsChangeSetList parse(final AbstractBuild build, final File changelogFile)
+        throws IOException, SAXException {
         LOGGER.info(String.format("Parsing changelog file %s...", changelogFile.toString()));
         final StringReader input = new StringReader(sanitizer.cleanse(changelogFile));
         xmlReader.parse(new InputSource(input));
@@ -84,8 +95,7 @@ class DarcsChangeLogParser extends ChangeLogParser {
     /**
      * @see #parse(hudson.model.AbstractBuild, java.io.File)
      *
-     * @param build the current build
-     * @param changelogFile the change log file
+     * @param changeLog stream to read XML from
      * @return change set list w/ current build null
      * @throws IOException on read errors
      * @throws SAXException on parse errors
@@ -95,5 +105,4 @@ class DarcsChangeLogParser extends ChangeLogParser {
         xmlReader.parse(new InputSource(input));
         return new DarcsChangeSetList(null, handler.getChangeSets());
     }
-
 }
