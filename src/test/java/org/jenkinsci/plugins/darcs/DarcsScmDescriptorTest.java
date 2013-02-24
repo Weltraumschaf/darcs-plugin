@@ -9,8 +9,14 @@
  */
 package org.jenkinsci.plugins.darcs;
 
+import hudson.model.Descriptor;
+import net.sf.json.JSONObject;
 import org.junit.Ignore;
 import org.junit.Test;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+import org.kohsuke.stapler.StaplerRequest;
+import static org.mockito.Mockito.*;
 
 /**
  *
@@ -19,13 +25,40 @@ import org.junit.Test;
 public class DarcsScmDescriptorTest {
 
     @Test
-    @Ignore("Incomplete!")
-    public void testGetRevisionState() {
-//        DarcsScm sut = new DarcsScm("");
-//        try {
-//            sut.getRevisionState(null, TaskListener.NULL, "");
-//        } catch (Exception e) {
-//            fail("Excpetion throwed: " + e);
-//        }
+    public void getDisplayName() {
+        final DarcsScmDescriptor sut = mock(DarcsScmDescriptor.class, CALLS_REAL_METHODS);
+        doNothing().when(sut).load();
+        assertThat(sut.getDisplayName(), is("Darcs"));
     }
+
+    @Test
+    public void getDarcsExe_default() {
+        final DarcsScmDescriptor sut = mock(DarcsScmDescriptor.class, CALLS_REAL_METHODS);
+        doNothing().when(sut).load();
+        assertThat(sut.getDarcsExe(), is("darcs"));
+    }
+
+    @Test
+    public void getDarcsExe_configured() throws Descriptor.FormException {
+        final DarcsScmDescriptor sut = mock(DarcsScmDescriptor.class, CALLS_REAL_METHODS);
+        doNothing().when(sut).load();
+        doNothing().when(sut).save();
+
+        final StaplerRequest req = mock(StaplerRequest.class);
+        final String parameter = "darcs.darcsExe";
+        final String exe = "/foo/bar/baz/darcs";
+        when(req.getParameter(parameter)).thenReturn(exe);
+
+        sut.configure(req, new JSONObject());
+        verify(req, times(1)).getParameter(parameter);
+        verify(sut, times(1)).save();
+        assertThat(sut.getDarcsExe(), is(exe));
+    }
+
+    @Test
+    @Ignore("Not ready yet")
+    public void doDarcsExeCheck() {
+
+    }
+
 }
