@@ -12,10 +12,9 @@ package org.jenkinsci.plugins.darcs;
 import hudson.scm.SCMRevisionState;
 
 /**
- * Represents the revision state of a repo.
- * 
- * The state consits of all changes in a repo. The comparison is made over
- * a digest from the DarcsChangeSetList.
+ * Represents the revision state of a repository.
+ *
+ * The state consists of all changes in a repository. The comparison is made over a digest from the DarcsChangeSetList.
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
@@ -26,57 +25,47 @@ public class DarcsRevisionState extends SCMRevisionState {
      */
     private final DarcsChangeSetList changes;
 
+    /**
+     * Initializes object with empty change set list.
+     */
     public DarcsRevisionState() {
         this(new DarcsChangeSetList());
     }
-    
-    public DarcsRevisionState(DarcsChangeSetList changes) {
+
+    /**
+     * Dedicated constructor.
+     *
+     * @param changes list of change sets
+     */
+    public DarcsRevisionState(final DarcsChangeSetList changes) {
         super();
         this.changes = changes;
     }
 
     /**
-     * Returns the current revison state change set list.
-     * 
-     * @return 
+     * Returns the current revision state change set list.
+     *
+     * @return never {@code null}
      */
     public DarcsChangeSetList getChanges() {
         return changes;
     }
 
-    /**
-     * Returns the change set lists digest as string.
-     * 
-     * @return 
-     */
     @Override
     public String toString() {
         return getChanges().digest();
     }
 
-    /**
-     * Compares the change set lists.
-     * 
-     * @param other
-     * @return 
-     */
     @Override
-    public boolean equals(Object other) {
-        boolean result = false;
-
-        if (other instanceof DarcsRevisionState) {
-            DarcsRevisionState that = (DarcsRevisionState) other;
-            return getChanges().equals(that.getChanges());
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof DarcsRevisionState)) {
+            return false;
         }
 
-        return result;
+        DarcsRevisionState other = (DarcsRevisionState) obj;
+        return getChanges().equals(other.getChanges());
     }
 
-    /**
-     * Returns the change set lists hash code.
-     * 
-     * @return 
-     */
     @Override
     public int hashCode() {
         return changes.hashCode();
