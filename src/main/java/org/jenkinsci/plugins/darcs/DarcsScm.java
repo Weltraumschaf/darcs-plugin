@@ -103,7 +103,7 @@ public class DarcsScm extends SCM implements Serializable {
      */
     @DataBoundConstructor
     public DarcsScm(final String source, final String localDir, final boolean clean, final DarcsRepositoryBrowser browser)
-            throws SAXException {
+        throws SAXException {
         super();
         this.source = source;
         this.clean = clean;
@@ -167,8 +167,8 @@ public class DarcsScm extends SCM implements Serializable {
 
     @Override
     protected PollingResult compareRemoteRevisionWith(final AbstractProject<?, ?> project, final Launcher launcher,
-            final FilePath workspace, final TaskListener listener, final SCMRevisionState baseline)
-            throws IOException, InterruptedException {
+        final FilePath workspace, final TaskListener listener, final SCMRevisionState baseline)
+        throws IOException, InterruptedException {
         final PrintStream logger = listener.getLogger();
         final DarcsRevisionState localRevisionState;
 
@@ -195,7 +195,7 @@ public class DarcsScm extends SCM implements Serializable {
         logger.printf("[poll] Current remote revision is %s. Local revision is %s.%n",
                 remoteRevisionState, localRevisionState);
 
-        if (SCMRevisionState.NONE == localRevisionState) {
+        if (SCMRevisionState.NONE.equals(localRevisionState)) {
             logger.println("[poll] Does not have a local revision state.");
             change = Change.SIGNIFICANT;
         } else if (localRevisionState.getClass() != DarcsRevisionState.class) {
@@ -239,7 +239,7 @@ public class DarcsScm extends SCM implements Serializable {
      * @throws InterruptedException
      */
     DarcsRevisionState getRevisionState(final Launcher launcher, final TaskListener listener, final String repo)
-            throws InterruptedException {
+        throws InterruptedException {
         final DarcsCmd cmd;
 
         if (null == launcher) {
@@ -449,8 +449,12 @@ public class DarcsScm extends SCM implements Serializable {
         return base;
     }
 
+    /**
+     * Add class name aliases for backward compatibility.
+     */
     @Initializer(before = InitMilestone.PLUGINS_STARTED)
     public static void addAliases() {
+        // until version 0.3.6 the descriptor was inner class of DarcsScm
         Items.XSTREAM2.addCompatibilityAlias("org.jenkinsci.plugins.darcs.DarcsScm$DescriptorImpl",
                 DarcsScmDescriptor.class);
     }
