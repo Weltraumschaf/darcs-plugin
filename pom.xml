@@ -55,19 +55,20 @@
     </licenses>
 
     <issueManagement>
-        <system>JIRA</system>
-        <url>http://issues.jenkins-ci.org/</url>
+        <system>GitHub</system>
+        <url>https://github.com/Weltraumschaf/darcs-plugin/issues</url>
     </issueManagement>
 
     <scm>
-        <connection>scm:git:git://github.com/jenkinsci/darcs-plugin.git</connection>
-        <developerConnection>scm:git:git@github.com:jenkinsci/darcs-plugin.git</developerConnection>
-        <url>https://github.com/jenkinsci/darcs-plugin/</url>
+        <connection>scm:git:git://github.com/Weltraumschaf/darcs-plugin.git</connection>
+        <developerConnection>scm:git:git@github.com:Weltraumschaf/darcs-plugin.git</developerConnection>
+        <url>https://github.com/Weltraumschaf/darcs-plugin.git</url>
     </scm>
 
     <ciManagement>
         <system>jenkins</system>
-        <url>https://buildhive.cloudbees.com/job/jenkinsci/job/darcs-plugin/</url>
+        <!--<url>https://buildhive.cloudbees.com/job/jenkinsci/job/darcs-plugin/</url>-->
+        <url>http://www.weltraumschaf.de:8080/job/Darcs%20Plugin/</url>
     </ciManagement>
 
     <properties>
@@ -92,7 +93,7 @@
     <distributionManagement>
         <site>
             <id>github-project-site</id>
-            <url>gitsite:git@github.com/jenkinsci/darcs-plugin</url>
+            <url>gitsite:git@github.com/Weltraumschaf/darcs-plugin.git</url>
         </site>
     </distributionManagement>
 
