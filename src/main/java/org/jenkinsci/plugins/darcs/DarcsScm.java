@@ -10,15 +10,17 @@
 package org.jenkinsci.plugins.darcs;
 
 import org.jenkinsci.plugins.darcs.browsers.DarcsRepositoryBrowser;
-
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.FilePath.FileCallable;
 import hudson.Launcher;
 import hudson.Launcher.LocalLauncher;
+import hudson.init.InitMilestone;
+import hudson.init.Initializer;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
+import hudson.model.Items;
 import hudson.model.TaskListener;
 import hudson.remoting.VirtualChannel;
 import hudson.scm.ChangeLogParser;
@@ -54,7 +56,7 @@ public class DarcsScm extends SCM implements Serializable {
     /**
      * Serial version UID.
      */
-    private static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = 3L;
     /**
      * Logging facility.
      */
@@ -101,7 +103,7 @@ public class DarcsScm extends SCM implements Serializable {
      */
     @DataBoundConstructor
     public DarcsScm(final String source, final String localDir, final boolean clean, final DarcsRepositoryBrowser browser)
-        throws SAXException {
+            throws SAXException {
         super();
         this.source = source;
         this.clean = clean;
@@ -154,7 +156,7 @@ public class DarcsScm extends SCM implements Serializable {
 
     @Override
     public DarcsRevisionState calcRevisionsFromBuild(final AbstractBuild<?, ?> build, final Launcher launcher,
-        final TaskListener listener) throws IOException, InterruptedException {
+            final TaskListener listener) throws IOException, InterruptedException {
         final FilePath localPath = createLocalPath(build.getWorkspace());
         final DarcsRevisionState local = getRevisionState(launcher, listener, localPath.getRemote());
         listener.getLogger()
@@ -165,8 +167,8 @@ public class DarcsScm extends SCM implements Serializable {
 
     @Override
     protected PollingResult compareRemoteRevisionWith(final AbstractProject<?, ?> project, final Launcher launcher,
-        final FilePath workspace, final TaskListener listener, final SCMRevisionState baseline)
-        throws IOException, InterruptedException {
+            final FilePath workspace, final TaskListener listener, final SCMRevisionState baseline)
+            throws IOException, InterruptedException {
         final PrintStream logger = listener.getLogger();
         final DarcsRevisionState localRevisionState;
 
@@ -205,7 +207,7 @@ public class DarcsScm extends SCM implements Serializable {
             logger.println("[poll] Local revision state differs from remote.");
 
             if (remoteRevisionState.getChanges().size()
-                < ((DarcsRevisionState) localRevisionState).getChanges().size()) {
+                    < ((DarcsRevisionState) localRevisionState).getChanges().size()) {
                 final FilePath ws = project.getLastBuild().getWorkspace();
 
                 logger.printf("[poll] Remote repo has less patches than local: remote(%s) vs. local(%s). Will wipe "
@@ -237,7 +239,7 @@ public class DarcsScm extends SCM implements Serializable {
      * @throws InterruptedException
      */
     DarcsRevisionState getRevisionState(final Launcher launcher, final TaskListener listener, final String repo)
-        throws InterruptedException {
+            throws InterruptedException {
         final DarcsCmd cmd;
 
         if (null == launcher) {
@@ -272,7 +274,7 @@ public class DarcsScm extends SCM implements Serializable {
      * @throws InterruptedException
      */
     private void createChangeLog(final Launcher launcher, final int numPatches, final FilePath workspace,
-        final File changeLog, final BuildListener listener) throws InterruptedException {
+            final File changeLog, final BuildListener listener) throws InterruptedException {
         if (0 == numPatches) {
             LOGGER.info("Creating empty changelog.");
             createEmptyChangeLog(changeLog, listener, "changelog");
@@ -305,7 +307,7 @@ public class DarcsScm extends SCM implements Serializable {
 
     @Override
     public boolean checkout(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace,
-        final BuildListener listener, final File changelogFile) throws IOException, InterruptedException {
+            final BuildListener listener, final File changelogFile) throws IOException, InterruptedException {
         final FilePath localPath = createLocalPath(workspace);
         final boolean existsRepoinWorkspace = localPath.act(new FileCallable<Boolean>() {
             private static final long serialVersionUID = 1L;
@@ -335,7 +337,7 @@ public class DarcsScm extends SCM implements Serializable {
      * @throws IOException
      */
     private int countPatches(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace,
-        final BuildListener listener) {
+            final BuildListener listener) {
         try {
             final DarcsCmd cmd = new DarcsCmd(launcher,
                     build.getEnvironment(listener),
@@ -362,7 +364,7 @@ public class DarcsScm extends SCM implements Serializable {
      * @throws IOException
      */
     private boolean pullRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace,
-        final BuildListener listener, final File changelogFile) throws InterruptedException, IOException {
+            final BuildListener listener, final File changelogFile) throws InterruptedException, IOException {
         LOGGER.info(String.format("Pulling repo from: %s", source));
         final int preCnt = countPatches(build, launcher, workspace, listener);
         LOGGER.info(String.format("Count of patches pre pulling is %d", preCnt));
@@ -397,7 +399,7 @@ public class DarcsScm extends SCM implements Serializable {
      * @throws InterruptedException
      */
     private boolean getRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace,
-        final BuildListener listener, final File changeLog) throws InterruptedException {
+            final BuildListener listener, final File changeLog) throws InterruptedException {
         LOGGER.info(String.format("Getting repo from: %s", source));
 
         try {
@@ -433,8 +435,8 @@ public class DarcsScm extends SCM implements Serializable {
     /**
      * Creates a local path relative to the given base.
      *
-     * If {@link #localDir} is not {@link null} and not empty a relative path to the given base is created,
-     * else the base pat itself is returned.     *
+     * If {@link #localDir} is not {@link null} and not empty a relative path to the given base is created, else the
+     * base pat itself is returned. *
      *
      * @param base base of the local path
      * @return local file path.
@@ -446,4 +448,11 @@ public class DarcsScm extends SCM implements Serializable {
 
         return base;
     }
+
+    @Initializer(before = InitMilestone.PLUGINS_STARTED)
+    public static void addAliases() {
+        Items.XSTREAM2.addCompatibilityAlias("org.jenkinsci.plugins.darcs.DarcsScm$DescriptorImpl",
+                DarcsScmDescriptor.class);
+    }
+
 }
