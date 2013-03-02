@@ -11,58 +11,98 @@ package org.jenkinsci.plugins.darcs;
 
 import hudson.model.AbstractBuild;
 import hudson.scm.ChangeLogParser;
-
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
- * Parses the output of darcs log.
+ * Parses the output of Darcs log.
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  * @author Ralph Lange <Ralph.Lange@gmx.de>
  */
-public class DarcsChangeLogParser extends ChangeLogParser {
+class DarcsChangeLogParser extends ChangeLogParser {
 
     /**
      * Logger facility.
      */
-    private static final Logger LOGGER = Logger.getLogger(DarcsChangeLogParser
-                                                          .class.getName());
+    private static final Logger LOGGER = Logger.getLogger(DarcsChangeLogParser.class.getName());
+    /**
+     * Custom SAX Parser.
+     */
+    private final DarcsSaxHandler handler;
+    /**
+     * Sanitizes XML character encoding.
+     */
+    private final DarcsXmlSanitizer sanitizer;
+    /**
+     * Reads the change log XML.
+     */
+    private final XMLReader xmlReader;
 
     /**
-     * Parses the darcs changelog file.
+     * Convenience constructor which initializes all dependencies.
      *
-     * The darcs changelog file is in XML format (as given by the command
-     * darcs changes --xml-output --summary).
+     * @throws SAXException if no default XMLReader class can be identified and instantiated.
+     */
+    public DarcsChangeLogParser() throws SAXException {
+        this(new DarcsSaxHandler(), new DarcsXmlSanitizer(), XMLReaderFactory.createXMLReader());
+    }
+
+    /**
+     * Dedicated constructor.
      *
-     * @param build
-     * @param changelogFile
-     * @return
-     * @throws IOException
-     * @throws SAXException
+     * @param handler implementation of a SAX parser
+     * @param sani sanitize to clean comments
+     * @param xmlReader reader to handle the XML input
+     */
+    public DarcsChangeLogParser(final DarcsSaxHandler handler, final DarcsXmlSanitizer sani, final XMLReader xmlReader) {
+        super();
+        this.handler = handler;
+        this.sanitizer = sani;
+        this.xmlReader = xmlReader;
+        this.xmlReader.setContentHandler(this.handler);
+        this.xmlReader.setErrorHandler(this.handler);
+    }
+
+    /**
+     * Parses the Darcs change log file.
+     *
+     * The Darcs change log file is in XML format (as given by the command
+     * {@literal darcs changes --xml-output --summary}).
+     *
+     * @param build the current build
+     * @param changelogFile the change log file
+     * @return change set list
+     * @throws IOException on read errors
+     * @throws SAXException on parse errors
      */
     @Override
-    public DarcsChangeSetList parse(AbstractBuild build, File changelogFile)
-    throws IOException, SAXException {
-        LOGGER.log(Level.INFO, "Parsing changelog file {0}", changelogFile.toString());
-
-        XMLReader         xmlReader = XMLReaderFactory.createXMLReader();
-        DarcsSaxHandler   handler   = new DarcsSaxHandler();
-        DarcsXmlSanitizer sani      = new DarcsXmlSanitizer();
-        StringReader      input     = new StringReader(sani.cleanse(changelogFile));
-
-        xmlReader.setContentHandler(handler);
-        xmlReader.setErrorHandler(handler);
+    public DarcsChangeSetList parse(final AbstractBuild build, final File changelogFile)
+        throws IOException, SAXException {
+        LOGGER.info(String.format("Parsing changelog file %s...", changelogFile.toString()));
+        final StringReader input = new StringReader(sanitizer.cleanse(changelogFile));
         xmlReader.parse(new InputSource(input));
-
         return new DarcsChangeSetList(build, handler.getChangeSets());
+    }
+
+    /**
+     * @see #parse(hudson.model.AbstractBuild, java.io.File)
+     *
+     * @param changeLog stream to read XML from
+     * @return change set list w/ current build null
+     * @throws IOException on read errors
+     * @throws SAXException on parse errors
+     */
+    public DarcsChangeSetList parse(final ByteArrayOutputStream changeLog) throws IOException, SAXException {
+        final StringReader input = new StringReader(sanitizer.cleanse(changeLog.toByteArray()));
+        xmlReader.parse(new InputSource(input));
+        return new DarcsChangeSetList(null, handler.getChangeSets());
     }
 }

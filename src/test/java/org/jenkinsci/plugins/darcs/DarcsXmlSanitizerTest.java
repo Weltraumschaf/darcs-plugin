@@ -7,88 +7,54 @@
  * this stuff. If we meet some day, and you think this stuff is worth it,
  * you can buy me a beer in return.
  */
-
 package org.jenkinsci.plugins.darcs;
 
 import java.io.UnsupportedEncodingException;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
  *
- * @author lange
+ * @author Ralph Lange <ralph.lange@gmx.de>
  */
 public class DarcsXmlSanitizerTest {
 
-    public DarcsXmlSanitizerTest() {
-    }
+    private final DarcsXmlSanitizer sut = new DarcsXmlSanitizer();
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of cleanse method, of class DarcsXmlSanitizer.
-     */
     @Test
-    public void testCleanse() {
-        System.out.println("cleanse");
-        DarcsXmlSanitizer sani = new DarcsXmlSanitizer();
-        try {
-            byte[] input = "foo <name>abcdefg</name> bar <comment>abcdefg</comment> foobar".getBytes("US-ASCII");
-            String output = "foo <name>abcdefg</name> bar <comment>abcdefg</comment> foobar";
-            String result = sani.cleanse(input);
-            assertEquals(output, result);
-        } catch (UnsupportedEncodingException e) {
-            System.out.println("Unsupported encoding exception" + e);
-        }
+    public void cleanse_usAscii() throws UnsupportedEncodingException {
+        final byte[] input = "foo <name>abcdefg</name> bar <comment>abcdefg</comment> foobar".getBytes("US-ASCII");
+        final String output = "foo <name>abcdefg</name> bar <comment>abcdefg</comment> foobar";
+        final String result = sut.cleanse(input);
+        assertEquals(output, result);
+    }
 
-        try {
-            byte[] input = "foo <name>äöüÄÖÜß</name> bar <comment>äöüÄÖÜß</comment> foobar".getBytes("UTF-8");
-            String output = "foo <name>äöüÄÖÜß</name> bar <comment>äöüÄÖÜß</comment> foobar";
-            String result = sani.cleanse(input);
-            assertEquals(output, result);
-        } catch (UnsupportedEncodingException e) {
-            System.out.println("Unsupported encoding exception" + e);
-        }
+    @Test
+    public void cleanse_utf8() throws UnsupportedEncodingException {
+        final byte[] input = "foo <name>äöüÄÖÜß</name> bar <comment>äöüÄÖÜß</comment> foobar".getBytes("UTF-8");
+        final String output = "foo <name>äöüÄÖÜß</name> bar <comment>äöüÄÖÜß</comment> foobar";
+        final String result = sut.cleanse(input);
+        assertEquals(output, result);
+    }
 
-        try {
-            byte[] input = "foo <name>äöüÄÖÜß</name> bar <comment>äöüÄÖÜß</comment> foobar".getBytes("ISO-8859-1");
-            String output = "foo <name>äöüÄÖÜß</name> bar <comment>äöüÄÖÜß</comment> foobar";
-            String result = sani.cleanse(input);
-            assertEquals(output, result);
-        } catch (UnsupportedEncodingException e) {
-            System.out.println("Unsupported encoding exception" + e);
-        }
+    @Test
+    public void cleanse_iso8859_1() throws UnsupportedEncodingException {
+        final byte[] input = "foo <name>äöüÄÖÜß</name> bar <comment>äöüÄÖÜß</comment> foobar".getBytes("ISO-8859-1");
+        final String output = "foo <name>äöüÄÖÜß</name> bar <comment>äöüÄÖÜß</comment> foobar";
+        final String result = sut.cleanse(input);
+        assertEquals(output, result);
+    }
 
-        try {
-            byte[] inp_a = "foo <name>äöüÄÖÜß</name> bar ".getBytes("ISO-8859-1");
-            byte[] inp_b = "<comment>äöüÄÖÜß</comment> foobar".getBytes("UTF-8");
-            byte[] input = new byte[inp_a.length + inp_b.length];
-            System.arraycopy(inp_a, 0, input, 0, inp_a.length);
-            System.arraycopy(inp_b, 0, input, inp_a.length, inp_b.length);
-            String output = "foo <name>äöüÄÖÜß</name> bar <comment>äöüÄÖÜß</comment> foobar";
-            String result = sani.cleanse(input);
-            assertEquals(output, result);
-        } catch (UnsupportedEncodingException e) {
-            System.out.println("Unsupported encoding exception" + e);
-        }
+    @Test
+    public void cleanse_utf8_iso8859_mixed() throws UnsupportedEncodingException {
+        final byte[] iso = "foo <name>äöüÄÖÜß</name> bar ".getBytes("ISO-8859-1");
+        final byte[] utf8 = "<comment>äöüÄÖÜß</comment> foobar".getBytes("UTF-8");
+        final byte[] input = new byte[iso.length + utf8.length];
+        System.arraycopy(iso, 0, input, 0, iso.length);
+        System.arraycopy(utf8, 0, input, iso.length, utf8.length);
+        final String output = "foo <name>äöüÄÖÜß</name> bar <comment>äöüÄÖÜß</comment> foobar";
+        final String result = sut.cleanse(input);
+        assertEquals(output, result);
     }
 
 }

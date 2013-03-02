@@ -10,54 +10,261 @@
 package org.jenkinsci.plugins.darcs;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
+import java.util.Map;
 import java.util.logging.Logger;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
+ * SAS based change log parser.
  *
- * @author sxs
+ * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
-public class DarcsSaxHandler extends DefaultHandler {
+class DarcsSaxHandler extends DefaultHandler {
 
+    /**
+     * Logging facility.
+     */
     private static final Logger LOGGER = Logger.getLogger(DarcsSaxHandler.class.getName());
+    /**
+     * True attribute value for boolean tag attributes.
+     */
+    private static final String ATTR_TRUE = "True";
+    /**
+     * False attribute value for boolean tag attributes.
+     */
+    private static final String ATTR_FALSE = "False";
 
-    public enum DarcsChangelogTag {
-        CHANGELOG,
-        PATCH,
-        NAME,
-        COMMENT,
-        SUMMARY,
-        MODIFY_FILE,
-        ADD_FILE,
-        REMOVE_FILE,
-        MOVE_FILE,
-        ADDED_LINES,
-        REMOVED_LINES,
-        ADD_DIRECTORY,
-        REMOVE_DIRECTORY;
+    /**
+     * The tags used in the change log XML.
+     */
+    private enum DarcsChangelogTag {
+
+        /**
+         * Tag {@literal <changelog>}.
+         */
+        CHANGELOG("changelog"),
+        /**
+         * Tag {@literal <patch>}.
+         */
+        PATCH("patch"),
+        /**
+         * Tag {@literal <name>}.
+         */
+        NAME("name"),
+        /**
+         * Tag {@literal <comment>}.
+         */
+        COMMENT("comment"),
+        /**
+         * Tag {@literal <summary>}.
+         */
+        SUMMARY("summary"),
+        /**
+         * Tag {@literal <modify_file>}.
+         */
+        MODIFY_FILE("modify_file"),
+        /**
+         * Tag {@literal <add_file>}.
+         */
+        ADD_FILE("add_file"),
+        /**
+         * Tag {@literal <remove_file>}.
+         */
+        REMOVE_FILE("remove_file"),
+        /**
+         * Tag {@literal <move>}.
+         */
+        MOVE_FILE("move"),
+        /**
+         * Tag {@literal <added_lines>}.
+         */
+        ADDED_LINES("added_lines"),
+        /**
+         * Tag {@literal <removed_lines>}.
+         */
+        REMOVED_LINES("removed_lines"),
+        /**
+         * Tag {@literal <add_directory>}.
+         */
+        ADD_DIRECTORY("add_directory"),
+        /**
+         * Tag {@literal <remove_directory>}.
+         */
+        REMOVE_DIRECTORY("remove_directory");
+        /**
+         * Lookup of string literal to tag.
+         */
+        private static final Map<String, DarcsChangelogTag> LOOKUP = new HashMap<String, DarcsChangelogTag>();
+
+        static {
+            for (final DarcsChangelogTag tag : DarcsChangelogTag.values()) {
+                LOOKUP.put(tag.getTagName().toLowerCase(), tag);
+            }
+        }
+        /**
+         * Literal tag name.
+         */
+        private final String tagName;
+
+        /**
+         * Dedicated constructor.
+         *
+         * @param tagName the string between the angle brackets.
+         */
+        private DarcsChangelogTag(final String tagName) {
+            this.tagName = tagName;
+        }
+
+        /**
+         * Get the tag name.
+         *
+         * @return the tag name
+         */
+        public String getTagName() {
+            return tagName;
+        }
+
+        /**
+         * Returns the tag enum to a literal tag name.
+         *
+         * @param tagName literal tag name, part between the angle brackets
+         * @return may return null, if tag name is unknown
+         */
+        static DarcsChangelogTag forTagName(final String tagName) {
+            if (LOOKUP.containsKey(tagName.toLowerCase())) {
+                return LOOKUP.get(tagName);
+            }
+
+            return null;
+        }
     }
 
-    private DarcsChangelogTag currentTag;
-    private DarcsChangeSet currentChangeset;
-    private boolean ready;
-    private List<DarcsChangeSet> changeSets;
-    private StringBuilder literal;
+    /**
+     * Attributes the {@literal <patch>} has.
+     */
+    private enum DarcsPatchTagAttribute {
 
+        /**
+         * Author attribute.
+         */
+        AUTHOR("author"),
+        /**
+         * date attribute.
+         */
+        DATE("date"),
+        /**
+         * Local date attribute.
+         */
+        LOCAL_DATE("local_date"),
+        /**
+         * Hash attribute.
+         */
+        HASH("hash"),
+        /**
+         * Inverted attribute.
+         */
+        INVERTED("inverted");
+        /**
+         * Name of the attribute.
+         */
+        private final String name;
+
+        /**
+         * Dedicated constructor.
+         *
+         * @param name of the attribute
+         */
+        private DarcsPatchTagAttribute(String name) {
+            this.name = name;
+        }
+
+        /**
+         * Get the attribute name.
+         *
+         * @return lower cased attribute name
+         */
+        public String getName() {
+            return name;
+        }
+    }
+
+    /**
+     * Attributes the {@literal <move>} has.
+     */
+    private enum DarcsMoveTagAttribute {
+        /** From attribute. */
+        FROM("from"),
+        /** To attribute. */
+        TO("to");
+        /**
+         * Name of the attribute.
+         */
+        private final String name;
+
+        /**
+         * Dedicated constructor.
+         *
+         * @param name of the attribute
+         */
+        private DarcsMoveTagAttribute(String name) {
+            this.name = name;
+        }
+
+        /**
+         * Get the attribute name.
+         *
+         * @return lower cased attribute name
+         */
+        public String getName() {
+            return name;
+        }
+    }
+    /**
+     * The current parsed tag.
+     */
+    private DarcsChangelogTag currentTag;
+    /**
+     * Current processed change set.
+     */
+    private DarcsChangeSet currentChangeSet;
+    /**
+     * Signals that parsing has ended.
+     */
+    private boolean ready;
+    /**
+     * Change sets collected during the parse process.
+     */
+    private final List<DarcsChangeSet> changeSets = new ArrayList<DarcsChangeSet>();
+    /**
+     * Buffers scanned literals.
+     */
+    private StringBuilder literalBuffer = new StringBuilder();
+
+    /**
+     * Dedicated constructor.
+     */
     public DarcsSaxHandler() {
         super();
-        ready = false;
-        changeSets = new ArrayList<DarcsChangeSet>();
     }
 
+    /**
+     * Returns if the parsing of the XML has ended.
+     *
+     * @return {@code true} if end of document reached, else {@code false}
+     */
     public boolean isReady() {
         return ready;
     }
 
+    /**
+     * Get the list of parsed change sets.
+     *
+     * @return may be an empty list, but never {@code null}
+     */
     public List<DarcsChangeSet> getChangeSets() {
         return changeSets;
     }
@@ -67,122 +274,110 @@ public class DarcsSaxHandler extends DefaultHandler {
         ready = true;
     }
 
-    private void recognizeTag(String tagName) {
-        if ("changelog".equals(tagName)) {
-            currentTag = DarcsChangelogTag.CHANGELOG;
-        } else if ("patch".equals(tagName)) {
-            currentTag = DarcsChangelogTag.PATCH;
-        } else if ("name".equals(tagName)) {
-            currentTag = DarcsChangelogTag.NAME;
-        } else if ("comment".equals(tagName)) {
-            currentTag = DarcsChangelogTag.COMMENT;
-        } else if ("summary".equals(tagName)) {
-            currentTag = DarcsChangelogTag.SUMMARY;
-        } else if ("modify_file".equals(tagName)) {
-            currentTag = DarcsChangelogTag.MODIFY_FILE;
-        } else if ("add_file".equals(tagName)) {
-            currentTag = DarcsChangelogTag.ADD_FILE;
-        } else if ("remove_file".equals(tagName)) {
-            currentTag = DarcsChangelogTag.REMOVE_FILE;
-        } else if ("move".equals(tagName)) {
-            currentTag = DarcsChangelogTag.MOVE_FILE;
-        } else if ("added_lines".equals(tagName)) {
-            currentTag = DarcsChangelogTag.ADDED_LINES;
-        } else if ("removed_lines".equals(tagName)) {
-            currentTag = DarcsChangelogTag.REMOVED_LINES;
-        } else if ("add_directory".equals(tagName)) {
-            currentTag = DarcsChangelogTag.ADD_DIRECTORY;
-        } else if ("remove_directory".equals(tagName)) {
-            currentTag = DarcsChangelogTag.REMOVE_DIRECTORY;
+    /**
+     * Recognizes the current scanned tag.
+     *
+     * Logs a warning if unrecognizable tag occurred and set {@link #currentTag} to {@value null}.
+     *
+     * @param tagName scanned tag name
+     */
+    private void recognizeTag(final String tagName) {
+        final DarcsChangelogTag tag = DarcsChangelogTag.forTagName(tagName);
+
+        if (null == tag) {
+            LOGGER.warning(String.format("Unrecognized tag <%s>!", tagName));
         } else {
-            LOGGER.log(Level.WARNING, "Unrecognized tag <" + tagName + ">!");
+            currentTag = tag;
         }
     }
 
     @Override
-    public void startElement(String uri, String name, String qName, Attributes atts) {
+    public void startElement(final String uri, final String name, final String qName, final Attributes atts) {
         if (DarcsChangelogTag.MODIFY_FILE == currentTag) {
-            currentChangeset.getModifiedPaths().add(literal.toString());
+            currentChangeSet.getModifiedPaths().add(literalBuffer.toString());
         }
-        
+
         recognizeTag(qName);
 
         if (DarcsChangelogTag.PATCH == currentTag) {
-            currentChangeset = new DarcsChangeSet();
-            currentChangeset.setAuthor(atts.getValue("author"));
-            currentChangeset.setDate(atts.getValue("date"));
-            currentChangeset.setLocalDate(atts.getValue("local_date"));
-            currentChangeset.setHash(atts.getValue("hash"));
+            currentChangeSet = new DarcsChangeSet();
+            currentChangeSet.setAuthor(atts.getValue(DarcsPatchTagAttribute.AUTHOR.getName()));
+            currentChangeSet.setDate(atts.getValue(DarcsPatchTagAttribute.DATE.getName()));
+            currentChangeSet.setLocalDate(atts.getValue(DarcsPatchTagAttribute.LOCAL_DATE.getName()));
+            currentChangeSet.setHash(atts.getValue(DarcsPatchTagAttribute.HASH.getName()));
 
-            if (atts.getValue("inverted").equals("True")) {
-                currentChangeset.setInverted(true);
-            } else if (atts.getValue("inverted").equals("False")) {
-                currentChangeset.setInverted(false);
+            if (ATTR_TRUE.equalsIgnoreCase(atts.getValue(DarcsPatchTagAttribute.INVERTED.getName()))) {
+                currentChangeSet.setInverted(true);
+            } else if (ATTR_FALSE.equalsIgnoreCase(atts.getValue(DarcsPatchTagAttribute.INVERTED.getName()))) {
+                currentChangeSet.setInverted(false);
             }
         } else if (DarcsChangelogTag.MOVE_FILE == currentTag) {
-            currentChangeset.getDeletedPaths().add(atts.getValue("from"));
-            currentChangeset.getAddedPaths().add(atts.getValue("to"));
+            currentChangeSet.getDeletedPaths().add(atts.getValue(DarcsMoveTagAttribute.FROM.getName()));
+            currentChangeSet.getAddedPaths().add(atts.getValue(DarcsMoveTagAttribute.TO.getName()));
         }
 
-        literal = new StringBuilder();
+        literalBuffer = new StringBuilder();
     }
 
     @Override
-    public void endElement(String uri, String name, String qName) {
+    public void endElement(final String uri, final String name, final String qName) {
         recognizeTag(qName);
-        
+
         switch (currentTag) {
             case PATCH:
-                changeSets.add(currentChangeset);
+                changeSets.add(currentChangeSet);
                 break;
             case NAME:
-                currentChangeset.setName(literal.toString());
+                currentChangeSet.setName(literalBuffer.toString());
                 break;
             case COMMENT:
-                String comment = stripIgnoreThisFromComment(literal.toString());
-                currentChangeset.setComment(comment);
+                final String comment = stripIgnoreThisFromComment(literalBuffer.toString());
+                currentChangeSet.setComment(comment);
                 break;
             case ADD_FILE:
             case ADD_DIRECTORY:
-                currentChangeset.getAddedPaths().add(literal.toString());
+                currentChangeSet.getAddedPaths().add(literalBuffer.toString());
                 break;
             case REMOVE_FILE:
             case REMOVE_DIRECTORY:
-                currentChangeset.getDeletedPaths().add(literal.toString());
+                currentChangeSet.getDeletedPaths().add(literalBuffer.toString());
                 break;
+            default:
+                LOGGER.info(String.format("Ignored tag <%s>!", currentTag));
         }
-        
+
         currentTag = null;
     }
 
     /**
-     * Strips out strings like Ignore-this: 606c40ef0d257da9b7a916e7f1c594aa.
-     * 
-     * It is asumed that after the hash a single line break occures.
-	 *
-     * @param String comment
-     * @return boolean
+     * Strips out strings like "Ignore-this: 606c40ef0d257da9b7a916e7f1c594aa".
+     *
+     * It is assumed that after the hash a single line break occurred.
+     *
+     * @param comment comment message
+     * @return cleaned comment message
      */
-    public static String stripIgnoreThisFromComment(String comment) {
+    static String stripIgnoreThisFromComment(final String comment) {
         if (comment.startsWith("Ignore-this:")) {
-            int end = comment.indexOf("\n");
-            
+            final int end = comment.indexOf("\n");
+
             if (-1 == end) {
                 return "";
             }
-            
+
             return comment.substring(end + 1);
         }
-        
+
         return comment;
     }
-    
-	/**
-	 * 
-	 * @param char c
-	 * @return boolean
-	 */
-    private boolean isWhiteSpace(char c) {
+
+    /**
+     * Determine whether a character is a whitespace character or not.
+     *
+     * @param c character to check
+     * @return {@code true} if passed in char is one of \n, \r, \t, ' '; else {@code false}
+     */
+    private boolean isWhiteSpace(final char c) {
         switch (c) {
             case '\n':
             case '\r':
@@ -194,33 +389,41 @@ public class DarcsSaxHandler extends DefaultHandler {
         }
     }
 
+    /**
+     * Return whether to skip white spaces.
+     *
+     * White spaces are not skipped if parsing the text of name and comment tags.
+     *
+     * @return {@code false} if current tag is {@value DarcsChangelogTag#NAME} or {@value DarcsChangelogTag#COMMENT};
+     * else {@code false}
+     */
     private boolean skipWhiteSpace() {
         return DarcsChangelogTag.NAME != currentTag && DarcsChangelogTag.COMMENT != currentTag;
     }
 
     @Override
-    public void characters(char ch[], int start, int length) {
+    public void characters(final char[] ch, final int start, final int length) {
         for (int i = start; i < start + length; i++) {
             if (isWhiteSpace(ch[i]) && skipWhiteSpace()) {
                 continue;
             }
 
-            literal.append(ch[i]);
+            literalBuffer.append(ch[i]);
         }
     }
 
     @Override
-    public void error(SAXParseException saxpe) {
-        LOGGER.log(Level.WARNING, saxpe.toString());
+    public void error(final SAXParseException saxpe) {
+        LOGGER.warning(saxpe.toString());
     }
 
     @Override
-    public void fatalError(SAXParseException saxpe) {
-        LOGGER.log(Level.WARNING, saxpe.toString());
+    public void fatalError(final SAXParseException saxpe) {
+        LOGGER.warning(saxpe.toString());
     }
 
     @Override
-    public void warning(SAXParseException saxpe) {
-        LOGGER.log(Level.WARNING, saxpe.toString());
+    public void warning(final SAXParseException saxpe) {
+        LOGGER.warning(saxpe.toString());
     }
 }

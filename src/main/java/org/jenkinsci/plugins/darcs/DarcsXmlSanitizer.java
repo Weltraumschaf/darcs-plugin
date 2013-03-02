@@ -24,33 +24,53 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Darcs XML Sanitizer
+ * Darcs XML Sanitizer.
  *
- * The output of "darcs changes --xml-output" might be invalid XML.
- * Darcs treats the patch comments as binary blobs, and the changes command
- * returns them as-is inside the XML structure, without ensuring that the encoding
- * is consistent. If some of the patches in your repository were recorded on UTF-8
- * machines and others on e.g. ISO-8859 machines, the XML output will contain
- * characters in both encodings.
+ * The output of "darcs changes --xml-output" might be invalid XML. Darcs treats the patch comments as binary blobs, and
+ * the changes command returns them as-is inside the XML structure, without ensuring that the encoding is consistent. If
+ * some of the patches in your repository were recorded on UTF-8 machines and others on e.g. ISO-8859 machines, the XML
+ * output will contain characters in both encodings.
  *
- * Some parsers (e.g. xerxes) choke on invalid characters in the XML input, so
- * this sanitizer is designed to ensure that the encoding is consistent.
+ * Some parsers (e.g. xerxes) choke on invalid characters in the XML input, so this sanitizer is designed to ensure that
+ * the encoding is consistent.
  *
  * @author Ralph Lange <Ralph.Lange@gmx.de>
  */
+class DarcsXmlSanitizer {
 
-public class DarcsXmlSanitizer {
+    private static final List<String> ADDL_CHARSETS = Arrays.asList("ISO-8859-1", "UTF-16");
+    private final List<CharsetDecoder> decoders = new ArrayList<CharsetDecoder>();
 
-    static final List<String> addlCharsets =
-            Arrays.asList("ISO-8859-1", "UTF-16");
-    List<CharsetDecoder> decoders = new ArrayList<CharsetDecoder>();
-    private enum State {OUTSIDE, IN_NAME, IN_COMMENT};
-    
+    /**
+     * States which indicates where in the comment string we are.
+     */
+    private enum State {
+
+        /**
+         * Outside a name or comment tag.
+         */
+        OUTSIDE,
+        /**
+         * Inside a name tag.
+         */
+        IN_NAME,
+        /**
+         * Inside a comment tag.
+         */
+        IN_COMMENT;
+    };
+
+    /**
+     * Dedicated constructor.
+     */
     public DarcsXmlSanitizer() {
+        super();
         decoders.add(Charset.forName("UTF-8").newDecoder());
-        for (String cs : addlCharsets) {
+
+        for (final String cs : ADDL_CHARSETS) {
             decoders.add(Charset.forName(cs).newDecoder());
         }
+
         // last resort: UTF-8 with replacement
         decoders.add(Charset.forName("UTF-8").newDecoder()
                 .onMalformedInput(CodingErrorAction.REPLACE)
@@ -58,14 +78,21 @@ public class DarcsXmlSanitizer {
     }
 
     /**
-     * Knuth-Morris-Pratt pattern matching algorithm
+     * Knuth-Morris-Pratt pattern matching algorithm.
+     *
+     * @param data
+     * @param start
+     * @param pattern
+     * @return
      */
-    private static int positionBeforeNext(byte[] data, int start, byte[] pattern) {
-        int[] failure = computeFailure(pattern);
+    private static int positionBeforeNext(final byte[] data, final int start, final byte[] pattern) {
+        final int[] failure = computeFailure(pattern);
         int j = 0;
+
         if (0 == data.length || start >= data.length) {
             return -1;
         }
+
         for (int i = start; i < data.length; i++) {
             while (j > 0 && pattern[j] != data[i]) {
                 j = failure[j - 1];
@@ -77,82 +104,114 @@ public class DarcsXmlSanitizer {
                 return i - pattern.length + 1;
             }
         }
+
         return -1;
     }
 
-    private static int positionAfterNext(byte[] data, int start, byte[] pattern) {
+    /**
+     *
+     * @param data
+     * @param start
+     * @param pattern
+     * @return
+     */
+    private static int positionAfterNext(final byte[] data, final int start, final byte[] pattern) {
         int pos = positionBeforeNext(data, start, pattern);
+
         if (-1 != pos) {
             pos += pattern.length;
         }
+
         return pos;
     }
 
     /**
-     * Computes the failure function using a bootstrapping process,
-     * where the pattern is matched against itself.
+     * Computes the failure function using a bootstrapping process, where the pattern is matched against itself.
+     *
+     * @param pattern
+     * @return
      */
-    private static int[] computeFailure(byte[] pattern) {
-        int[] failure = new int[pattern.length];
+    private static int[] computeFailure(final byte[] pattern) {
+        final int[] failure = new int[pattern.length];
         int j = 0;
+
         for (int i = 1; i < pattern.length; i++) {
             while (j > 0 && pattern[j] != pattern[i]) {
                 j = failure[j - 1];
             }
+
             if (pattern[j] == pattern[i]) {
                 j++;
             }
+
             failure[i] = j;
         }
+
         return failure;
     }
 
-    public String cleanse(byte[] input) {
-        ByteBuffer in;
-        CharBuffer cb = CharBuffer.allocate(input.length);
+    /**
+     * Cleanse the mixed encoding in the input byte array.
+     *
+     * @param input
+     * @return
+     */
+    public String cleanse(final byte[] input) {
+        final CharBuffer cb = CharBuffer.allocate(input.length);
         CoderResult result;
         State state = State.OUTSIDE;
-        int curr_pos = 0;
-        int next_name, next_comm;
-        int next = 0;
+        int currentPosition = 0;
+        int nextPosition = 0;
+        int nextName;
+        int nextComment;
 
-        while (curr_pos < input.length) {
+        while (currentPosition < input.length) {
             switch (state) {
                 case OUTSIDE:
-                    next_name = positionAfterNext(input, curr_pos, "<name>".getBytes());
-                    next_comm = positionAfterNext(input, curr_pos, "<comment>".getBytes());
-                    if (-1 != next_name && next_name < next_comm) {
-                        next = next_name;
+                    nextName = positionAfterNext(input, currentPosition, "<name>".getBytes());
+                    nextComment = positionAfterNext(input, currentPosition, "<comment>".getBytes());
+
+                    if (-1 != nextName && nextName < nextComment) {
+                        nextPosition = nextName;
                         state = State.IN_NAME;
                     } else {
-                        next = next_comm;
+                        nextPosition = nextComment;
                         state = State.IN_COMMENT;
                     }
-                    if (-1 == next) {
-                        next = input.length;
+
+                    if (-1 == nextPosition) {
+                        nextPosition = input.length;
                         state = State.OUTSIDE;
                     }
                     break;
                 case IN_NAME:
-                    next = positionBeforeNext(input, next, "</name>".getBytes());
-                    if (-1 != next) {
+                    nextPosition = positionBeforeNext(input, nextPosition, "</name>".getBytes());
+
+                    if (-1 != nextPosition) {
                         state = State.OUTSIDE;
                     }
+
                     break;
                 case IN_COMMENT:
-                    next = positionBeforeNext(input, next, "</comment>".getBytes());
-                    if (-1 != next) {
+                    nextPosition = positionBeforeNext(input, nextPosition, "</comment>".getBytes());
+
+                    if (-1 != nextPosition) {
                         state = State.OUTSIDE;
                     }
+
                     break;
+                default:
+                    throw new IllegalStateException(String.format("Illegal state %s!", state));
             }
 
-            in = ByteBuffer.wrap(input, curr_pos, next - curr_pos);
+            final ByteBuffer in = ByteBuffer.wrap(input, currentPosition, nextPosition - currentPosition);
             in.mark();
             cb.mark();
-            for (CharsetDecoder dec : decoders) {
+
+            for (final CharsetDecoder dec : decoders) {
                 dec.reset();
                 result = dec.decode(in, cb, true);
+
                 if (result.isError()) {
                     in.reset();
                     cb.reset();
@@ -162,16 +221,27 @@ public class DarcsXmlSanitizer {
                     break;
                 }
             }
-            curr_pos += next - curr_pos;
+            currentPosition += nextPosition - currentPosition;
         }
+
         cb.flip();
         return cb.toString();
     }
 
-    private byte[] readFile(File file) throws IOException {
+    /**
+     * @see #cleanse(byte[])
+     * @param file
+     * @return
+     * @throws IOException
+     */
+    public String cleanse(final File file) throws IOException {
+        return cleanse(readFile(file));
+    }
+
+    private byte[] readFile(final File file) throws IOException {
         // Taken from www.exampledepot.com
         // Get the size of the file
-        long length = file.length();
+        final long length = file.length();
 
         // You cannot create an array using a long type.
         // It needs to be an int type.
@@ -182,15 +252,23 @@ public class DarcsXmlSanitizer {
         }
 
         // Create the byte array to hold the data
-        byte[] bytes = new byte[(int) length];
-
-        // Read in the bytes
-        InputStream is = new FileInputStream(file);
+        final byte[] bytes = new byte[(int) length];
         int offset = 0;
-        int numRead = 0;
-        while (offset < bytes.length
-                && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
-            offset += numRead;
+        InputStream is = null;
+
+        try {
+            // Read in the bytes
+            is = new FileInputStream(file);
+
+            int numRead = 0;
+            while (offset < bytes.length
+                    && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
+                offset += numRead;
+            }
+        } finally {
+            if (null != is) {
+                is.close();
+            }
         }
 
         // Ensure all the bytes have been read in
@@ -198,12 +276,6 @@ public class DarcsXmlSanitizer {
             throw new IOException("Could not completely read file " + file.getName());
         }
 
-        // Close the input stream and return bytes
-        is.close();
         return bytes;
-    }
-
-    public String cleanse(File file) throws IOException {
-        return cleanse(readFile(file));
     }
 }

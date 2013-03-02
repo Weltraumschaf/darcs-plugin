@@ -7,44 +7,36 @@
  * this stuff. If we meet some day, and you think this stuff is worth it,
  * you can buy me a beer in return.
  */
-
 package org.jenkinsci.plugins.darcs.browsers;
 
 import org.jenkinsci.plugins.darcs.DarcsChangeSet;
 
-import junit.framework.TestCase;
 import org.junit.Ignore;
 
 import java.io.IOException;
 import java.net.URL;
 import java.net.MalformedURLException;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
  * @author sxs
  */
-public class DarcsdenTest extends TestCase {
+public class DarcsdenTest {
 
-    public DarcsdenTest(String testName) {
-        super(testName);
-    }
-
-    @Ignore("not ready yet")
-    public void testImplementSome() {
-
-    }
-
+    @Test
     public void testGetChangeSetLink() {
         try {
-            String         hash = "20110214201356-7677a-15b1d7313611ef85de46d8daf57123a365d5b800.gz";
-            String         url  = "http://darcsden.com/Weltraumschaf/test";
-            DarcsChangeSet cs   = new DarcsChangeSet();
-            Darcsden       sut  = new Darcsden(new URL(url));
+            final String hash = "20110214201356-7677a-15b1d7313611ef85de46d8daf57123a365d5b800.gz";
+            final String url = "http://darcsden.com/Weltraumschaf/test";
+            final DarcsChangeSet cs = new DarcsChangeSet();
+            final Darcsden sut = new Darcsden(new URL(url));
 
             cs.setHash(hash);
             assertEquals("",
-                         url + "/patch/20110214201356-7677a",
-                         sut.getChangeSetLink(cs).toString());
+                    url + "/patch/20110214201356-7677a",
+                    sut.getChangeSetLink(cs).toString());
         } catch (MalformedURLException e) {
             fail("Can not create SUT!");
         } catch (IOException e) {
@@ -52,6 +44,7 @@ public class DarcsdenTest extends TestCase {
         }
     }
 
+    @Test
     @Ignore("not ready yet")
     public void testGetFileDiffLink() {
     }

@@ -1,4 +1,24 @@
 <changelog>
+<patch author='ich@weltraumschaf.de' date='20130224204531' local_date='Sun Feb 24 21:45:31 CET 2011' inverted='True' hash='20130224204531-7677a-1b935a82ba6408ffa9add3642ab52f233fe4ef54.gz'>
+    <name>Readd Bar.java</name>
+    <comment>Ignore-this: 7c0271b552e03728bbc7d4f33cb545f9
+This is an other comment.</comment>
+    <summary>
+    <add_file>
+    Bar.java
+    </add_file>
+    </summary>
+</patch>    
+<patch author='ich@weltraumschaf.de' date='20130224203531' local_date='Sun Feb 24 21:35:31 CET 2011' inverted='False' hash='20130224203531-7677a-1b935a82ba6408ffa9add3642ab52f233ff4ef54.gz'>
+    <name>Remove Bar.java</name>
+    <comment>Ignore-this: 7c0271b552e03728bbc7d4f33cb545f9
+This is a comment.</comment>
+    <summary>
+    <remove_file>
+    Bar.java
+    </remove_file>
+    </summary>
+</patch>
 <patch author='ich@weltraumschaf.de' date='20110224143546' local_date='Thu Feb 24 15:35:46 CET 2011' inverted='False' hash='20110224143546-7677a-359f8967374ac52adc87dedac6f4ad458a7b6446.gz'>
 	<name>German Umlauts in ISO8859-15 encoding: ‰ˆ¸ƒ÷‹ﬂ</name>
 	<comment>Ignore-this: 7c74b888addef772a93a63b69a144836</comment>

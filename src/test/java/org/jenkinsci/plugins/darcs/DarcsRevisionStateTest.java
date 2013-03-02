@@ -7,71 +7,58 @@
  * this stuff. If we meet some day, and you think this stuff is worth it,
  * you can buy me a beer in return.
  */
-
 package org.jenkinsci.plugins.darcs;
 
-import java.util.ArrayList;
-import java.util.List;
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
-public class DarcsRevisionStateTest extends TestCase {
-    
-    protected static DarcsChangeSetList createChangeSetList(int count) {
-        List<DarcsChangeSet> list = new ArrayList<DarcsChangeSet>();
-        
-        for (int i = 0; i < count ; i++) {
-            DarcsChangeSet cs = DarcsChangeSetListTest.createChangeSet(Integer.toString(i));
-            list.add(cs);
-        }
-        
-        return new DarcsChangeSetList(list);
-    }
-    
-    public DarcsRevisionStateTest(String testName) {
-        super(testName);
-    }
+public class DarcsRevisionStateTest {
 
-	public void testToString() {
+    @Test
+    public void testToString() {
         DarcsChangeSetList csl;
         DarcsRevisionState sut;
-                
-        csl = createChangeSetList(0);
-        sut = new DarcsRevisionState(csl);
-        assertEquals(csl.digest(), sut.toString());
-        
-        csl = createChangeSetList(3);
-        sut = new DarcsRevisionState(csl);
-        assertEquals(csl.digest(), sut.toString());
-	}
 
-	public void testEquals() {
-        DarcsChangeSetList csl1 = createChangeSetList(3),
-                           csl2 = createChangeSetList(2);
-        DarcsRevisionState sut1, sut2;
-        
+        csl = Helper.createChangeSetList(0);
+        sut = new DarcsRevisionState(csl);
+        assertEquals(csl.digest(), sut.toString());
+
+        csl = Helper.createChangeSetList(3);
+        sut = new DarcsRevisionState(csl);
+        assertEquals(csl.digest(), sut.toString());
+    }
+
+    @Test
+    public void testEquals() {
+        final DarcsChangeSetList csl1 = Helper.createChangeSetList(3);
+        final DarcsChangeSetList csl2 = Helper.createChangeSetList(2);
+        DarcsRevisionState sut1;
+        DarcsRevisionState sut2;
+
         sut1 = new DarcsRevisionState(csl1);
         sut2 = new DarcsRevisionState(csl1);
         assertTrue(sut1.equals(sut2));
         assertTrue(sut2.equals(sut1));
-        
+
         sut2 = new DarcsRevisionState(csl2);
         assertFalse(sut1.equals(sut2));
         assertFalse(sut2.equals(sut1));
-	}
-    
+    }
+
+    @Test
     public void testHashCode() {
         DarcsChangeSetList csl;
         DarcsRevisionState sut;
-                
-        csl = createChangeSetList(0);
+
+        csl = Helper.createChangeSetList(0);
         sut = new DarcsRevisionState(csl);
         assertEquals(csl.hashCode(), sut.hashCode());
-        
-        csl = createChangeSetList(3);
+
+        csl = Helper.createChangeSetList(3);
         sut = new DarcsRevisionState(csl);
         assertEquals(csl.hashCode(), sut.hashCode());
     }

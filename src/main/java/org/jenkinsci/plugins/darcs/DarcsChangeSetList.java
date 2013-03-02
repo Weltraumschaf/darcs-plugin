@@ -22,43 +22,56 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * List of changeset that went into a particular build.
+ * List of change set that went into a particular build.
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
 
     /**
+     * Kind description string.
+     */
+    private static final String KIND = "darcs";
+    /**
+     * Used to mask bytes.
+     */
+    private static final int BYTE_MASK = 0xFF;
+
+    /**
      * Set of the changes.
      */
     private final List<DarcsChangeSet> changeSets;
     /**
-     * Lazy computed digest over all changeset hashes.
+     * Lazy computed digest over all change set hashes.
      */
     private String digest;
 
+    /**
+     * Convenience constructor with empty change set list.
+     */
     public DarcsChangeSetList() {
         this(new ArrayList<DarcsChangeSet>());
     }
-    
+
     /**
      * Constructs without build.
-     * 
-     * @param changes 
+     *
+     * @param changes list of patches
      */
-    public DarcsChangeSetList(List<DarcsChangeSet> changes) {
+    public DarcsChangeSetList(final List<DarcsChangeSet> changes) {
         this(null, changes);
     }
-    
+
     /**
      * Constructs with build and changes.
-     * 
-     * @param build
-     * @param changes 
+     *
+     * @param build current build associated with change set
+     * @param changes list of patches
      */
-    public DarcsChangeSetList(AbstractBuild build, List<DarcsChangeSet> changes) {
+    @SuppressWarnings("LeakingThisInConstructor") // because its' at the end od constructor
+    public DarcsChangeSetList(final AbstractBuild build, final List<DarcsChangeSet> changes) {
         super(build);
-        
+
         // we want the changesets allways in same order for digesting
         Collections.sort(changes, new Comparator<DarcsChangeSet>() {
             public int compare(DarcsChangeSet a, DarcsChangeSet b) {
@@ -67,16 +80,11 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
         });
         changeSets = Collections.unmodifiableList(changes);
 
-        for (DarcsChangeSet log : changes) {
+        for (final DarcsChangeSet log : changes) {
             log.setParent(this);
         }
     }
 
-    /**
-     * Returns whether the change set list is empty or not.
-     * 
-     * @return 
-     */
     @Override
     public boolean isEmptySet() {
         return getChangeSets().isEmpty();
@@ -84,8 +92,8 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
 
     /**
      * Returns an iterator for the list.
-     * 
-     * @return 
+     *
+     * @return change set iterator
      */
     public Iterator<DarcsChangeSet> iterator() {
         return getChangeSets().iterator();
@@ -93,8 +101,8 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
 
     /**
      * Returns the count of change sets.
-     * 
-     * @return 
+     *
+     * @return size of changes
      */
     public int size() {
         return getChangeSets().size();
@@ -102,8 +110,8 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
 
     /**
      * Returns the change set list.
-     * 
-     * @return 
+     *
+     * @return change set list
      */
     public List<DarcsChangeSet> getChangeSets() {
         return changeSets;
@@ -111,42 +119,41 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
 
     /**
      * Returns the kind as string.
-     * 
-     * @return 
+     *
+     * @return {@value #KIND}
      */
     @Override
     public String getKind() {
-        return "darcs";
+        return KIND;
     }
 
     /**
      * Calculates md5 digest over all changesets darcs hashes.
      *
      * Inspired by http://www.stratos.me/2008/05/java-string-calculate-md5/
-     * 
-     * @return
+     *
+     * @return md5 hashed string
      */
-    protected String calcDigest() {
-        StringBuilder res = new StringBuilder();
+    private String calcDigest() {
+        final StringBuilder res = new StringBuilder();
 
         try {
-            MessageDigest algorithm = MessageDigest.getInstance("MD5");
+            final MessageDigest algorithm = MessageDigest.getInstance("MD5");
             algorithm.reset();
 
             if (isEmptySet()) {
                 algorithm.update("".getBytes());
             } else {
-                for (DarcsChangeSet cs : this) {
+                for (final DarcsChangeSet cs : this) {
                     algorithm.update(cs.getHash().getBytes());
                 }
             }
-            
-            byte[] md5 = algorithm.digest();
-            String tmp = "";
+
+            final byte[] md5 = algorithm.digest();
 
             for (int i = 0; i < md5.length; i++) {
-                tmp = (Integer.toHexString(0xFF & md5[i]));
-                
+                final String tmp = (Integer.toHexString(BYTE_MASK & md5[i]));
+
                 if (tmp.length() == 1) {
                     res.append("0");
                 }
@@ -161,9 +168,11 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
     }
 
     /**
-     * Returns the digest for the whole changeset.
+     * Returns the digest for the whole change set.
      *
-     * @return
+     * Lazy computes the digest one time.
+     *
+     * @return md5 hashed digest
      */
     public String digest() {
         if (null == digest) {
@@ -173,29 +182,16 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
         return digest;
     }
 
-    /**
-     * Compares over the digest of the change set list.
-     * 
-     * @param other
-     * @return 
-     */
     @Override
-    public boolean equals(Object other) {
-        boolean result = false;
-
-        if (other instanceof DarcsChangeSetList) {
-            DarcsChangeSetList that = (DarcsChangeSetList) other;
-            return digest().equals(that.digest());
+    public boolean equals(final Object object) {
+        if (!(object instanceof DarcsChangeSetList)) {
+            return false;
         }
 
-        return result;
+        final DarcsChangeSetList other = (DarcsChangeSetList) object;
+        return digest().equals(other.digest());
     }
 
-    /**
-     * Returns the hash code for the digest string.
-     * 
-     * @return 
-     */
     @Override
     public int hashCode() {
         return digest().hashCode();
@@ -203,6 +199,7 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
 
     @Override
     public String toString() {
-        return "DarcsChangeSetList{changeSets=" + changeSets + ", digest=" + digest + '}';
+        return String.format("DarcsChangeSetList{changeSets=%s, digest=%s}", changeSets, digest());
     }
+
 }

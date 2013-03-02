@@ -35,11 +35,41 @@ import org.kohsuke.stapler.StaplerRequest;
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public final class Darcsden extends DarcsRepositoryBrowser {
+
+    /**
+     * Serial version UID.
+     */
+    private static final long serialVersionUID = 1L;
+
+    public final URL url;
+
+    @DataBoundConstructor
+    public Darcsden(final URL url) throws MalformedURLException {
+        this.url = new URL(Util.removeTrailingSlash(url.toString()));
+    }
+
+    public URL getChangeSetLink(final DarcsChangeSet changeSet) throws IOException {
+        final String hash = changeSet.getHash();
+        final String shortHash = hash.substring(0, hash.lastIndexOf('-'));
+        final DarcsQueryBuilder query = new DarcsQueryBuilder(DarcsQueryBuilder.SeparatorType.SLASHES);
+        query.add("patch")
+             .add(shortHash);
+
+        return new URL(url + query.toString());
+    }
+
+    public URL getFileDiffLink(final DarcsChangeSet changeSet, final String file) throws IOException {
+        return null;
+    }
+
+    /**
+     * Darcsden repository browser description.
+     */
     @Extension
     public static class DescriptorImpl extends Descriptor<RepositoryBrowser<?>> {
-        
+
         private static final Pattern URI_PATTERN = Pattern.compile("http://darcsden.com/.+");
-        
+
         public String getDisplayName() {
             return "Darcsden";
         }
@@ -54,54 +84,32 @@ public final class Darcsden extends DarcsRepositoryBrowser {
          * @throws IOException
          * @throws ServletException
          */
-        public FormValidation doCheck(@QueryParameter final String value) throws IOException, ServletException {    
-            
-            return new FormValidation.URLCheck() {
-            
+        public FormValidation doCheck(@QueryParameter final String value) throws IOException, ServletException {
+
+            return (new FormValidation.URLCheck() {
+
                 @Override
                 protected FormValidation check() throws IOException, ServletException {
-                    String uri = Util.fixEmpty(value);
-                    
-                    if (null == uri) {// nothing entered yet
+                    final String uri = Util.fixEmpty(value);
+
+                    if (null == uri) { // nothing entered yet
                         return FormValidation.ok();
                     }
-                    
-                    if ( ! URI_PATTERN.matcher(uri).matches()) {
-                        return FormValidation.errorWithMarkup("The URI should look like <tt>http://darcsden.com/...</tt>!");
+
+                    if (!URI_PATTERN.matcher(uri).matches()) {
+                        return FormValidation.errorWithMarkup("The URI should look like "
+                                + "<tt>http://darcsden.com/...</tt>!");
                     }
-                    
+
                     return FormValidation.ok();
                 }
-            }.check();
+            }).check();
         }
 
         @Override
-        public DarcsWeb newInstance(StaplerRequest req, JSONObject formData) throws FormException {
+        public DarcsWeb newInstance(final StaplerRequest req, final JSONObject formData) throws Descriptor.FormException {
             return req.bindParameters(DarcsWeb.class, "darcsden.darcs.");
         }
     }
 
-
-    private static final long serialVersionUID = 1L;
-
-    public final URL url;
-
-    @DataBoundConstructor
-    public Darcsden(URL url) throws MalformedURLException {
-        this.url = new URL(Util.removeTrailingSlash(url.toString()));
-    }
-
-    public URL getChangeSetLink(DarcsChangeSet changeSet) throws IOException {
-        String hash = changeSet.getHash();
-        String shortHash = hash.substring(0, hash.lastIndexOf('-'));
-        DarcsQueryBuilder query = new DarcsQueryBuilder(DarcsQueryBuilder.SeparatorType.SLASHES);
-        query.add("patch")
-             .add(shortHash);
-
-        return new URL(url + query.toString());
-    }
-
-    public URL getFileDiffLink(DarcsChangeSet changeSet, String file) throws IOException {
-        return null;
-    }
 }

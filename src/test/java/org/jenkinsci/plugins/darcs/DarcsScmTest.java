@@ -7,32 +7,26 @@
  * this stuff. If we meet some day, and you think this stuff is worth it,
  * you can buy me a beer in return.
  */
-
 package org.jenkinsci.plugins.darcs;
 
 import hudson.model.TaskListener;
 
-//import junit.framework.Assert;
-import junit.framework.TestCase;
+
 import org.junit.Ignore;
+import org.junit.Test;
+import org.xml.sax.SAXException;
 
 /**
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
-public class DarcsScmTest extends TestCase {
-	
-    public DarcsScmTest(String testName) {
-        super(testName);
+public class DarcsScmTest {
+
+    @Test
+    @Ignore("Incomplete!")
+    public void testGetRevisionState() throws SAXException, InterruptedException {
+        final DarcsScm sut = new DarcsScm("");
+        sut.getRevisionState(null, TaskListener.NULL, "");
     }
 
-    @Ignore("Incomplete!")
-    public void testGetRevisionState() {
-		DarcsScm sut = new DarcsScm("");
-		try {
-			sut.getRevisionState(null, TaskListener.NULL, "");
-		} catch (Exception e) {
-			fail("Excpetion throwed: " + e);
-		}
-    }
 }
