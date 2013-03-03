@@ -8,7 +8,7 @@
     </parent>
 
     <artifactId>darcs</artifactId>
-    <version>0.3.7-SNAPSHOT</version>
+    <version>0.3.7</version>
     <packaging>hpi</packaging>
 
     <name>Jenkins Darcs plugin</name>
@@ -63,7 +63,8 @@
         <connection>scm:git:git://github.com/Weltraumschaf/darcs-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:Weltraumschaf/darcs-plugin.git</developerConnection>
         <url>https://github.com/Weltraumschaf/darcs-plugin.git</url>
-    </scm>
+      <tag>0.3.7</tag>
+  </scm>
 
     <ciManagement>
         <system>jenkins</system>
