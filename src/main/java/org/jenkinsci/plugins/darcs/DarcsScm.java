@@ -442,7 +442,7 @@ public class DarcsScm extends SCM implements Serializable {
     /**
      * Add class name aliases for backward compatibility.
      */
-    @Initializer(before = InitMilestone.PLUGINS_STARTED)
+    @Initializer(before = InitMilestone.PLUGINS_LISTED)
     public static void addAliases() {
         // until version 0.3.6 the descriptor was inner class of DarcsScm
         Jenkins.XSTREAM2.addCompatibilityAlias("org.jenkinsci.plugins.darcs.DarcsScm$DescriptorImpl",
