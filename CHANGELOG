@@ -59,3 +59,8 @@ Changelog
 - Refactoring and code cleaning.
 - Increase test coverage
 - Increase Javadoc.
+
+0.3.8
+-----
+
+- Fix issues with deserializing global plugin config from older versions (#11).
