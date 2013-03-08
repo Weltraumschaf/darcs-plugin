@@ -28,6 +28,7 @@ import hudson.scm.PollingResult;
 import hudson.scm.PollingResult.Change;
 import hudson.scm.SCM;
 import hudson.scm.SCMRevisionState;
+import hudson.util.IOUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -295,13 +296,7 @@ public class DarcsScm extends SCM implements Serializable {
             e.printStackTrace(new PrintWriter(w));
             LOGGER.warning(String.format("Failed to get log from repository: %s", w));
         } finally {
-            if (null != fos) {
-                try {
-                    fos.close();
-                } catch (IOException ex) {
-                    throw new InterruptedException(String.format("Failed to close file output stream!%n%s", ex));
-                }
-            }
+            IOUtils.closeQuietly(fos);
         }
     }
 
