@@ -20,7 +20,6 @@ import hudson.init.Initializer;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
-import hudson.model.Items;
 import hudson.model.TaskListener;
 import hudson.remoting.VirtualChannel;
 import hudson.scm.ChangeLogParser;
@@ -38,6 +37,7 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.logging.Logger;
+import jenkins.model.Jenkins;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.xml.sax.SAXException;
@@ -334,10 +334,7 @@ public class DarcsScm extends SCM implements Serializable {
     private int countPatches(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace,
             final BuildListener listener) {
         try {
-            final DarcsCmd cmd = new DarcsCmd(launcher,
-                    build.getEnvironment(listener),
-                    getDescriptor().getDarcsExe());
-
+            final DarcsCmd cmd = new DarcsCmd(launcher, build.getEnvironment(listener), getDescriptor().getDarcsExe());
             final FilePath localPath = createLocalPath(workspace);
             return cmd.countChanges(localPath.getRemote());
         } catch (Exception e) {
@@ -365,9 +362,7 @@ public class DarcsScm extends SCM implements Serializable {
         LOGGER.info(String.format("Count of patches pre pulling is %d", preCnt));
 
         try {
-            final DarcsCmd cmd = new DarcsCmd(launcher,
-                    build.getEnvironment(listener),
-                    getDescriptor().getDarcsExe());
+            final DarcsCmd cmd = new DarcsCmd(launcher, build.getEnvironment(listener), getDescriptor().getDarcsExe());
             final FilePath localPath = createLocalPath(workspace);
             cmd.pull(localPath.getRemote(), source);
         } catch (Exception e) {
@@ -450,7 +445,7 @@ public class DarcsScm extends SCM implements Serializable {
     @Initializer(before = InitMilestone.PLUGINS_STARTED)
     public static void addAliases() {
         // until version 0.3.6 the descriptor was inner class of DarcsScm
-        Items.XSTREAM2.addCompatibilityAlias("org.jenkinsci.plugins.darcs.DarcsScm$DescriptorImpl",
+        Jenkins.XSTREAM2.addCompatibilityAlias("org.jenkinsci.plugins.darcs.DarcsScm$DescriptorImpl",
                 DarcsScmDescriptor.class);
     }
 
