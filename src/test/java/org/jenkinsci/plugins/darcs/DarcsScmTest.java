@@ -10,8 +10,6 @@
 package org.jenkinsci.plugins.darcs;
 
 import hudson.model.TaskListener;
-
-
 import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.SAXException;
@@ -26,7 +24,7 @@ public class DarcsScmTest {
     @Ignore("Incomplete!")
     public void testGetRevisionState() throws SAXException, InterruptedException {
         final DarcsScm sut = new DarcsScm("");
-        sut.getRevisionState(null, TaskListener.NULL, "");
+        sut.getRevisionState(null, TaskListener.NULL, "", null);
     }
 
 }

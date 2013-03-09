@@ -9,6 +9,7 @@
  */
 package org.jenkinsci.plugins.darcs;
 
+import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Launcher.ProcStarter;
 import hudson.util.ArgumentListBuilder;
@@ -43,22 +44,33 @@ public class DarcsCmd {
     private static final String OPT_COUNT = "--count";
     private static final String OPT_ALL = "--all";
     private static final String OPT_VERBOSE = "--verbose";
+    /**
+     * Used to start a process.
+     */
     private final Launcher launcher;
+    /**
+     * Name of the Darcs executable binary.
+     */
     private final String darcsExe;
+    /**
+     * Environment variables.
+     */
     private final Map<String, String> envs;
+    private final FilePath workingDir;
 
     /**
      * Creates a Darcs command object.
      *
-     * @param launcher used to start a process
+     * @param launcher starts a process
      * @param envs environment variables
      * @param darcsExe executable name
      */
-    public DarcsCmd(final Launcher launcher, final Map<String, String> envs, final String darcsExe) {
+    public DarcsCmd(final Launcher launcher, final Map<String, String> envs, final String darcsExe, final FilePath workingDir) {
         super();
         this.envs = envs;
         this.launcher = launcher;
         this.darcsExe = darcsExe;
+        this.workingDir = workingDir;
     }
 
     /**
@@ -71,7 +83,7 @@ public class DarcsCmd {
         final ProcStarter proc = launcher.launch();
         proc.cmds(args);
         proc.envs(envs);
-
+        proc.pwd(workingDir);
         return proc;
     }
 

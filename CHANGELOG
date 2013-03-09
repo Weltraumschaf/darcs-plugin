@@ -65,3 +65,4 @@ Changelog
 
 - Fix issues with deserializing global plugin config from older versions throws exception(#11).
 - Known issue: Old global plugin config is not loaded.
+- Use job directory as working directory for darcs.
