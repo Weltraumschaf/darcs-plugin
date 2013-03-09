@@ -20,7 +20,6 @@ import hudson.init.Initializer;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
-import hudson.model.Items;
 import hudson.model.TaskListener;
 import hudson.remoting.VirtualChannel;
 import hudson.scm.ChangeLogParser;
@@ -28,6 +27,7 @@ import hudson.scm.PollingResult;
 import hudson.scm.PollingResult.Change;
 import hudson.scm.SCM;
 import hudson.scm.SCMRevisionState;
+import hudson.util.IOUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -37,7 +37,6 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.logging.Logger;
-
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.xml.sax.SAXException;
 
@@ -103,7 +102,7 @@ public class DarcsScm extends SCM implements Serializable {
      */
     @DataBoundConstructor
     public DarcsScm(final String source, final String localDir, final boolean clean, final DarcsRepositoryBrowser browser)
-        throws SAXException {
+            throws SAXException {
         super();
         this.source = source;
         this.clean = clean;
@@ -158,7 +157,7 @@ public class DarcsScm extends SCM implements Serializable {
     public DarcsRevisionState calcRevisionsFromBuild(final AbstractBuild<?, ?> build, final Launcher launcher,
             final TaskListener listener) throws IOException, InterruptedException {
         final FilePath localPath = createLocalPath(build.getWorkspace());
-        final DarcsRevisionState local = getRevisionState(launcher, listener, localPath.getRemote());
+        final DarcsRevisionState local = getRevisionState(launcher, listener, localPath.getRemote(), build.getWorkspace());
         listener.getLogger()
                 .println("[poll] Calculate revison from build " + local);
 
@@ -167,8 +166,8 @@ public class DarcsScm extends SCM implements Serializable {
 
     @Override
     protected PollingResult compareRemoteRevisionWith(final AbstractProject<?, ?> project, final Launcher launcher,
-        final FilePath workspace, final TaskListener listener, final SCMRevisionState baseline)
-        throws IOException, InterruptedException {
+            final FilePath workspace, final TaskListener listener, final SCMRevisionState baseline)
+            throws IOException, InterruptedException {
         final PrintStream logger = listener.getLogger();
         final DarcsRevisionState localRevisionState;
 
@@ -190,7 +189,7 @@ public class DarcsScm extends SCM implements Serializable {
         }
 
         final Change change;
-        final DarcsRevisionState remoteRevisionState = getRevisionState(launcher, listener, source);
+        final DarcsRevisionState remoteRevisionState = getRevisionState(launcher, listener, source, workspace);
 
         logger.printf("[poll] Current remote revision is %s. Local revision is %s.%n",
                 remoteRevisionState, localRevisionState);
@@ -238,17 +237,17 @@ public class DarcsScm extends SCM implements Serializable {
      * @return
      * @throws InterruptedException
      */
-    DarcsRevisionState getRevisionState(final Launcher launcher, final TaskListener listener, final String repo)
-        throws InterruptedException {
+    DarcsRevisionState getRevisionState(final Launcher launcher, final TaskListener listener, final String repo, final FilePath workspace)
+            throws InterruptedException {
         final DarcsCmd cmd;
 
         if (null == launcher) {
             /* Create a launcher on master
              * todo better grab a launcher on 'any slave'
              */
-            cmd = new DarcsCmd(new LocalLauncher(listener), EnvVars.masterEnvVars, getDescriptor().getDarcsExe());
+            cmd = new DarcsCmd(new LocalLauncher(listener), EnvVars.masterEnvVars, getDescriptor().getDarcsExe(), workspace);
         } else {
-            cmd = new DarcsCmd(launcher, EnvVars.masterEnvVars, getDescriptor().getDarcsExe());
+            cmd = new DarcsCmd(launcher, EnvVars.masterEnvVars, getDescriptor().getDarcsExe(), workspace);
         }
 
         DarcsRevisionState rev = null;
@@ -281,8 +280,7 @@ public class DarcsScm extends SCM implements Serializable {
             return;
         }
 
-        final DarcsCmd cmd = new DarcsCmd(launcher, EnvVars.masterEnvVars,
-                getDescriptor().getDarcsExe());
+        final DarcsCmd cmd = new DarcsCmd(launcher, EnvVars.masterEnvVars, getDescriptor().getDarcsExe(), workspace.getParent());
         FileOutputStream fos = null;
 
         try {
@@ -295,13 +293,7 @@ public class DarcsScm extends SCM implements Serializable {
             e.printStackTrace(new PrintWriter(w));
             LOGGER.warning(String.format("Failed to get log from repository: %s", w));
         } finally {
-            if (null != fos) {
-                try {
-                    fos.close();
-                } catch (IOException ex) {
-                    throw new InterruptedException(String.format("Failed to close file output stream!%n%s", ex));
-                }
-            }
+            IOUtils.closeQuietly(fos);
         }
     }
 
@@ -339,10 +331,7 @@ public class DarcsScm extends SCM implements Serializable {
     private int countPatches(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace,
             final BuildListener listener) {
         try {
-            final DarcsCmd cmd = new DarcsCmd(launcher,
-                    build.getEnvironment(listener),
-                    getDescriptor().getDarcsExe());
-
+            final DarcsCmd cmd = new DarcsCmd(launcher, build.getEnvironment(listener), getDescriptor().getDarcsExe(), workspace.getParent());
             final FilePath localPath = createLocalPath(workspace);
             return cmd.countChanges(localPath.getRemote());
         } catch (Exception e) {
@@ -370,9 +359,7 @@ public class DarcsScm extends SCM implements Serializable {
         LOGGER.info(String.format("Count of patches pre pulling is %d", preCnt));
 
         try {
-            final DarcsCmd cmd = new DarcsCmd(launcher,
-                    build.getEnvironment(listener),
-                    getDescriptor().getDarcsExe());
+            final DarcsCmd cmd = new DarcsCmd(launcher, build.getEnvironment(listener), getDescriptor().getDarcsExe(), workspace.getParent());
             final FilePath localPath = createLocalPath(workspace);
             cmd.pull(localPath.getRemote(), source);
         } catch (Exception e) {
@@ -411,7 +398,7 @@ public class DarcsScm extends SCM implements Serializable {
         }
 
         try {
-            final DarcsCmd cmd = new DarcsCmd(launcher, build.getEnvironment(listener), getDescriptor().getDarcsExe());
+            final DarcsCmd cmd = new DarcsCmd(launcher, build.getEnvironment(listener), getDescriptor().getDarcsExe(), workspace.getParent());
             final FilePath localPath = createLocalPath(workspace);
             cmd.get(localPath.getRemote(), source);
         } catch (Exception e) {
@@ -451,12 +438,22 @@ public class DarcsScm extends SCM implements Serializable {
 
     /**
      * Add class name aliases for backward compatibility.
+     *
+     * FIXME Does not work, don't know why!
      */
-    @Initializer(before = InitMilestone.PLUGINS_STARTED)
+    @Initializer(before = InitMilestone.PLUGINS_PREPARED)
     public static void addAliases() {
         // until version 0.3.6 the descriptor was inner class of DarcsScm
-        Items.XSTREAM2.addCompatibilityAlias("org.jenkinsci.plugins.darcs.DarcsScm$DescriptorImpl",
-                DarcsScmDescriptor.class);
+//        Jenkins.XSTREAM2.addCompatibilityAlias("org.jenkinsci.plugins.darcs.DarcsScm_-DescriptorImpl",
+//                DarcsScmDescriptor.class);
+//        Jenkins.XSTREAM2.addCompatibilityAlias("org.jenkinsci.plugins.darcs.DarcsScm$DescriptorImpl",
+//                DarcsScmDescriptor.class);
+//        Jenkins.XSTREAM2.addCompatibilityAlias("org.jenkinsci.plugins.darcs.DarcsScm.DescriptorImpl",
+//                DarcsScmDescriptor.class);
     }
+
+    /** Hack to prevent exceptions on old configs. */
+    @Deprecated
+    public static class DescriptorImpl extends DarcsScmDescriptor {}
 
 }

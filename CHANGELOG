@@ -55,7 +55,14 @@ Changelog
 0.3.7
 -----
 
-- Bug fixing (NPE and init checkout problms with new local path feature).
+- Bug fixing (NPE and init checkout problems with new local path feature).
 - Refactoring and code cleaning.
 - Increase test coverage
 - Increase Javadoc.
+
+0.3.8
+-----
+
+- Fix issues with deserializing global plugin config from older versions throws exception(#11).
+- Known issue: Old global plugin config is not loaded.
+- Use job directory as working directory for darcs.

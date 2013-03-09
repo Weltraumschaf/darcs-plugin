@@ -9,58 +9,114 @@
  */
 package org.jenkinsci.plugins.darcs;
 
-//import hudson.FilePath;
+import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Launcher.ProcStarter;
-//import hudson.model.TaskListener;
 import hudson.util.ArgumentListBuilder;
-
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
 
 /**
+ * Abstracts the Darcs command.
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsCmd {
 
+    /**
+     * `darcs changes` command.
+     */
+    private static final String CMD_CHANGES = "changes";
+    /**
+     * `darcs pull` command.
+     */
+    private static final String CMD_PULL = "pull";
+    /**
+     * `darcs get` command.
+     */
+    private static final String CMD_GET = "get";
+    // Command options
+    private static final String OPT_REPO = "--repo=";
+    private static final String OPT_XML_OUTPUT = "--xml-output";
+    private static final String OPT_SUMMARY = "--summary";
+    private static final String OPT_LAST = "--last=";
+    private static final String OPT_REPODIR = "--repodir=";
+    private static final String OPT_COUNT = "--count";
+    private static final String OPT_ALL = "--all";
+    private static final String OPT_VERBOSE = "--verbose";
+    /**
+     * Used to start a process.
+     */
     private final Launcher launcher;
+    /**
+     * Name of the Darcs executable binary.
+     */
     private final String darcsExe;
+    /**
+     * Environment variables.
+     */
     private final Map<String, String> envs;
+    private final FilePath workingDir;
 
-    public DarcsCmd(final Launcher launcher, final Map<String, String> envs) {
-        this(launcher, envs, "darcs");
-    }
-
-    public DarcsCmd(final Launcher launcher, final Map<String, String> envs, final String darcsExe) {
+    /**
+     * Creates a Darcs command object.
+     *
+     * @param launcher starts a process
+     * @param envs environment variables
+     * @param darcsExe executable name
+     */
+    public DarcsCmd(final Launcher launcher, final Map<String, String> envs, final String darcsExe, final FilePath workingDir) {
         super();
         this.envs = envs;
         this.launcher = launcher;
         this.darcsExe = darcsExe;
+        this.workingDir = workingDir;
     }
 
+    /**
+     * Creates process starter.
+     *
+     * @param args builds argument list for command
+     * @return a process starter object
+     */
     public ProcStarter createProc(final ArgumentListBuilder args) {
         final ProcStarter proc = launcher.launch();
         proc.cmds(args);
         proc.envs(envs);
-
+        proc.pwd(workingDir);
         return proc;
     }
 
+    public ByteArrayOutputStream lastSummarizedChanges(final String repo, final int n) throws DarcsCmdException {
+        return getChanges(repo, true, n);
+    }
+
+    public ByteArrayOutputStream allSummarizedChanges(final String repo) throws DarcsCmdException {
+        return getChanges(repo, true);
+    }
+
+    public ByteArrayOutputStream allChanges(final String repo) throws DarcsCmdException {
+        return getChanges(repo, false);
+    }
+
+    private ByteArrayOutputStream getChanges(final String repo, final boolean summarize) throws DarcsCmdException {
+        return getChanges(repo, summarize, 0);
+    }
+
     private ByteArrayOutputStream getChanges(final String repo, final boolean summarize, final int n)
-        throws DarcsCmdException {
+            throws DarcsCmdException {
         final ArgumentListBuilder args = new ArgumentListBuilder();
         args.add(darcsExe)
-                .add("changes")
-                .add("--repo=" + repo)
-                .add("--xml-output");
+                .add(CMD_CHANGES)
+                .add(OPT_REPO + repo)
+                .add(OPT_XML_OUTPUT);
 
         if (summarize) {
-            args.add("--summary");
+            args.add(OPT_SUMMARY);
         }
 
-        if (n != 0) {
-            args.add("--last=" + n);
+        if (n > 0) {
+            args.add(OPT_LAST + n);
         }
 
         final ProcStarter proc = createProc(args);
@@ -80,24 +136,12 @@ public class DarcsCmd {
         return baos;
     }
 
-    public ByteArrayOutputStream lastSummarizedChanges(final String repo, final int n) throws DarcsCmdException {
-        return getChanges(repo, true, n);
-    }
-
-    public ByteArrayOutputStream allSummarizedChanges(final String repo) throws DarcsCmdException {
-        return getChanges(repo, true, 0);
-    }
-
-    public ByteArrayOutputStream allChanges(final String repo) throws DarcsCmdException {
-        return getChanges(repo, false, 0);
-    }
-
     public int countChanges(final String repo) throws DarcsCmdException {
         final ArgumentListBuilder args = new ArgumentListBuilder();
         args.add(darcsExe)
-                .add("changes")
-                .add("--repodir=" + repo)
-                .add("--count");
+                .add(CMD_CHANGES)
+                .add(OPT_REPODIR + repo)
+                .add(OPT_COUNT);
 
         final ProcStarter proc = createProc(args);
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -119,11 +163,11 @@ public class DarcsCmd {
     public void pull(final String repo, final String from) throws DarcsCmdException {
         final ArgumentListBuilder args = new ArgumentListBuilder();
         args.add(darcsExe)
-                .add("pull")
+                .add(CMD_PULL)
                 .add(from)
-                .add("--repodir=" + repo)
-                .add("--all")
-                .add("--verbose");
+                .add(OPT_REPODIR + repo)
+                .add(OPT_ALL)
+                .add(OPT_VERBOSE);
 
         try {
             final ProcStarter proc = createProc(args);
@@ -131,17 +175,27 @@ public class DarcsCmd {
             final int ret = proc.join();
 
             if (0 != ret) {
-                throw new DarcsCmdException("can not do darcs changes in repo " + repo);
+                throw new DarcsCmdException(String.format("Can't do darcs changes in repo %s! Return code: %d",
+                        repo, ret));
             }
         } catch (Exception ex) {
-            throw new DarcsCmdException("can not do darcs changes in repo " + repo, ex);
+            throw new DarcsCmdException(String.format("Can't do darcs changes in repo %s!", repo), ex);
         }
     }
 
+    /**
+     * Do a fresh checkout of a repository.
+     *
+     * FIXME Make a chdir into the repository directory.
+     *
+     * @param repo where to checkout
+     * @param from from where to get the repository
+     * @throws DarcsCmd.DarcsCmdException if can't do checkout
+     */
     public void get(final String repo, final String from) throws DarcsCmdException {
         final ArgumentListBuilder args = new ArgumentListBuilder();
         args.add(darcsExe)
-                .add("get")
+                .add(CMD_GET)
                 .add(from)
                 .add(repo);
 
@@ -151,17 +205,18 @@ public class DarcsCmd {
             final int ret = proc.join();
 
             if (0 != ret) {
-                throw new DarcsCmdException("Getting repo with args " + args.toStringWithQuote() + " returne " + ret);
+                throw new DarcsCmdException(String.format("Getting repo with args %s failed! Return code: %d",
+                        args.toStringWithQuote(), ret));
             }
         } catch (Exception ex) {
-            throw new DarcsCmdException("Can not get repo with args: " + args.toStringWithQuote(), ex);
+            throw new DarcsCmdException(String.format("Can't get repo with args: %s", args.toStringWithQuote()), ex);
         }
     }
 
     /**
      * Darcs command exception.
      */
-    public static class DarcsCmdException extends Exception {
+    public static class DarcsCmdException extends RuntimeException {
 
         /**
          * Creates exception with message.
@@ -181,6 +236,5 @@ public class DarcsCmd {
         public DarcsCmdException(final String string, final Throwable thrwbl) {
             super(string, thrwbl);
         }
-
     }
 }
