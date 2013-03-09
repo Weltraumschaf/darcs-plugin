@@ -104,7 +104,7 @@ public class DarcsScm extends SCM implements Serializable {
      */
     @DataBoundConstructor
     public DarcsScm(final String source, final String localDir, final boolean clean, final DarcsRepositoryBrowser browser)
-        throws SAXException {
+            throws SAXException {
         super();
         this.source = source;
         this.clean = clean;
@@ -168,8 +168,8 @@ public class DarcsScm extends SCM implements Serializable {
 
     @Override
     protected PollingResult compareRemoteRevisionWith(final AbstractProject<?, ?> project, final Launcher launcher,
-        final FilePath workspace, final TaskListener listener, final SCMRevisionState baseline)
-        throws IOException, InterruptedException {
+            final FilePath workspace, final TaskListener listener, final SCMRevisionState baseline)
+            throws IOException, InterruptedException {
         final PrintStream logger = listener.getLogger();
         final DarcsRevisionState localRevisionState;
 
@@ -240,7 +240,7 @@ public class DarcsScm extends SCM implements Serializable {
      * @throws InterruptedException
      */
     DarcsRevisionState getRevisionState(final Launcher launcher, final TaskListener listener, final String repo)
-        throws InterruptedException {
+            throws InterruptedException {
         final DarcsCmd cmd;
 
         if (null == launcher) {
@@ -441,12 +441,22 @@ public class DarcsScm extends SCM implements Serializable {
 
     /**
      * Add class name aliases for backward compatibility.
+     *
+     * FIXME Does not work, don't know why!
      */
-    @Initializer(before = InitMilestone.PLUGINS_LISTED)
+    @Initializer(before = InitMilestone.PLUGINS_PREPARED)
     public static void addAliases() {
         // until version 0.3.6 the descriptor was inner class of DarcsScm
+        Jenkins.XSTREAM2.addCompatibilityAlias("org.jenkinsci.plugins.darcs.DarcsScm_-DescriptorImpl",
+                DarcsScmDescriptor.class);
         Jenkins.XSTREAM2.addCompatibilityAlias("org.jenkinsci.plugins.darcs.DarcsScm$DescriptorImpl",
                 DarcsScmDescriptor.class);
+        Jenkins.XSTREAM2.addCompatibilityAlias("org.jenkinsci.plugins.darcs.DarcsScm.DescriptorImpl",
+                DarcsScmDescriptor.class);
     }
+
+    /** Prevent exceptions on old configs. */
+    @Deprecated
+    public static class DescriptorImpl extends DarcsScmDescriptor {}
 
 }
