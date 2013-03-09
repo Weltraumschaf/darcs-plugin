@@ -22,12 +22,19 @@ import java.util.Map;
  */
 public class DarcsCmd {
 
-    /** `darcs changes` command. */
+    /**
+     * `darcs changes` command.
+     */
     private static final String CMD_CHANGES = "changes";
-    /** `darcs pull` command. */
+    /**
+     * `darcs pull` command.
+     */
     private static final String CMD_PULL = "pull";
-    /** `darcs get` command. */
+    /**
+     * `darcs get` command.
+     */
     private static final String CMD_GET = "get";
+    // Command options
     private static final String OPT_REPO = "--repo=";
     private static final String OPT_XML_OUTPUT = "--xml-output";
     private static final String OPT_SUMMARY = "--summary";
@@ -73,11 +80,15 @@ public class DarcsCmd {
     }
 
     public ByteArrayOutputStream allSummarizedChanges(final String repo) throws DarcsCmdException {
-        return getChanges(repo, true, 0);
+        return getChanges(repo, true);
     }
 
     public ByteArrayOutputStream allChanges(final String repo) throws DarcsCmdException {
-        return getChanges(repo, false, 0);
+        return getChanges(repo, false);
+    }
+
+    private ByteArrayOutputStream getChanges(final String repo, final boolean summarize) throws DarcsCmdException {
+        return getChanges(repo, summarize, 0);
     }
 
     private ByteArrayOutputStream getChanges(final String repo, final boolean summarize, final int n)
@@ -92,7 +103,7 @@ public class DarcsCmd {
             args.add(OPT_SUMMARY);
         }
 
-        if (n != 0) {
+        if (n > 0) {
             args.add(OPT_LAST + n);
         }
 
