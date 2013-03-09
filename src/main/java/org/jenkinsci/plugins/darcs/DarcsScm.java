@@ -447,15 +447,15 @@ public class DarcsScm extends SCM implements Serializable {
     @Initializer(before = InitMilestone.PLUGINS_PREPARED)
     public static void addAliases() {
         // until version 0.3.6 the descriptor was inner class of DarcsScm
-        Jenkins.XSTREAM2.addCompatibilityAlias("org.jenkinsci.plugins.darcs.DarcsScm_-DescriptorImpl",
-                DarcsScmDescriptor.class);
-        Jenkins.XSTREAM2.addCompatibilityAlias("org.jenkinsci.plugins.darcs.DarcsScm$DescriptorImpl",
-                DarcsScmDescriptor.class);
-        Jenkins.XSTREAM2.addCompatibilityAlias("org.jenkinsci.plugins.darcs.DarcsScm.DescriptorImpl",
-                DarcsScmDescriptor.class);
+//        Jenkins.XSTREAM2.addCompatibilityAlias("org.jenkinsci.plugins.darcs.DarcsScm_-DescriptorImpl",
+//                DarcsScmDescriptor.class);
+//        Jenkins.XSTREAM2.addCompatibilityAlias("org.jenkinsci.plugins.darcs.DarcsScm$DescriptorImpl",
+//                DarcsScmDescriptor.class);
+//        Jenkins.XSTREAM2.addCompatibilityAlias("org.jenkinsci.plugins.darcs.DarcsScm.DescriptorImpl",
+//                DarcsScmDescriptor.class);
     }
 
-    /** Prevent exceptions on old configs. */
+    /** Hack to prevent exceptions on old configs. */
     @Deprecated
     public static class DescriptorImpl extends DarcsScmDescriptor {}
 
