@@ -12,6 +12,7 @@
 package org.jenkinsci.plugins.darcs.cmd;
 
 import hudson.Launcher;
+import hudson.Launcher.ProcStarter;
 import hudson.util.ArgumentListBuilder;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -67,11 +68,20 @@ public class DarcsCommand {
      * @throws InterruptedException if a thread is waiting, sleeping, or otherwise occupied, and the thread is
      * interrupted, either before or during the activity
      */
-    public int execute(final Launcher.ProcStarter proc) throws IOException, InterruptedException {
+    public int execute(final ProcStarter proc) throws IOException, InterruptedException {
+        prepare(proc);
+        return proc.join();
+    }
+
+    /**
+     * Prepares the proc starter.
+     *
+     * @param proc proc starter to prepare
+     */
+    void prepare(final ProcStarter proc) {
         proc.cmds(args);
         proc.stdout(out);
         proc.stderr(err);
-        return proc.join();
     }
 
     /**
