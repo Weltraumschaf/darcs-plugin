@@ -127,7 +127,7 @@ public class DarcsChangesBuilder extends DarcsBaseCommandBuilder implements Darc
     public DarcsCommand create() {
         final ArgumentListBuilder arguments = createArgumentList();
 
-        if (!repoDir.isEmpty()) {
+        if (repoDir.length() > 0) {
             arguments.add(String.format("--repo=%s", repoDir));
         }
 

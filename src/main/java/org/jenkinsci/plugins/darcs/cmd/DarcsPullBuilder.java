@@ -109,7 +109,7 @@ public class DarcsPullBuilder extends DarcsBaseCommandBuilder implements DarcsCo
         final ArgumentListBuilder arguments = createArgumentList();
         arguments.add(from);
 
-        if (!repoDir.isEmpty()) {
+        if (repoDir.length() > 0) {
             arguments.add(String.format("--repo=%s", repoDir));
         }
 

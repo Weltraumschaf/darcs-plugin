@@ -81,7 +81,7 @@ public class DarcsGetBuilder extends DarcsBaseCommandBuilder implements DarcsCom
         final ArgumentListBuilder arguments = createArgumentList();
         arguments.add(from);
 
-        if (!to.isEmpty()) {
+        if (to.length() > 0) {
             arguments.add(to);
         }
 

@@ -73,7 +73,7 @@ class DarcsBaseCommandBuilder {
         final ArgumentListBuilder arguments = new ArgumentListBuilder();
         arguments.add(darcsExe);
 
-        if (!command.isEmpty()) {
+        if (command.length() > 0) {
             arguments.add(command);
         }
 
