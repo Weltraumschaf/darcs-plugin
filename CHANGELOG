@@ -68,3 +68,7 @@
 
 * Refactoring of Darcs command abstraction.
 * Fix NPE on calculating first revision state (issue #13).
+
+## 0.4.0
+
+* Use refactored command abstraction.
