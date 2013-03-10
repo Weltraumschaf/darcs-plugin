@@ -1,33 +1,57 @@
-Darcs Plugin for Jenkins CI
-===========================
+# Darcs Plugin for Jenkins CI
 
-Todo
-----
-- write more unittests
-    - BrowserChooser
-- write more javadoc
-- improve the changeset index view
+This plugin integrates the [Darcs][1] SCM into [Jenkins CI][2]. The official plugin site
+is [here][3].
 
-Installation
------------
-In the GitHub download section are compiled Jenkins plugins (.hpi) for each version available. 
-You can find the darcs.hpi file in side the tar/zip archive. The plugin itself is archived, because
-of naming issues: The hpi itsel must be named 'darcs.hpi' without version numbers in the filename.
-But to seperate different precompiled plugins they are archived with versioned names.
-Download an apropriate archive, unpack it and and upload the resulting darcs.hpi to your Jenkins.
+## Installation
 
-Developers
-----------
-As prerequisite you need Maven2 installed.
+You can install the plugin via the Jenkins plugin management site. This plugin requires a
+Darcs installation on the machine where it is installed.
 
-In your ~/.m2/settings.xml you need:
+## Developers
 
- <settings>
-     <pluginGroups>
-         <pluginGroup>org.jvnet.hudson.tools</pluginGroup>
-     </pluginGroups>
- <settings>
+As prerequisite you need [Apache Maven][4] installed.
 
-Clone this repo with: git clone git://github.com/Weltraumschaf/jenkins-darcs.git
+In your `~/.m2/settings.xml` you need the Jenkins tools plugin group:
 
-Change into the repo and run mvn install. After that you can open the pom.xml e.g. in Netbeans and start coding.
+    <pluginGroups>
+        ...
+        <pluginGroup>org.jenkins-ci.tools</pluginGroup>
+        ...
+    </pluginGroups>
+
+And for some backword compatibility a mirror:
+
+    <mirrors>
+        ...
+        <mirror>
+            <id>repo.jenkins-ci.org</id>
+            <url>http://repo.jenkins-ci.org/public/</url>
+            <mirrorOf>m.g.o-public</mirrorOf>
+        </mirror>
+        ...
+    </mirrors>
+
+Clone this repo with:
+
+    $ git clone git://github.com/Weltraumschaf/jenkins-darcs.git
+
+To compile the source change into the repo and type:
+
+    $ mvn instal
+
+For running the plugin from the repo locally type:
+
+    $ mvn hpi:run
+
+Information about how to write a plugin for Jenkins can be found in this [plugin tutorial][5].
+Informations about the general architecture of Jenkins can be found [here][6]. And last but not
+least [here][7] are some informations about how to host a Jenkins plugin.
+
+[1]: http://darcs.net/
+[2]: http://www.jenkins-ci.org/
+[3]: http://wiki.jenkins-ci.org/display/JENKINS/Darcs+Plugin
+[4]: http://maven.apache.org/
+[5]: https://wiki.jenkins-ci.org/display/JENKINS/Plugin+tutorial
+[6]: https://wiki.jenkins-ci.org/display/JENKINS/Architecture
+[7]: https://wiki.jenkins-ci.org/display/JENKINS/Hosting+Plugins
