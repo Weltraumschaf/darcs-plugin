@@ -158,8 +158,12 @@ public class DarcsScm extends SCM implements Serializable {
             final TaskListener listener) throws IOException, InterruptedException {
         final FilePath localPath = createLocalPath(build.getWorkspace());
         final DarcsRevisionState local = getRevisionState(launcher, listener, localPath.getRemote(), build.getWorkspace());
-        listener.getLogger()
-                .println("[poll] Calculate revison from build " + local);
+
+        if (null == local) {
+            listener.getLogger().println(String.format("[poll] Get <null> as revision state."));
+        } else {
+            listener.getLogger().println(String.format("[poll] Calculate revison from build %s.", local));
+        }
 
         return local;
     }
@@ -173,13 +177,13 @@ public class DarcsScm extends SCM implements Serializable {
 
         if (baseline instanceof DarcsRevisionState) {
             localRevisionState = (DarcsRevisionState) baseline;
-        } else if (project.getLastBuild() != null) {
+        } else if (null != project && null != project.getLastBuild()) {
             localRevisionState = calcRevisionsFromBuild(project.getLastBuild(), launcher, listener);
         } else {
             localRevisionState = new DarcsRevisionState();
         }
 
-        if (null != project.getLastBuild()) {
+        if (null != project && null != project.getLastBuild()) {
             logger.println("[poll] Last Build : #" + project.getLastBuild().getNumber());
         } else {
             // If we've never been built before, well, gotta build!
@@ -257,7 +261,7 @@ public class DarcsScm extends SCM implements Serializable {
             changelogParser.parse(changes);
             rev = new DarcsRevisionState(changelogParser.parse(changes));
         } catch (Exception e) {
-            LOGGER.warning(String.format("Failed to get revision state for repository: %s", e));
+            listener.getLogger().println(String.format("[warning] Failed to get revision state for repository: %s", e));
         }
 
         return rev;

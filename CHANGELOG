@@ -39,7 +39,7 @@
 
 ## 0.3.4
 
-* Implemented XML sanitizing for mixed character encoding in Darcs XML output (Issue 1).
+* Implemented XML sanitizing for mixed character encoding in Darcs XML output (Issue #1).
 
 ## 0.3.5
 
@@ -60,10 +60,11 @@
 
 ## 0.3.8
 
-* Fix issues with deserializing global plugin config from older versions throws exception(#11).
+* Fix issues with deserializing global plugin config from older versions throws exception (issue #11).
 * Known issue: Old global plugin config is not loaded.
 * Use job directory as working directory for darcs.
 
 ## 0.3.9
 
 * Refactoring of Darcs command abstraction.
+* Fix NPE on calculating first revision state (issue #13).
