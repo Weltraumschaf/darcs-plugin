@@ -77,10 +77,6 @@ public class DarcsScm extends SCM implements Serializable {
      * Used repository browser.
      */
     private final DarcsRepositoryBrowser browser;
-    /**
-     * Reused parser.
-     */
-    private final transient DarcsChangeLogParser changelogParser;
 
     /**
      * Convenience constructor.
@@ -102,14 +98,12 @@ public class DarcsScm extends SCM implements Serializable {
      * @param browser the browser used to browse the repository
      */
     @DataBoundConstructor
-    public DarcsScm(final String source, final String localDir, final boolean clean, final DarcsRepositoryBrowser browser)
-            throws SAXException {
+    public DarcsScm(final String source, final String localDir, final boolean clean, final DarcsRepositoryBrowser browser) {
         super();
         this.source = source;
         this.clean = clean;
         this.browser = browser;
         this.localDir = localDir;
-        this.changelogParser = new DarcsChangeLogParser();
     }
 
     /**
@@ -155,17 +149,17 @@ public class DarcsScm extends SCM implements Serializable {
     }
 
     @Override
-    public DarcsRevisionState calcRevisionsFromBuild(final AbstractBuild<?, ?> build, final Launcher launcher,
+    public SCMRevisionState calcRevisionsFromBuild(final AbstractBuild<?, ?> build, final Launcher launcher,
             final TaskListener listener) throws IOException, InterruptedException {
         final FilePath localPath = createLocalPath(build.getWorkspace());
         final DarcsRevisionState local = getRevisionState(launcher, listener, localPath.getRemote(), build.getWorkspace());
 
         if (null == local) {
-            listener.getLogger().println(String.format("[poll] Get <null> as revision state."));
-        } else {
-            listener.getLogger().println(String.format("[poll] Calculate revison from build %s.", local));
+            listener.getLogger().println(String.format("[poll] Got <null> as revision state."));
+            return SCMRevisionState.NONE;
         }
 
+        listener.getLogger().println(String.format("[poll] Calculate revison from build %s.", local));
         return local;
     }
 
@@ -174,7 +168,7 @@ public class DarcsScm extends SCM implements Serializable {
             final FilePath workspace, final TaskListener listener, final SCMRevisionState baseline)
             throws IOException, InterruptedException {
         final PrintStream logger = listener.getLogger();
-        final DarcsRevisionState localRevisionState;
+        final SCMRevisionState localRevisionState;
 
         if (baseline instanceof DarcsRevisionState) {
             localRevisionState = (DarcsRevisionState) baseline;
@@ -259,10 +253,9 @@ public class DarcsScm extends SCM implements Serializable {
 
         try {
             final OutputStream changes = cmd.allChanges(repo);
-            rev = new DarcsRevisionState(changelogParser.parse((ByteArrayOutputStream) changes)); // FIXME Remove cast
+            rev = new DarcsRevisionState(((DarcsChangeLogParser) createChangeLogParser()).parse((ByteArrayOutputStream) changes)); // FIXME Remove cast
         } catch (Exception e) {
-            listener.getLogger().println(String.format("[warning] Failed to get revision state for repository: %s", e));
-            e.printStackTrace(listener.getLogger());
+            listener.getLogger().println(String.format("[warning] Failed to get revision state for repository: %s", repo));
         }
 
         return rev;
@@ -416,7 +409,7 @@ public class DarcsScm extends SCM implements Serializable {
 
     @Override
     public ChangeLogParser createChangeLogParser() {
-        return changelogParser;
+        return new DarcsChangeLogParser();
     }
 
     @Override
@@ -459,6 +452,10 @@ public class DarcsScm extends SCM implements Serializable {
 
     /** Hack to prevent exceptions on old configs. */
     @Deprecated
-    public static class DescriptorImpl extends DarcsScmDescriptor {}
+    public static class DescriptorImpl extends DarcsScmDescriptor {
+//        public Object readResolve() {
+//            return new DarcsScmDescriptor();
+//        }
+    }
 
 }
