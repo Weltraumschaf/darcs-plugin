@@ -167,8 +167,6 @@ public class DarcsCmd {
     /**
      * Do a fresh checkout of a repository.
      *
-     * FIXME Make a chdir into the repository directory.
-     *
      * @param repo where to checkout
      * @param from from where to get the repository
      * @throws DarcsCommadException if can't do checkout

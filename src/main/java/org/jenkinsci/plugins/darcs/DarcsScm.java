@@ -206,7 +206,7 @@ public class DarcsScm extends SCM implements Serializable {
             // so do a (fugly) class check.
             logger.println("[poll] local revision state is not of type darcs.");
             change = Change.SIGNIFICANT;
-        } else if (!remoteRevisionState.equals(localRevisionState)) {
+        } else if (null != remoteRevisionState && !remoteRevisionState.equals(localRevisionState)) {
             logger.println("[poll] Local revision state differs from remote.");
 
             if (remoteRevisionState.getChanges().size()
@@ -247,7 +247,7 @@ public class DarcsScm extends SCM implements Serializable {
 
         if (null == launcher) {
             /* Create a launcher on master
-             * todo better grab a launcher on 'any slave'
+             * TODO better grab a launcher on 'any slave'
              */
             cmd = new DarcsCmd(new LocalLauncher(listener), EnvVars.masterEnvVars, getDescriptor().getDarcsExe(), workspace);
         } else {
@@ -258,10 +258,10 @@ public class DarcsScm extends SCM implements Serializable {
 
         try {
             final ByteArrayOutputStream changes = cmd.allChanges(repo);
-            changelogParser.parse(changes);
             rev = new DarcsRevisionState(changelogParser.parse(changes));
         } catch (Exception e) {
             listener.getLogger().println(String.format("[warning] Failed to get revision state for repository: %s", e));
+            e.printStackTrace(listener.getLogger());
         }
 
         return rev;
