@@ -35,6 +35,16 @@ public class DarcsCommadException extends RuntimeException {
     }
 
     /**
+     * Initializes {@link #returnCode} with 0.
+     *
+     * @param cause previous exception
+     */
+    public DarcsCommadException(final Throwable cause) {
+        super(cause);
+        this.returnCode = 0;
+    }
+
+    /**
      * Creates exception with message.
      *
      * @param string exception message
@@ -49,7 +59,7 @@ public class DarcsCommadException extends RuntimeException {
      * Creates exception with message and a previous exception.
      *
      * Initializes {@link #returnCode} with 0.
-     * 
+     *
      * @param string exception message
      * @param thrwbl previous exception
      */

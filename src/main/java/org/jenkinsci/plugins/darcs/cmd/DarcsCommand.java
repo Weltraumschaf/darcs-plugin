@@ -62,14 +62,23 @@ public class DarcsCommand {
      * Executes the command by joining the passed in process starter.
      *
      * @param proc used to join the command
-     * @return the return code of the executed command
-     * @throws IOException if there's an error launching/joining a process
-     * @throws InterruptedException if a thread is waiting, sleeping, or otherwise occupied, and the thread is
-     * interrupted, either before or during the activity
+     * @throws DarcsCommadException if command execution fails
      */
-    public int execute(final ProcStarter proc) throws IOException, InterruptedException {
+    public void execute(final ProcStarter proc) throws DarcsCommadException {
         prepare(proc);
-        return proc.join();
+        int returnCode = 0;
+        try {
+            returnCode = proc.join();
+        } catch (IOException ex) {
+            throw new DarcsCommadException(ex);
+        } catch (InterruptedException ex) {
+            throw new DarcsCommadException(ex);
+        }
+
+        if (0 != returnCode) {
+            throw new DarcsCommadException(String.format("Error on performing command: %s", args.toStringWithQuote()),
+                                           returnCode);
+        }
     }
 
     /**

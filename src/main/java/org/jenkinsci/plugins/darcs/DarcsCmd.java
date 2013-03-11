@@ -13,7 +13,6 @@ import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Launcher.ProcStarter;
 import hudson.util.ArgumentListBuilder;
-import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.Map;
 import org.jenkinsci.plugins.darcs.cmd.DarcsChangesBuilder;
@@ -24,6 +23,8 @@ import org.jenkinsci.plugins.darcs.cmd.DarcsPullBuilder;
 
 /**
  * Abstracts the Darcs command.
+ *
+ * TODO Consider returning String instead of OutputStream.
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
@@ -116,16 +117,7 @@ public class DarcsCmd {
         }
 
         final DarcsCommand cmd = builder.create();
-
-        try {
-            if (0 != cmd.execute(createProc())) {
-                // TODO throw inside DarcsCommand#execute
-                throw new DarcsCommadException("can not do darcs changes in repo " + repo);
-            }
-        } catch (Exception ex) {
-            throw new DarcsCommadException("can not do darcs changes in repo " + repo, ex);
-        }
-
+        cmd.execute(createProc());
         return cmd.getOut();
     }
 
@@ -133,38 +125,25 @@ public class DarcsCmd {
         final DarcsChangesBuilder builder = DarcsCommand.builder(darcsExe).changes();
         builder.repoDir(repo).count();
         final DarcsCommand cmd = builder.create();
-
-        try {
-            if (0 != cmd.execute(createProc())) {
-                // TODO throw inside DarcsCommand#execute
-                throw new DarcsCommadException("can not do darcs changes in repo " + repo);
-            }
-        } catch (Exception ex) {
-            throw new DarcsCommadException("can not do darcs changes in repo " + repo, ex);
-        }
-
+        cmd.execute(createProc());
         return Integer.parseInt(cmd.getErr().toString().trim());
     }
 
+    /**
+     * Pull all patches from remote.
+     *
+     * @param repo to pull in
+     * @param from remote repository to pull from
+     * @throws DarcsCommadException if command execution fails
+     */
     public void pull(final String repo, final String from) throws DarcsCommadException {
         final DarcsPullBuilder builder = DarcsCommand.builder(darcsExe).pull();
         builder.from(from).repoDir(repo).all().verbose();
         final DarcsCommand cmd = builder.create();
         cmd.setOut(launcher.getListener().getLogger());
-
-        try {
-            final ProcStarter proc = createProc();
-            proc.stdout(this.launcher.getListener());
-            final int ret = cmd.execute(proc);
-
-            if (0 != ret) {
-                // TODO throw inside DarcsCommand#execute
-                throw new DarcsCommadException(String.format("Can't do darcs changes in repo %s! Return code: %d",
-                        repo, ret));
-            }
-        } catch (Exception ex) {
-            throw new DarcsCommadException(String.format("Can't do darcs changes in repo %s!", repo), ex);
-        }
+        final ProcStarter proc = createProc();
+        proc.stdout(this.launcher.getListener());
+        cmd.execute(proc);
     }
 
     /**
@@ -178,19 +157,8 @@ public class DarcsCmd {
         final DarcsGetBuilder builder = DarcsCommand.builder(darcsExe).get();
         builder.from(from).to(repo);
         final DarcsCommand cmd = builder.create();
-
-        try {
-            final ProcStarter proc = createProc();
-            proc.stdout(this.launcher.getListener());
-            final int ret = cmd.execute(proc);
-
-            if (0 != ret) {
-                // TODO throw inside DarcsCommand#execute
-                throw new DarcsCommadException(String.format("Getting repo with args %s failed! Return code: %d",
-                        cmd.toString(), ret));
-            }
-        } catch (Exception ex) {
-            throw new DarcsCommadException(String.format("Can't get repo with args: %s", cmd.toString()), ex);
-        }
+        final ProcStarter proc = createProc();
+        proc.stdout(this.launcher.getListener());
+        cmd.execute(proc);
     }
 }
