@@ -76,10 +76,6 @@ public class DarcsScm extends SCM implements Serializable {
      * Used repository browser.
      */
     private final DarcsRepositoryBrowser browser;
-    /**
-     * Reused parser.
-     */
-    private final transient DarcsChangeLogParser changelogParser;
 
     /**
      * Convenience constructor.
@@ -101,14 +97,12 @@ public class DarcsScm extends SCM implements Serializable {
      * @param browser the browser used to browse the repository
      */
     @DataBoundConstructor
-    public DarcsScm(final String source, final String localDir, final boolean clean, final DarcsRepositoryBrowser browser)
-            throws SAXException {
+    public DarcsScm(final String source, final String localDir, final boolean clean, final DarcsRepositoryBrowser browser) {
         super();
         this.source = source;
         this.clean = clean;
         this.browser = browser;
         this.localDir = localDir;
-        this.changelogParser = new DarcsChangeLogParser();
     }
 
     /**
@@ -258,10 +252,9 @@ public class DarcsScm extends SCM implements Serializable {
 
         try {
             final ByteArrayOutputStream changes = cmd.allChanges(repo);
-            rev = new DarcsRevisionState(changelogParser.parse(changes));
+            rev = new DarcsRevisionState(((DarcsChangeLogParser) createChangeLogParser()).parse(changes));
         } catch (Exception e) {
-            listener.getLogger().println(String.format("[warning] Failed to get revision state for repository: %s", e));
-            e.printStackTrace(listener.getLogger());
+            listener.getLogger().println(String.format("[warning] Failed to get revision state for repository: %s", repo));
         }
 
         return rev;
@@ -415,7 +408,11 @@ public class DarcsScm extends SCM implements Serializable {
 
     @Override
     public ChangeLogParser createChangeLogParser() {
-        return changelogParser;
+        try {
+            return new DarcsChangeLogParser();
+        } catch (SAXException ex) {
+            throw new RuntimeException("Can't create changelog parser!", ex);
+        }
     }
 
     @Override
