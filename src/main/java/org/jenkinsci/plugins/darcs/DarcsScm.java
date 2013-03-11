@@ -451,6 +451,10 @@ public class DarcsScm extends SCM implements Serializable {
 
     /** Hack to prevent exceptions on old configs. */
     @Deprecated
-    public static class DescriptorImpl extends DarcsScmDescriptor {}
+    public static class DescriptorImpl extends DarcsScmDescriptor {
+//        public Object readResolve() {
+//            return new DarcsScmDescriptor();
+//        }
+    }
 
 }
