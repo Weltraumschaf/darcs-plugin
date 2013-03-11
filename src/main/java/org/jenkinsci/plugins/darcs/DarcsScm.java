@@ -148,17 +148,17 @@ public class DarcsScm extends SCM implements Serializable {
     }
 
     @Override
-    public DarcsRevisionState calcRevisionsFromBuild(final AbstractBuild<?, ?> build, final Launcher launcher,
+    public SCMRevisionState calcRevisionsFromBuild(final AbstractBuild<?, ?> build, final Launcher launcher,
             final TaskListener listener) throws IOException, InterruptedException {
         final FilePath localPath = createLocalPath(build.getWorkspace());
         final DarcsRevisionState local = getRevisionState(launcher, listener, localPath.getRemote(), build.getWorkspace());
 
         if (null == local) {
-            listener.getLogger().println(String.format("[poll] Get <null> as revision state."));
-        } else {
-            listener.getLogger().println(String.format("[poll] Calculate revison from build %s.", local));
+            listener.getLogger().println(String.format("[poll] Got <null> as revision state."));
+            return SCMRevisionState.NONE;
         }
 
+        listener.getLogger().println(String.format("[poll] Calculate revison from build %s.", local));
         return local;
     }
 
@@ -167,7 +167,7 @@ public class DarcsScm extends SCM implements Serializable {
             final FilePath workspace, final TaskListener listener, final SCMRevisionState baseline)
             throws IOException, InterruptedException {
         final PrintStream logger = listener.getLogger();
-        final DarcsRevisionState localRevisionState;
+        final SCMRevisionState localRevisionState;
 
         if (baseline instanceof DarcsRevisionState) {
             localRevisionState = (DarcsRevisionState) baseline;
