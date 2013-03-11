@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="4.2.5" timestamp="2013-02-24T22:31:13.615">
+<pmd version="4.2.5" timestamp="2013-03-11T23:28:57.448">
 <file name="/Users/sxs/src/java/darcs-plugin/src/main/java/org/jenkinsci/plugins/darcs/DarcsChangeSet.java">
 <violation beginline="312" endline="314" begincolumn="15" endcolumn="5" rule="UselessOverridingMethod" ruleset="Basic Rules" package="org.jenkinsci.plugins.darcs" class="DarcsChangeSet" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UselessOverridingMethod" priority="3">
 Overriding method merely calls super
