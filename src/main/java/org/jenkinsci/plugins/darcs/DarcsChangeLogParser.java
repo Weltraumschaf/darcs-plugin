@@ -99,9 +99,26 @@ class DarcsChangeLogParser extends ChangeLogParser {
      * @return change set list w/ current build null
      * @throws IOException on read errors
      * @throws SAXException on parse errors
+     * @deprecated use {@link #parse(java.lang.String)} instead
      */
+    @Deprecated
     public DarcsChangeSetList parse(final ByteArrayOutputStream changeLog) throws IOException, SAXException {
         final StringReader input = new StringReader(sanitizer.cleanse(changeLog.toByteArray()));
+        xmlReader.parse(new InputSource(input));
+        return new DarcsChangeSetList(null, handler.getChangeSets());
+    }
+
+    /**
+     * @see #parse(hudson.model.AbstractBuild, java.io.File)
+     *
+     * @param changeLog to read XML from
+     * @return change set list w/ current build null
+     * @throws IOException on read errors
+     * @throws SAXException on parse errors
+     * @deprecated use {@link #parse(java.lang.String)} instead
+     */
+    public DarcsChangeSetList parse(final String changeLog) throws IOException, SAXException {
+        final StringReader input = new StringReader(sanitizer.cleanse(changeLog.getBytes())); // TODO consider encoding
         xmlReader.parse(new InputSource(input));
         return new DarcsChangeSetList(null, handler.getChangeSets());
     }

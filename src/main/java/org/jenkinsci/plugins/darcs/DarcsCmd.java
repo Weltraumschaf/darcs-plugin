@@ -14,6 +14,7 @@ import hudson.Launcher;
 import hudson.Launcher.ProcStarter;
 import hudson.util.ArgumentListBuilder;
 import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.util.Map;
 import org.jenkinsci.plugins.darcs.cmd.DarcsChangesBuilder;
 import org.jenkinsci.plugins.darcs.cmd.DarcsCommadException;
@@ -86,24 +87,23 @@ public class DarcsCmd {
         return proc;
     }
 
-    public ByteArrayOutputStream lastSummarizedChanges(final String repo, final int n) throws DarcsCommadException {
+    public OutputStream lastSummarizedChanges(final String repo, final int n) throws DarcsCommadException {
         return getChanges(repo, true, n);
     }
 
-    public ByteArrayOutputStream allSummarizedChanges(final String repo) throws DarcsCommadException {
+    public OutputStream allSummarizedChanges(final String repo) throws DarcsCommadException {
         return getChanges(repo, true);
     }
 
-    public ByteArrayOutputStream allChanges(final String repo) throws DarcsCommadException {
+    public OutputStream allChanges(final String repo) throws DarcsCommadException {
         return getChanges(repo, false);
     }
 
-    private ByteArrayOutputStream getChanges(final String repo, final boolean summarize) throws DarcsCommadException {
+    private OutputStream getChanges(final String repo, final boolean summarize) throws DarcsCommadException {
         return getChanges(repo, summarize, 0);
     }
 
-    private ByteArrayOutputStream getChanges(final String repo, final boolean summarize, final int lastPatches)
-            throws DarcsCommadException {
+    private OutputStream getChanges(final String repo, final boolean summarize, final int lastPatches) throws DarcsCommadException {
         final DarcsChangesBuilder builder = DarcsCommand.builder(darcsExe).changes();
         builder.repoDir(repo).xmlOutput();
 
@@ -119,13 +119,14 @@ public class DarcsCmd {
 
         try {
             if (0 != cmd.execute(createProc())) {
+                // TODO throw inside DarcsCommand#execute
                 throw new DarcsCommadException("can not do darcs changes in repo " + repo);
             }
         } catch (Exception ex) {
             throw new DarcsCommadException("can not do darcs changes in repo " + repo, ex);
         }
 
-        return (ByteArrayOutputStream) cmd.getOut(); // TODO remove cast
+        return cmd.getOut();
     }
 
     public int countChanges(final String repo) throws DarcsCommadException {
@@ -135,6 +136,7 @@ public class DarcsCmd {
 
         try {
             if (0 != cmd.execute(createProc())) {
+                // TODO throw inside DarcsCommand#execute
                 throw new DarcsCommadException("can not do darcs changes in repo " + repo);
             }
         } catch (Exception ex) {
@@ -156,6 +158,7 @@ public class DarcsCmd {
             final int ret = cmd.execute(proc);
 
             if (0 != ret) {
+                // TODO throw inside DarcsCommand#execute
                 throw new DarcsCommadException(String.format("Can't do darcs changes in repo %s! Return code: %d",
                         repo, ret));
             }
@@ -182,6 +185,7 @@ public class DarcsCmd {
             final int ret = cmd.execute(proc);
 
             if (0 != ret) {
+                // TODO throw inside DarcsCommand#execute
                 throw new DarcsCommadException(String.format("Getting repo with args %s failed! Return code: %d",
                         cmd.toString(), ret));
             }

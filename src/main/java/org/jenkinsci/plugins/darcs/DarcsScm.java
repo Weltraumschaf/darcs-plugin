@@ -32,6 +32,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
@@ -257,8 +258,8 @@ public class DarcsScm extends SCM implements Serializable {
         DarcsRevisionState rev = null;
 
         try {
-            final ByteArrayOutputStream changes = cmd.allChanges(repo);
-            rev = new DarcsRevisionState(changelogParser.parse(changes));
+            final OutputStream changes = cmd.allChanges(repo);
+            rev = new DarcsRevisionState(changelogParser.parse((ByteArrayOutputStream) changes)); // FIXME Remove cast
         } catch (Exception e) {
             listener.getLogger().println(String.format("[warning] Failed to get revision state for repository: %s", e));
             e.printStackTrace(listener.getLogger());
@@ -290,8 +291,8 @@ public class DarcsScm extends SCM implements Serializable {
         try {
             fos = new FileOutputStream(changeLog);
             final FilePath localPath = createLocalPath(workspace);
-            final ByteArrayOutputStream changes = cmd.lastSummarizedChanges(localPath.getRemote(), numPatches);
-            changes.writeTo(fos);
+            final OutputStream changes = cmd.lastSummarizedChanges(localPath.getRemote(), numPatches);
+            ((ByteArrayOutputStream) changes).writeTo(fos); // FIXME remove cast
         } catch (Exception e) {
             final StringWriter w = new StringWriter();
             e.printStackTrace(new PrintWriter(w));
