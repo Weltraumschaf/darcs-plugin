@@ -258,7 +258,6 @@ public class DarcsScm extends SCM implements Serializable {
 
         try {
             final ByteArrayOutputStream changes = cmd.allChanges(repo);
-            changelogParser.parse(changes);
             rev = new DarcsRevisionState(changelogParser.parse(changes));
         } catch (Exception e) {
             listener.getLogger().println(String.format("[warning] Failed to get revision state for repository: %s", e));
