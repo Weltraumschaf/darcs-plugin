@@ -8,7 +8,7 @@
  * you can buy me a beer in return.
  */
 
-package org.jenkinsci.plugins.darcs;
+package org.jenkinsci.plugins.darcs.cmd;
 
 import org.junit.Ignore;
 import org.junit.Test;
