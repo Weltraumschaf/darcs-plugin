@@ -16,6 +16,7 @@ import hudson.util.ArgumentListBuilder;
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
 import org.jenkinsci.plugins.darcs.cmd.DarcsChangesBuilder;
+import org.jenkinsci.plugins.darcs.cmd.DarcsCommadException;
 import org.jenkinsci.plugins.darcs.cmd.DarcsCommand;
 import org.jenkinsci.plugins.darcs.cmd.DarcsGetBuilder;
 import org.jenkinsci.plugins.darcs.cmd.DarcsPullBuilder;
@@ -188,33 +189,6 @@ public class DarcsCmd {
             }
         } catch (Exception ex) {
             throw new DarcsCommadException(String.format("Can't get repo with args: %s", cmd.toString()), ex);
-        }
-    }
-
-    /**
-     * Darcs command exception.
-     *
-     * TODO rename to DarcsCommandException and move into cmd package.
-     */
-    public static class DarcsCommadException extends RuntimeException {
-
-        /**
-         * Creates exception with message.
-         *
-         * @param string exception message
-         */
-        public DarcsCommadException(final String string) {
-            super(string);
-        }
-
-        /**
-         * Creates exception with message and a previous exception.
-         *
-         * @param string exception message
-         * @param thrwbl previous exception
-         */
-        public DarcsCommadException(final String string, final Throwable thrwbl) {
-            super(string, thrwbl);
         }
     }
 }
