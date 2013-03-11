@@ -21,19 +21,40 @@ public class DarcsCmdTest {
 
     @Test
     @Ignore("not ready yet")
-    public void testChanges() {
-
+    public void lastSummarizedChanges() {
+        // TODO Implement test
     }
 
     @Test
     @Ignore("not ready yet")
-    public void testPull() {
-
+    public void allSummarizedChanges() {
+        // TODO Implement test
     }
 
     @Test
     @Ignore("not ready yet")
-    public void testGet() {
-
+    public void allChanges() {
+        // TODO Implement test
     }
+
+    @Test
+    @Ignore("not ready yet")
+    public void countChanges() {
+        // TODO Implement test
+    }
+
+    @Test
+    @Ignore("not ready yet")
+    public void pull() {
+        // TODO Implement test
+    }
+
+    @Test
+    @Ignore("not ready yet")
+    public void get() {
+        // TODO Implement test
+    }
+
+
+
 }
