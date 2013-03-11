@@ -22,13 +22,13 @@ import org.jenkinsci.plugins.darcs.cmd.DarcsGetBuilder;
 import org.jenkinsci.plugins.darcs.cmd.DarcsPullBuilder;
 
 /**
- * Abstracts the Darcs command.
+ * Facade for the Darcs command.
  *
  * TODO Consider returning String instead of OutputStream.
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
-public class DarcsCmd {
+public class DarcsCommandFacade {
 
     /**
      * Used to start a process.
@@ -55,7 +55,7 @@ public class DarcsCmd {
      * @param darcsExe executable name
      * @param workingDir working dir for darcs command
      */
-    public DarcsCmd(final Launcher launcher, final Map<String, String> envs, final String darcsExe, final FilePath workingDir) {
+    public DarcsCommandFacade(final Launcher launcher, final Map<String, String> envs, final String darcsExe, final FilePath workingDir) {
         super();
         this.envs = envs;
         this.launcher = launcher;

@@ -238,15 +238,15 @@ public class DarcsScm extends SCM implements Serializable {
      */
     DarcsRevisionState getRevisionState(final Launcher launcher, final TaskListener listener, final String repo, final FilePath workspace)
             throws InterruptedException {
-        final DarcsCmd cmd;
+        final DarcsCommandFacade cmd;
 
         if (null == launcher) {
             /* Create a launcher on master
              * TODO better grab a launcher on 'any slave'
              */
-            cmd = new DarcsCmd(new LocalLauncher(listener), EnvVars.masterEnvVars, getDescriptor().getDarcsExe(), workspace);
+            cmd = new DarcsCommandFacade(new LocalLauncher(listener), EnvVars.masterEnvVars, getDescriptor().getDarcsExe(), workspace);
         } else {
-            cmd = new DarcsCmd(launcher, EnvVars.masterEnvVars, getDescriptor().getDarcsExe(), workspace);
+            cmd = new DarcsCommandFacade(launcher, EnvVars.masterEnvVars, getDescriptor().getDarcsExe(), workspace);
         }
 
         DarcsRevisionState rev = null;
@@ -278,7 +278,7 @@ public class DarcsScm extends SCM implements Serializable {
             return;
         }
 
-        final DarcsCmd cmd = new DarcsCmd(launcher, EnvVars.masterEnvVars, getDescriptor().getDarcsExe(), workspace.getParent());
+        final DarcsCommandFacade cmd = new DarcsCommandFacade(launcher, EnvVars.masterEnvVars, getDescriptor().getDarcsExe(), workspace.getParent());
         FileOutputStream fos = null;
 
         try {
@@ -329,7 +329,7 @@ public class DarcsScm extends SCM implements Serializable {
     private int countPatches(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace,
             final BuildListener listener) {
         try {
-            final DarcsCmd cmd = new DarcsCmd(launcher, build.getEnvironment(listener), getDescriptor().getDarcsExe(), workspace.getParent());
+            final DarcsCommandFacade cmd = new DarcsCommandFacade(launcher, build.getEnvironment(listener), getDescriptor().getDarcsExe(), workspace.getParent());
             final FilePath localPath = createLocalPath(workspace);
             return cmd.countChanges(localPath.getRemote());
         } catch (Exception e) {
@@ -357,7 +357,7 @@ public class DarcsScm extends SCM implements Serializable {
         LOGGER.info(String.format("Count of patches pre pulling is %d", preCnt));
 
         try {
-            final DarcsCmd cmd = new DarcsCmd(launcher, build.getEnvironment(listener), getDescriptor().getDarcsExe(), workspace.getParent());
+            final DarcsCommandFacade cmd = new DarcsCommandFacade(launcher, build.getEnvironment(listener), getDescriptor().getDarcsExe(), workspace.getParent());
             final FilePath localPath = createLocalPath(workspace);
             cmd.pull(localPath.getRemote(), source);
         } catch (Exception e) {
@@ -396,7 +396,7 @@ public class DarcsScm extends SCM implements Serializable {
         }
 
         try {
-            final DarcsCmd cmd = new DarcsCmd(launcher, build.getEnvironment(listener), getDescriptor().getDarcsExe(), workspace.getParent());
+            final DarcsCommandFacade cmd = new DarcsCommandFacade(launcher, build.getEnvironment(listener), getDescriptor().getDarcsExe(), workspace.getParent());
             final FilePath localPath = createLocalPath(workspace);
             cmd.get(localPath.getRemote(), source);
         } catch (Exception e) {

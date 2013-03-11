@@ -17,7 +17,7 @@ import org.junit.Test;
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
-public class DarcsCommadTest {
+public class DarcsCommandFacadeTest {
 
     @Test
     @Ignore("not ready yet")
