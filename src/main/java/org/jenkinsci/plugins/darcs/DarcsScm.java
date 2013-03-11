@@ -408,11 +408,7 @@ public class DarcsScm extends SCM implements Serializable {
 
     @Override
     public ChangeLogParser createChangeLogParser() {
-        try {
-            return new DarcsChangeLogParser();
-        } catch (SAXException ex) {
-            throw new RuntimeException("Can't create changelog parser!", ex);
-        }
+        return new DarcsChangeLogParser();
     }
 
     @Override

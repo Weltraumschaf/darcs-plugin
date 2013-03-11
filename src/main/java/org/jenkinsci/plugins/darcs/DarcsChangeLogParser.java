@@ -41,18 +41,12 @@ class DarcsChangeLogParser extends ChangeLogParser {
      * Sanitizes XML character encoding.
      */
     private final DarcsXmlSanitizer sanitizer;
-    /**
-     * Reads the change log XML.
-     */
-    private final XMLReader xmlReader;
 
     /**
      * Convenience constructor which initializes all dependencies.
-     *
-     * @throws SAXException if no default XMLReader class can be identified and instantiated.
      */
-    public DarcsChangeLogParser() throws SAXException {
-        this(new DarcsSaxHandler(), new DarcsXmlSanitizer(), XMLReaderFactory.createXMLReader());
+    public DarcsChangeLogParser() {
+        this(new DarcsSaxHandler(), new DarcsXmlSanitizer());
     }
 
     /**
@@ -60,15 +54,11 @@ class DarcsChangeLogParser extends ChangeLogParser {
      *
      * @param handler implementation of a SAX parser
      * @param sani sanitize to clean comments
-     * @param xmlReader reader to handle the XML input
      */
-    public DarcsChangeLogParser(final DarcsSaxHandler handler, final DarcsXmlSanitizer sani, final XMLReader xmlReader) {
+    public DarcsChangeLogParser(final DarcsSaxHandler handler, final DarcsXmlSanitizer sani) {
         super();
         this.handler = handler;
         this.sanitizer = sani;
-        this.xmlReader = xmlReader;
-        this.xmlReader.setContentHandler(this.handler);
-        this.xmlReader.setErrorHandler(this.handler);
     }
 
     /**
@@ -88,8 +78,7 @@ class DarcsChangeLogParser extends ChangeLogParser {
         throws IOException, SAXException {
         LOGGER.info(String.format("Parsing changelog file %s...", changelogFile.toString()));
         final StringReader input = new StringReader(sanitizer.cleanse(changelogFile));
-        xmlReader.parse(new InputSource(input));
-        return new DarcsChangeSetList(build, handler.getChangeSets());
+        return parse(build, new InputSource(input));
     }
 
     /**
@@ -102,7 +91,14 @@ class DarcsChangeLogParser extends ChangeLogParser {
      */
     public DarcsChangeSetList parse(final ByteArrayOutputStream changeLog) throws IOException, SAXException {
         final StringReader input = new StringReader(sanitizer.cleanse(changeLog.toByteArray()));
-        xmlReader.parse(new InputSource(input));
-        return new DarcsChangeSetList(null, handler.getChangeSets());
+        return parse(null, new InputSource(input));
+    }
+
+    private DarcsChangeSetList parse(final AbstractBuild build, final InputSource changeLog) throws IOException, SAXException {
+        final XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+        xmlReader.setContentHandler(handler);
+        xmlReader.setErrorHandler(handler);
+        xmlReader.parse(changeLog);
+        return new DarcsChangeSetList(build, handler.getChangeSets());
     }
 }
