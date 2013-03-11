@@ -68,3 +68,7 @@
 
 * Refactoring of Darcs command abstraction.
 * Fix NPE on calculating first revision state (issue #13).
+
+## 0.3.10
+
+* Fix NPE: BEcause of serialization issues with the main the changelog parse may be null on build time (issue #13).
