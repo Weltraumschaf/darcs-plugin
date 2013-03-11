@@ -85,24 +85,24 @@ public class DarcsCmd {
         return proc;
     }
 
-    public ByteArrayOutputStream lastSummarizedChanges(final String repo, final int n) throws DarcsCmdException {
+    public ByteArrayOutputStream lastSummarizedChanges(final String repo, final int n) throws DarcsCommadException {
         return getChanges(repo, true, n);
     }
 
-    public ByteArrayOutputStream allSummarizedChanges(final String repo) throws DarcsCmdException {
+    public ByteArrayOutputStream allSummarizedChanges(final String repo) throws DarcsCommadException {
         return getChanges(repo, true);
     }
 
-    public ByteArrayOutputStream allChanges(final String repo) throws DarcsCmdException {
+    public ByteArrayOutputStream allChanges(final String repo) throws DarcsCommadException {
         return getChanges(repo, false);
     }
 
-    private ByteArrayOutputStream getChanges(final String repo, final boolean summarize) throws DarcsCmdException {
+    private ByteArrayOutputStream getChanges(final String repo, final boolean summarize) throws DarcsCommadException {
         return getChanges(repo, summarize, 0);
     }
 
     private ByteArrayOutputStream getChanges(final String repo, final boolean summarize, final int lastPatches)
-            throws DarcsCmdException {
+            throws DarcsCommadException {
         final DarcsChangesBuilder builder = DarcsCommand.builder(darcsExe).changes();
         builder.repoDir(repo).xmlOutput();
 
@@ -118,32 +118,32 @@ public class DarcsCmd {
 
         try {
             if (0 != cmd.execute(createProc())) {
-                throw new DarcsCmdException("can not do darcs changes in repo " + repo);
+                throw new DarcsCommadException("can not do darcs changes in repo " + repo);
             }
         } catch (Exception ex) {
-            throw new DarcsCmdException("can not do darcs changes in repo " + repo, ex);
+            throw new DarcsCommadException("can not do darcs changes in repo " + repo, ex);
         }
 
         return (ByteArrayOutputStream) cmd.getOut(); // TODO remove cast
     }
 
-    public int countChanges(final String repo) throws DarcsCmdException {
+    public int countChanges(final String repo) throws DarcsCommadException {
         final DarcsChangesBuilder builder = DarcsCommand.builder(darcsExe).changes();
         builder.repoDir(repo).count();
         final DarcsCommand cmd = builder.create();
 
         try {
             if (0 != cmd.execute(createProc())) {
-                throw new DarcsCmdException("can not do darcs changes in repo " + repo);
+                throw new DarcsCommadException("can not do darcs changes in repo " + repo);
             }
         } catch (Exception ex) {
-            throw new DarcsCmdException("can not do darcs changes in repo " + repo, ex);
+            throw new DarcsCommadException("can not do darcs changes in repo " + repo, ex);
         }
 
         return Integer.parseInt(cmd.getErr().toString().trim());
     }
 
-    public void pull(final String repo, final String from) throws DarcsCmdException {
+    public void pull(final String repo, final String from) throws DarcsCommadException {
         final DarcsPullBuilder builder = DarcsCommand.builder(darcsExe).pull();
         builder.from(from).repoDir(repo).all().verbose();
         final DarcsCommand cmd = builder.create();
@@ -155,11 +155,11 @@ public class DarcsCmd {
             final int ret = cmd.execute(proc);
 
             if (0 != ret) {
-                throw new DarcsCmdException(String.format("Can't do darcs changes in repo %s! Return code: %d",
+                throw new DarcsCommadException(String.format("Can't do darcs changes in repo %s! Return code: %d",
                         repo, ret));
             }
         } catch (Exception ex) {
-            throw new DarcsCmdException(String.format("Can't do darcs changes in repo %s!", repo), ex);
+            throw new DarcsCommadException(String.format("Can't do darcs changes in repo %s!", repo), ex);
         }
     }
 
@@ -170,9 +170,9 @@ public class DarcsCmd {
      *
      * @param repo where to checkout
      * @param from from where to get the repository
-     * @throws DarcsCmdException if can't do checkout
+     * @throws DarcsCommadException if can't do checkout
      */
-    public void get(final String repo, final String from) throws DarcsCmdException {
+    public void get(final String repo, final String from) throws DarcsCommadException {
         final DarcsGetBuilder builder = DarcsCommand.builder(darcsExe).get();
         builder.from(from).to(repo);
         final DarcsCommand cmd = builder.create();
@@ -183,11 +183,11 @@ public class DarcsCmd {
             final int ret = cmd.execute(proc);
 
             if (0 != ret) {
-                throw new DarcsCmdException(String.format("Getting repo with args %s failed! Return code: %d",
+                throw new DarcsCommadException(String.format("Getting repo with args %s failed! Return code: %d",
                         cmd.toString(), ret));
             }
         } catch (Exception ex) {
-            throw new DarcsCmdException(String.format("Can't get repo with args: %s", cmd.toString()), ex);
+            throw new DarcsCommadException(String.format("Can't get repo with args: %s", cmd.toString()), ex);
         }
     }
 
@@ -196,14 +196,14 @@ public class DarcsCmd {
      *
      * TODO rename to DarcsCommandException and move into cmd package.
      */
-    public static class DarcsCmdException extends RuntimeException {
+    public static class DarcsCommadException extends RuntimeException {
 
         /**
          * Creates exception with message.
          *
          * @param string exception message
          */
-        public DarcsCmdException(final String string) {
+        public DarcsCommadException(final String string) {
             super(string);
         }
 
@@ -213,7 +213,7 @@ public class DarcsCmd {
          * @param string exception message
          * @param thrwbl previous exception
          */
-        public DarcsCmdException(final String string, final Throwable thrwbl) {
+        public DarcsCommadException(final String string, final Throwable thrwbl) {
             super(string, thrwbl);
         }
     }
