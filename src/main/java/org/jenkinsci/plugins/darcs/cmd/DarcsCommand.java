@@ -11,7 +11,6 @@
  */
 package org.jenkinsci.plugins.darcs.cmd;
 
-import hudson.Launcher;
 import hudson.Launcher.ProcStarter;
 import hudson.util.ArgumentListBuilder;
 import java.io.ByteArrayOutputStream;
@@ -32,7 +31,7 @@ public class DarcsCommand {
     /**
      * Records STDOUT of command.
      */
-    private final OutputStream out = new ByteArrayOutputStream();
+    private OutputStream out = new ByteArrayOutputStream();
     /**
      * Records STDERR of command.
      */
@@ -94,6 +93,15 @@ public class DarcsCommand {
     }
 
     /**
+     * Set output stream for STDOUT.
+     *
+     * @param out output stream
+     */
+    public void setOut(final OutputStream out) {
+        this.out = out;
+    }
+
+    /**
      * Get output stream which records STDOUT.
      *
      * @return reference to the output stream
@@ -109,6 +117,11 @@ public class DarcsCommand {
      */
     ArgumentListBuilder getArgs() {
         return args;
+    }
+
+    @Override
+    public String toString() {
+        return args.toStringWithQuote();
     }
 
 }

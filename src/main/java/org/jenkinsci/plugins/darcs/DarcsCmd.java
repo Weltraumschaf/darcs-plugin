@@ -15,6 +15,10 @@ import hudson.Launcher.ProcStarter;
 import hudson.util.ArgumentListBuilder;
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
+import org.jenkinsci.plugins.darcs.cmd.DarcsChangesBuilder;
+import org.jenkinsci.plugins.darcs.cmd.DarcsCommand;
+import org.jenkinsci.plugins.darcs.cmd.DarcsGetBuilder;
+import org.jenkinsci.plugins.darcs.cmd.DarcsPullBuilder;
 
 /**
  * Abstracts the Darcs command.
@@ -23,27 +27,6 @@ import java.util.Map;
  */
 public class DarcsCmd {
 
-    /**
-     * `darcs changes` command.
-     */
-    private static final String CMD_CHANGES = "changes";
-    /**
-     * `darcs pull` command.
-     */
-    private static final String CMD_PULL = "pull";
-    /**
-     * `darcs get` command.
-     */
-    private static final String CMD_GET = "get";
-    // Command options
-    private static final String OPT_REPO = "--repo=";
-    private static final String OPT_XML_OUTPUT = "--xml-output";
-    private static final String OPT_SUMMARY = "--summary";
-    private static final String OPT_LAST = "--last=";
-    private static final String OPT_REPODIR = "--repodir=";
-    private static final String OPT_COUNT = "--count";
-    private static final String OPT_ALL = "--all";
-    private static final String OPT_VERBOSE = "--verbose";
     /**
      * Used to start a process.
      */
@@ -56,6 +39,9 @@ public class DarcsCmd {
      * Environment variables.
      */
     private final Map<String, String> envs;
+    /**
+     * Working directory of Darcs command.
+     */
     private final FilePath workingDir;
 
     /**
@@ -64,6 +50,7 @@ public class DarcsCmd {
      * @param launcher starts a process
      * @param envs environment variables
      * @param darcsExe executable name
+     * @param workingDir working dir for darcs command
      */
     public DarcsCmd(final Launcher launcher, final Map<String, String> envs, final String darcsExe, final FilePath workingDir) {
         super();
@@ -74,14 +61,25 @@ public class DarcsCmd {
     }
 
     /**
+     * Create proc starter w/o arguments.
+     *
+     * @return a new process starter object
+     */
+    private ProcStarter createProc() {
+        return createProc(null);
+    }
+
+    /**
      * Creates process starter.
      *
      * @param args builds argument list for command
-     * @return a process starter object
+     * @return a new process starter object
      */
-    public ProcStarter createProc(final ArgumentListBuilder args) {
+    private ProcStarter createProc(final ArgumentListBuilder args) {
         final ProcStarter proc = launcher.launch();
-        proc.cmds(args);
+        if (null != args) {
+            proc.cmds(args);
+        }
         proc.envs(envs);
         proc.pwd(workingDir);
         return proc;
@@ -103,76 +101,58 @@ public class DarcsCmd {
         return getChanges(repo, summarize, 0);
     }
 
-    private ByteArrayOutputStream getChanges(final String repo, final boolean summarize, final int n)
+    private ByteArrayOutputStream getChanges(final String repo, final boolean summarize, final int lastPatches)
             throws DarcsCmdException {
-        final ArgumentListBuilder args = new ArgumentListBuilder();
-        args.add(darcsExe)
-                .add(CMD_CHANGES)
-                .add(OPT_REPO + repo)
-                .add(OPT_XML_OUTPUT);
+        final DarcsChangesBuilder builder = DarcsCommand.builder(darcsExe).changes();
+        builder.repoDir(repo).xmlOutput();
 
         if (summarize) {
-            args.add(OPT_SUMMARY);
+            builder.summary();
         }
 
-        if (n > 0) {
-            args.add(OPT_LAST + n);
+        if (lastPatches > 0) {
+            builder.last(lastPatches);
         }
 
-        final ProcStarter proc = createProc(args);
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        proc.stdout(baos);
+        final DarcsCommand cmd = builder.create();
 
         try {
-            final int ret = proc.join();
-
-            if (0 != ret) {
+            if (0 != cmd.execute(createProc())) {
                 throw new DarcsCmdException("can not do darcs changes in repo " + repo);
             }
         } catch (Exception ex) {
             throw new DarcsCmdException("can not do darcs changes in repo " + repo, ex);
         }
 
-        return baos;
+        return (ByteArrayOutputStream) cmd.getOut(); // TODO remove cast
     }
 
     public int countChanges(final String repo) throws DarcsCmdException {
-        final ArgumentListBuilder args = new ArgumentListBuilder();
-        args.add(darcsExe)
-                .add(CMD_CHANGES)
-                .add(OPT_REPODIR + repo)
-                .add(OPT_COUNT);
-
-        final ProcStarter proc = createProc(args);
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        proc.stdout(baos);
+        final DarcsChangesBuilder builder = DarcsCommand.builder(darcsExe).changes();
+        builder.repoDir(repo).count();
+        final DarcsCommand cmd = builder.create();
 
         try {
-            final int ret = proc.join();
-
-            if (0 != ret) {
+            if (0 != cmd.execute(createProc())) {
                 throw new DarcsCmdException("can not do darcs changes in repo " + repo);
             }
         } catch (Exception ex) {
             throw new DarcsCmdException("can not do darcs changes in repo " + repo, ex);
         }
 
-        return Integer.parseInt(baos.toString().trim());
+        return Integer.parseInt(cmd.getErr().toString().trim());
     }
 
     public void pull(final String repo, final String from) throws DarcsCmdException {
-        final ArgumentListBuilder args = new ArgumentListBuilder();
-        args.add(darcsExe)
-                .add(CMD_PULL)
-                .add(from)
-                .add(OPT_REPODIR + repo)
-                .add(OPT_ALL)
-                .add(OPT_VERBOSE);
+        final DarcsPullBuilder builder = DarcsCommand.builder(darcsExe).pull();
+        builder.from(from).repoDir(repo).all().verbose();
+        final DarcsCommand cmd = builder.create();
+        cmd.setOut(launcher.getListener().getLogger());
 
         try {
-            final ProcStarter proc = createProc(args);
+            final ProcStarter proc = createProc();
             proc.stdout(this.launcher.getListener());
-            final int ret = proc.join();
+            final int ret = cmd.execute(proc);
 
             if (0 != ret) {
                 throw new DarcsCmdException(String.format("Can't do darcs changes in repo %s! Return code: %d",
@@ -190,31 +170,31 @@ public class DarcsCmd {
      *
      * @param repo where to checkout
      * @param from from where to get the repository
-     * @throws DarcsCmd.DarcsCmdException if can't do checkout
+     * @throws DarcsCmdException if can't do checkout
      */
     public void get(final String repo, final String from) throws DarcsCmdException {
-        final ArgumentListBuilder args = new ArgumentListBuilder();
-        args.add(darcsExe)
-                .add(CMD_GET)
-                .add(from)
-                .add(repo);
+        final DarcsGetBuilder builder = DarcsCommand.builder(darcsExe).get();
+        builder.from(from).to(repo);
+        final DarcsCommand cmd = builder.create();
 
         try {
-            final ProcStarter proc = createProc(args);
+            final ProcStarter proc = createProc();
             proc.stdout(this.launcher.getListener());
-            final int ret = proc.join();
+            final int ret = cmd.execute(proc);
 
             if (0 != ret) {
                 throw new DarcsCmdException(String.format("Getting repo with args %s failed! Return code: %d",
-                        args.toStringWithQuote(), ret));
+                        cmd.toString(), ret));
             }
         } catch (Exception ex) {
-            throw new DarcsCmdException(String.format("Can't get repo with args: %s", args.toStringWithQuote()), ex);
+            throw new DarcsCmdException(String.format("Can't get repo with args: %s", cmd.toString()), ex);
         }
     }
 
     /**
      * Darcs command exception.
+     *
+     * TODO rename to DarcsCommandException and move into cmd package.
      */
     public static class DarcsCmdException extends RuntimeException {
 
