@@ -19,7 +19,7 @@ package org.jenkinsci.plugins.darcs.cmd;
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
-public final class DarcsCommandBuilder extends DarcsBaseCommandBuilder {
+final class DarcsCommandBuilder extends DarcsBaseCommandBuilder {
 
     /**
      * Not instantiated outside of package.

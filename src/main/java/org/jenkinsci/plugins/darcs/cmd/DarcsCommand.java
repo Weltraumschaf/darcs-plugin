@@ -22,7 +22,7 @@ import java.io.OutputStream;
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
-public class DarcsCommand {
+class DarcsCommand {
 
     /**
      * Argument list representing the command.

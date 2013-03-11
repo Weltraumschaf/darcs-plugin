@@ -17,7 +17,7 @@ package org.jenkinsci.plugins.darcs.cmd;
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
-public interface DarcsCommandCreator {
+interface DarcsCommandCreator {
 
     /**
      * Create the parameterized command object.

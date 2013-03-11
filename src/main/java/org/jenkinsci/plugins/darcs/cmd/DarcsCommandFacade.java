@@ -15,11 +15,6 @@ import hudson.Launcher.ProcStarter;
 import hudson.util.ArgumentListBuilder;
 import java.io.OutputStream;
 import java.util.Map;
-import org.jenkinsci.plugins.darcs.cmd.DarcsChangesBuilder;
-import org.jenkinsci.plugins.darcs.cmd.DarcsCommadException;
-import org.jenkinsci.plugins.darcs.cmd.DarcsCommand;
-import org.jenkinsci.plugins.darcs.cmd.DarcsGetBuilder;
-import org.jenkinsci.plugins.darcs.cmd.DarcsPullBuilder;
 
 /**
  * Facade for the Darcs command.
