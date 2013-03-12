@@ -12,7 +12,6 @@ package org.jenkinsci.plugins.darcs.cmd;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Launcher.ProcStarter;
-import hudson.util.ArgumentListBuilder;
 import java.util.Map;
 
 /**
@@ -60,75 +59,67 @@ public final class DarcsCommandFacade {
      *
      * @return a new process starter object
      */
-    private ProcStarter createProc() {
-        return createProc(null);
-    }
-
-    /**
-     * Creates process starter.
-     *
-     * @param args builds argument list for command
-     * @return a new process starter object
-     */
-    private ProcStarter createProc(final ArgumentListBuilder args) {
+    private ProcStarter createProcessStarter() {
         final ProcStarter proc = launcher.launch();
-        if (null != args) {
-            proc.cmds(args);
-        }
         proc.envs(envs);
         proc.pwd(workingDir);
         return proc;
     }
 
     /**
+     * Return the summary XML from the last n patches.
      *
-     * @param repo
-     * @param n
-     * @return
-     * @throws DarcsCommadException
+     * @param repo to get summary of
+     * @param lastPatches how many patches to summarize
+     * @return XML string
+     * @throws DarcsCommadException if command execution fails
      */
-    public String lastSummarizedChanges(final String repo, final int n) throws DarcsCommadException {
-        return getChanges(repo, true, n);
+    public String lastSummarizedChanges(final String repo, final int lastPatches) throws DarcsCommadException {
+        return getChanges(repo, true, lastPatches);
     }
 
     /**
+     * Return the summary XML from all patches.
      *
-     * @param repo
-     * @return
-     * @throws DarcsCommadException
+     * @param repo to get summary of
+     * @return XML string
+     * @throws DarcsCommadException if command execution fails
      */
     public String allSummarizedChanges(final String repo) throws DarcsCommadException {
         return getChanges(repo, true);
     }
 
     /**
+     * Return all changes as extended (not summarized) XML.
      *
-     * @param repo
-     * @return
-     * @throws DarcsCommadException
+     * @param repo to get summary of
+     * @return XML string
+     * @throws DarcsCommadException if command execution fails
      */
     public String allChanges(final String repo) throws DarcsCommadException {
         return getChanges(repo, false);
     }
 
     /**
+     * Get all changes from a repository.
      *
-     * @param repo
-     * @param summarize
-     * @return
-     * @throws DarcsCommadException
+     * @param repo to get changes of
+     * @param summarize whether to summarize changes or not
+     * @return XML string
+     * @throws DarcsCommadException if command execution fails
      */
     private String getChanges(final String repo, final boolean summarize) throws DarcsCommadException {
         return getChanges(repo, summarize, 0);
     }
 
     /**
+     * Get changes from a repository.
      *
-     * @param repo
-     * @param summarize
-     * @param lastPatches
-     * @return
-     * @throws DarcsCommadException
+     * @param repo to get changes of
+     * @param summarize whether to summarize changes or not
+     * @param lastPatches if greater than 0, the number of last patches to get changes for
+     * @return XML string
+     * @throws DarcsCommadException if command execution fails
      */
     private String getChanges(final String repo, final boolean summarize, final int lastPatches) throws DarcsCommadException {
         final DarcsChangesBuilder builder = DarcsCommand.builder(darcsExe).changes();
@@ -143,21 +134,22 @@ public final class DarcsCommandFacade {
         }
 
         final DarcsCommand cmd = builder.create();
-        cmd.execute(createProc());
+        cmd.execute(createProcessStarter());
         return cmd.getOut().toString();
     }
 
     /**
+     * Count all changes in a repository.
      *
-     * @param repo
-     * @return
-     * @throws DarcsCommadException
+     * @param repo to count changes of
+     * @return number of patches in repository
+     * @throws DarcsCommadException if command execution fails
      */
     public int countChanges(final String repo) throws DarcsCommadException {
         final DarcsChangesBuilder builder = DarcsCommand.builder(darcsExe).changes();
         builder.repoDir(repo).count();
         final DarcsCommand cmd = builder.create();
-        cmd.execute(createProc());
+        cmd.execute(createProcessStarter());
         final String count = cmd.getErr().toString().trim();
         return count.length() > 0 ? Integer.parseInt(count) : 0;
     }
@@ -174,7 +166,7 @@ public final class DarcsCommandFacade {
         builder.from(from).repoDir(repo).all().verbose();
         final DarcsCommand cmd = builder.create();
         cmd.setOut(launcher.getListener().getLogger());
-        final ProcStarter proc = createProc();
+        final ProcStarter proc = createProcessStarter();
         proc.stdout(launcher.getListener());
         cmd.execute(proc);
     }
@@ -190,7 +182,7 @@ public final class DarcsCommandFacade {
         final DarcsGetBuilder builder = DarcsCommand.builder(darcsExe).get();
         builder.from(from).to(repo);
         final DarcsCommand cmd = builder.create();
-        final ProcStarter proc = createProc();
+        final ProcStarter proc = createProcessStarter();
         proc.stdout(launcher.getListener());
         cmd.execute(proc);
     }
