@@ -30,11 +30,15 @@ import static org.mockito.Mockito.mock;
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsCommandFacadeTest {
-    private static final String REPO_ARCHIVE = "/org/jenkinsci/plugins/darcs/cmd/repo.tar.gz";
+    private static final String FIXTURE_BASE = "/org/jenkinsci/plugins/darcs/cmd";
+    private static final String LINUX_BIN = "darcs_bin_linux_2.8";
+    private static final String MACOS_BIN = "darcs_bin_macos_2.5";
+    private static final String REPO_ARCHIVE = FIXTURE_BASE + "/repo.tar.gz";
     private static final String REPO_DIR_NAME = "repo";
 
-    @Rule public TemporaryFolder folder= new TemporaryFolder();
-
+    //CHECKSTYLE:OFF
+    @Rule public TemporaryFolder folder = new TemporaryFolder();
+    //CHECKSTYLE:ON
     private File repo;
 
     @Before

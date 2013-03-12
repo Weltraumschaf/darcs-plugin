@@ -173,7 +173,7 @@ public class DarcsChangeLogParserTest {
     @Test
     public void parse_file() throws IOException, SAXException, URISyntaxException {
         final DarcsChangeLogParser sut = new DarcsChangeLogParser();
-        final URL resource = getClass().getResource("/changes-summary.xml");
+        final URL resource = getClass().getResource("/org/jenkinsci/plugins/darcs/changes-summary.xml");
         final DarcsChangeSetList list = sut.parse(null, new File(resource.toURI()));
 
         assertNotNull(list);
@@ -189,7 +189,7 @@ public class DarcsChangeLogParserTest {
     @Test
     public void parse_byteArray() throws SAXException, URISyntaxException, IOException {
         final DarcsChangeLogParser sut = new DarcsChangeLogParser();
-        final URL resource = getClass().getResource("/changes-summary.xml");
+        final URL resource = getClass().getResource("/org/jenkinsci/plugins/darcs/changes-summary.xml");
         final FileInputStream fis = new FileInputStream(new File(resource.toURI()));
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
         final byte[] buf = new byte[1024];
