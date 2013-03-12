@@ -19,7 +19,24 @@
         <name>weltraumschaf.de</name>
         <url>http://www.weltraumschaf.de</url>
     </organization>
-
+    
+    <mailingLists>
+        <mailingList>
+            <name>Core-/Plugin-developer discussion</name>
+            <subscribe>jenkinsci-dev+subscribe@googlegroups.com</subscribe>
+            <unsubscribe>jenkinsci-dev+unsubscribe@googlegroups.com</unsubscribe>
+            <post>jenkinsci-dev@googlegroups.com</post>
+            <archive>http://groups.google.com/group/jenkinsci-dev/topics</archive>
+        </mailingList>
+        <mailingList>
+            <name>General user question/discussion</name>
+            <subscribe>jenkinsci-users+subscribe@googlegroups.com</subscribe>
+            <unsubscribe>jenkinsci-users+unsubscribe@googlegroups.com</unsubscribe>
+            <post>jenkinsci-users@googlegroups.com</post>
+            <archive>http://groups.google.com/group/jenkinsci-users/topics</archive>
+        </mailingList>
+    </mailingLists>
+     
     <developers>
         <developer>
             <id>weltraumschaf</id>
@@ -248,7 +265,7 @@
                                         <report>index</report>
                                         <report>project-team</report>
                                         <report>license</report>
-                                        <report>dependencies</report>
+                                        <!--<report>dependencies</report>-->
                                         <report>dependency-convergence</report>
                                         <report>plugin-management</report>
                                         <report>cim</report>
