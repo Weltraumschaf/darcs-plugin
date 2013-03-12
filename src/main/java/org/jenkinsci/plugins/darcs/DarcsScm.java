@@ -253,8 +253,8 @@ public class DarcsScm extends SCM implements Serializable {
         DarcsRevisionState rev = null;
 
         try {
-            final OutputStream changes = cmd.allChanges(repo);
-            rev = new DarcsRevisionState(((DarcsChangeLogParser) createChangeLogParser()).parse((ByteArrayOutputStream) changes)); // FIXME Remove cast
+            final String changes = cmd.allChanges(repo);
+            rev = new DarcsRevisionState(((DarcsChangeLogParser) createChangeLogParser()).parse(changes));
         } catch (Exception e) {
             listener.getLogger().println(String.format("[warning] Failed to get revision state for repository: %s", repo));
         }
@@ -285,8 +285,8 @@ public class DarcsScm extends SCM implements Serializable {
         try {
             fos = new FileOutputStream(changeLog);
             final FilePath localPath = createLocalPath(workspace);
-            final OutputStream changes = cmd.lastSummarizedChanges(localPath.getRemote(), numPatches);
-            ((ByteArrayOutputStream) changes).writeTo(fos); // FIXME remove cast
+            final String changes = cmd.lastSummarizedChanges(localPath.getRemote(), numPatches);
+            fos.write(changes.getBytes());
         } catch (Exception e) {
             final StringWriter w = new StringWriter();
             e.printStackTrace(new PrintWriter(w));

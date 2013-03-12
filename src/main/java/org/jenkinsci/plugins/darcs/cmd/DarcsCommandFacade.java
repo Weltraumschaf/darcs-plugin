@@ -13,17 +13,14 @@ import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Launcher.ProcStarter;
 import hudson.util.ArgumentListBuilder;
-import java.io.OutputStream;
 import java.util.Map;
 
 /**
  * Facade for the Darcs command.
  *
- * TODO Consider returning String instead of OutputStream.
- *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
-public class DarcsCommandFacade {
+public final class DarcsCommandFacade {
 
     /**
      * Used to start a process.
@@ -83,23 +80,57 @@ public class DarcsCommandFacade {
         return proc;
     }
 
-    public OutputStream lastSummarizedChanges(final String repo, final int n) throws DarcsCommadException {
+    /**
+     *
+     * @param repo
+     * @param n
+     * @return
+     * @throws DarcsCommadException
+     */
+    public String lastSummarizedChanges(final String repo, final int n) throws DarcsCommadException {
         return getChanges(repo, true, n);
     }
 
-    public OutputStream allSummarizedChanges(final String repo) throws DarcsCommadException {
+    /**
+     *
+     * @param repo
+     * @return
+     * @throws DarcsCommadException
+     */
+    public String allSummarizedChanges(final String repo) throws DarcsCommadException {
         return getChanges(repo, true);
     }
 
-    public OutputStream allChanges(final String repo) throws DarcsCommadException {
+    /**
+     *
+     * @param repo
+     * @return
+     * @throws DarcsCommadException
+     */
+    public String allChanges(final String repo) throws DarcsCommadException {
         return getChanges(repo, false);
     }
 
-    private OutputStream getChanges(final String repo, final boolean summarize) throws DarcsCommadException {
+    /**
+     *
+     * @param repo
+     * @param summarize
+     * @return
+     * @throws DarcsCommadException
+     */
+    private String getChanges(final String repo, final boolean summarize) throws DarcsCommadException {
         return getChanges(repo, summarize, 0);
     }
 
-    private OutputStream getChanges(final String repo, final boolean summarize, final int lastPatches) throws DarcsCommadException {
+    /**
+     *
+     * @param repo
+     * @param summarize
+     * @param lastPatches
+     * @return
+     * @throws DarcsCommadException
+     */
+    private String getChanges(final String repo, final boolean summarize, final int lastPatches) throws DarcsCommadException {
         final DarcsChangesBuilder builder = DarcsCommand.builder(darcsExe).changes();
         builder.repoDir(repo).xmlOutput();
 
@@ -113,15 +144,22 @@ public class DarcsCommandFacade {
 
         final DarcsCommand cmd = builder.create();
         cmd.execute(createProc());
-        return cmd.getOut();
+        return cmd.getOut().toString();
     }
 
+    /**
+     *
+     * @param repo
+     * @return
+     * @throws DarcsCommadException
+     */
     public int countChanges(final String repo) throws DarcsCommadException {
         final DarcsChangesBuilder builder = DarcsCommand.builder(darcsExe).changes();
         builder.repoDir(repo).count();
         final DarcsCommand cmd = builder.create();
         cmd.execute(createProc());
-        return Integer.parseInt(cmd.getErr().toString().trim());
+        final String count = cmd.getErr().toString().trim();
+        return count.length() > 0 ? Integer.parseInt(count) : 0;
     }
 
     /**
@@ -137,7 +175,7 @@ public class DarcsCommandFacade {
         final DarcsCommand cmd = builder.create();
         cmd.setOut(launcher.getListener().getLogger());
         final ProcStarter proc = createProc();
-        proc.stdout(this.launcher.getListener());
+        proc.stdout(launcher.getListener());
         cmd.execute(proc);
     }
 
@@ -153,7 +191,7 @@ public class DarcsCommandFacade {
         builder.from(from).to(repo);
         final DarcsCommand cmd = builder.create();
         final ProcStarter proc = createProc();
-        proc.stdout(this.launcher.getListener());
+        proc.stdout(launcher.getListener());
         cmd.execute(proc);
     }
 }

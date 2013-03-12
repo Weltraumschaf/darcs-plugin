@@ -10,14 +10,26 @@
 
 package org.jenkinsci.plugins.darcs.cmd;
 
+import java.io.File;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.rules.TemporaryFolder;
 
 /**
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsCommandFacadeTest {
+
+    @Rule public ExpectedException thrown = ExpectedException.none();
+    @Rule public TemporaryFolder folder= new TemporaryFolder();
+
+    private File prepareTestRepo() {
+        File tmpDir = folder.getRoot();
+        return tmpDir;
+    }
 
     @Test
     @Ignore("not ready yet")
