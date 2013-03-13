@@ -150,7 +150,7 @@ public final class DarcsCommandFacade {
         builder.repoDir(repo).count();
         final DarcsCommand cmd = builder.create();
         cmd.execute(createProcessStarter());
-        final String count = cmd.getErr().toString().trim();
+        final String count = cmd.getOut().toString().trim();
         return count.length() > 0 ? Integer.parseInt(count) : 0;
     }
 
