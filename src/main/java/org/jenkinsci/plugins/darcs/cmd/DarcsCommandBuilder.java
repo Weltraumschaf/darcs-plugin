@@ -11,6 +11,8 @@
  */
 package org.jenkinsci.plugins.darcs.cmd;
 
+import hudson.util.ArgumentListBuilder;
+
 /**
  * Main entry point.
  *
@@ -19,7 +21,10 @@ package org.jenkinsci.plugins.darcs.cmd;
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
-final class DarcsCommandBuilder extends DarcsBaseCommandBuilder {
+final class DarcsCommandBuilder extends DarcsBaseCommandBuilder implements DarcsCommandCreator {
+
+    private boolean version;
+    private boolean exactVersion;
 
     /**
      * Not instantiated outside of package.
@@ -55,6 +60,43 @@ final class DarcsCommandBuilder extends DarcsBaseCommandBuilder {
      */
     public DarcsGetBuilder get() {
         return new DarcsGetBuilder(getDarcsExe());
+    }
+
+    /**
+     * Creates a command which executes `darcs --version`.
+     *
+     * @return itself
+     */
+    public DarcsCommandBuilder version() {
+        version = true;
+        exactVersion = false;
+        return this;
+    }
+
+    /**
+     * Creates a command which executes `darcs --exact-version`.
+     *
+     * @return itself
+     */
+    public DarcsCommandBuilder exactVersion() {
+        exactVersion = true;
+        version = false;
+        return this;
+    }
+
+    @Override
+    public DarcsCommand create() {
+        final ArgumentListBuilder arguments = createArgumentList();
+
+        if (version) {
+            arguments.add("--version");
+        }
+
+        if (exactVersion) {
+            arguments.add("--exact-version");
+        }
+
+        return new DarcsCommand(arguments);
     }
 
 }

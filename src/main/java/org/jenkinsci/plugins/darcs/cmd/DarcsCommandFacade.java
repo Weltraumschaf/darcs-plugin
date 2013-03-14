@@ -12,10 +12,13 @@ package org.jenkinsci.plugins.darcs.cmd;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Launcher.ProcStarter;
+import java.io.File;
 import java.util.Map;
 
 /**
  * Facade for the Darcs command.
+ *
+ * TODO add method which checks if a given directory is a darcs repository (presence of _darcs folder.
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
@@ -66,6 +69,10 @@ public final class DarcsCommandFacade {
         return proc;
     }
 
+    public String lastSummarizedChanges(final File repo, final int lastPatches) throws DarcsCommadException {
+        return lastSummarizedChanges(repo.getAbsolutePath(), lastPatches);
+    }
+
     /**
      * Return the summary XML from the last n patches.
      *
@@ -78,6 +85,10 @@ public final class DarcsCommandFacade {
         return getChanges(repo, true, lastPatches);
     }
 
+    public String allSummarizedChanges(final File repo) throws DarcsCommadException {
+        return allSummarizedChanges(repo.getAbsolutePath());
+    }
+
     /**
      * Return the summary XML from all patches.
      *
@@ -87,6 +98,10 @@ public final class DarcsCommandFacade {
      */
     public String allSummarizedChanges(final String repo) throws DarcsCommadException {
         return getChanges(repo, true);
+    }
+
+    public String allChanges(final File repo) throws DarcsCommadException {
+        return allChanges(repo.getAbsolutePath());
     }
 
     /**
@@ -138,6 +153,10 @@ public final class DarcsCommandFacade {
         return cmd.getOut().toString();
     }
 
+    public int countChanges(final File repo) throws DarcsCommadException {
+        return countChanges(repo.getAbsolutePath());
+    }
+
     /**
      * Count all changes in a repository.
      *
@@ -152,6 +171,10 @@ public final class DarcsCommandFacade {
         cmd.execute(createProcessStarter());
         final String count = cmd.getOut().toString().trim();
         return count.length() > 0 ? Integer.parseInt(count) : 0;
+    }
+
+    public void pull(final File repo, final File from) throws DarcsCommadException {
+        pull(repo.getAbsolutePath(), from.getAbsolutePath());
     }
 
     /**
@@ -171,6 +194,10 @@ public final class DarcsCommandFacade {
         cmd.execute(proc);
     }
 
+    public void get(final File repo, final File from) throws DarcsCommadException {
+        get(repo.getAbsolutePath(), from.getAbsolutePath());
+    }
+
     /**
      * Do a fresh checkout of a repository.
      *
@@ -186,4 +213,31 @@ public final class DarcsCommandFacade {
         proc.stdout(launcher.getListener());
         cmd.execute(proc);
     }
+
+    public boolean isRepo(final File repo) {
+        return isRepo(repo.getAbsolutePath());
+    }
+
+    public boolean isRepo(final String repo) {
+        throw new UnsupportedOperationException("not implemented yet");
+    }
+
+    public String version() {
+        return version(false);
+    }
+
+    public String version(final boolean exact) {
+        final DarcsCommandBuilder builder = DarcsCommand.builder(darcsExe);
+
+        if (exact) {
+            builder.exactVersion();
+        } else {
+            builder.version();
+        }
+
+        final DarcsCommand cmd = builder.create();
+        cmd.execute(createProcessStarter());
+        return cmd.getOut().toString();
+    }
+
 }

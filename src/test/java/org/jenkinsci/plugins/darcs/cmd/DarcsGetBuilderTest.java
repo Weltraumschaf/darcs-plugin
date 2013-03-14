@@ -26,7 +26,9 @@ import static org.junit.Assert.assertThat;
  */
 public class DarcsGetBuilderTest {
 
+    //CHECKSTYLE:OFF
     @Rule public ExpectedException thrown = ExpectedException.none();
+    //CHECKSTYLE:ON
     private final DarcsGetBuilder sut = new DarcsGetBuilder("foo");
 
     @Test
