@@ -37,6 +37,7 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.logging.Logger;
+import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.xml.sax.SAXException;
 
@@ -435,26 +436,12 @@ public class DarcsScm extends SCM implements Serializable {
 
     /**
      * Add class name aliases for backward compatibility.
-     *
-     * FIXME Does not work, don't know why!
      */
-    @Initializer(before = InitMilestone.PLUGINS_PREPARED)
+    @Initializer(before = InitMilestone.PLUGINS_STARTED)
     public static void addAliases() {
         // until version 0.3.6 the descriptor was inner class of DarcsScm
-//        Jenkins.XSTREAM2.addCompatibilityAlias("org.jenkinsci.plugins.darcs.DarcsScm_-DescriptorImpl",
-//                DarcsScmDescriptor.class);
-//        Jenkins.XSTREAM2.addCompatibilityAlias("org.jenkinsci.plugins.darcs.DarcsScm$DescriptorImpl",
-//                DarcsScmDescriptor.class);
-//        Jenkins.XSTREAM2.addCompatibilityAlias("org.jenkinsci.plugins.darcs.DarcsScm.DescriptorImpl",
-//                DarcsScmDescriptor.class);
-    }
-
-    /** Hack to prevent exceptions on old configs. */
-    @Deprecated
-    public static class DescriptorImpl extends DarcsScmDescriptor {
-//        public Object readResolve() {
-//            return new DarcsScmDescriptor();
-//        }
+        Jenkins.XSTREAM2.addCompatibilityAlias("org.jenkinsci.plugins.darcs.DarcsScm$DescriptorImpl",
+                DarcsScmDescriptor.class);
     }
 
 }
