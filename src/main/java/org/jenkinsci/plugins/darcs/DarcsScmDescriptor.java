@@ -14,15 +14,20 @@ package org.jenkinsci.plugins.darcs;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.Util;
+import hudson.XmlFile;
 import hudson.model.Hudson;
 import hudson.model.TaskListener;
+import hudson.scm.RepositoryBrowser;
 import hudson.scm.SCM;
 import hudson.scm.SCMDescriptor;
 import hudson.util.FormValidation;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.logging.Level;
+import static java.util.logging.Level.WARNING;
 import java.util.logging.Logger;
+import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.darcs.browsers.DarcsRepositoryBrowser;
 import org.kohsuke.stapler.QueryParameter;
@@ -51,7 +56,6 @@ public class DarcsScmDescriptor extends SCMDescriptor<DarcsScm> {
      * Default name of the Darcs binary.
      */
     private static final String DEFAULT_EXE = "darcs";
-
     /**
      * The executable.
      *
@@ -65,6 +69,49 @@ public class DarcsScmDescriptor extends SCMDescriptor<DarcsScm> {
     public DarcsScmDescriptor() {
         super(DarcsScm.class, DarcsRepositoryBrowser.class);
         load();
+    }
+
+    /**
+     * Own implementation of XML configuration loading to inject {@link Jenkins#XSTREAM2} for unmarshalling.
+     *
+     * TODO Remove this, if it possible to inject XStream into parent implementation.
+     *      Since 1.494 Dexcriptor#getConfigFile() is not private anymore. override load()
+     *      and call getConfigFile().getXStream().addCompatibilityAlias()
+     *
+     * <code>
+     * public void load() {
+     *      getConfigFile().getXStream().addCompatibilityAlias("org.jenkinsci.plugins.darcs.DarcsScm$DescriptorImpl",
+     *                                                         DarcsScmDescriptor.class);
+     *      super.load();
+     * }
+     * </code>
+     */
+    @Override
+    public void load() {
+        final XmlFile file = new XmlFile(Jenkins.XSTREAM2,
+                                         new File(Jenkins.getInstance().getRootDir(), getId() + ".xml"));
+        if (!file.exists()) {
+            return;
+        }
+
+        try {
+            file.unmarshal(this);
+        } catch (IOException e) {
+            LOGGER.log(Level.WARNING, "Failed to load " + file, e);
+        }
+
+        final Class<? extends RepositoryBrowser> rb = repositoryBrowser;
+        if (repositoryBrowser != rb) { // XStream may overwrite even the final field.
+            try {
+                final Field f = SCMDescriptor.class.getDeclaredField("repositoryBrowser");
+                f.setAccessible(true);
+                f.set(this, rb);
+            } catch (NoSuchFieldException e) {
+                LOGGER.log(WARNING, "Failed to overwrite the repositoryBrowser field", e);
+            } catch (IllegalAccessException e) {
+                LOGGER.log(WARNING, "Failed to overwrite the repositoryBrowser field", e);
+            }
+        }
     }
 
     /**
@@ -83,8 +130,8 @@ public class DarcsScmDescriptor extends SCMDescriptor<DarcsScm> {
      */
     public String getDarcsExe() {
         return null == darcsExe
-               ? DEFAULT_EXE
-               : darcsExe;
+                ? DEFAULT_EXE
+                : darcsExe;
     }
 
     @Override
@@ -113,8 +160,8 @@ public class DarcsScmDescriptor extends SCMDescriptor<DarcsScm> {
                 try {
                     final Launcher launcher = Hudson.getInstance().createLauncher(TaskListener.NULL);
                     final Launcher.ProcStarter proc = launcher.launch()
-                                                              .cmds(exe, "--version")
-                                                              .stdout(new ByteBuffer());
+                            .cmds(exe, "--version")
+                            .stdout(new ByteBuffer());
 
                     if (proc.join() == 0) {
                         return FormValidation.ok();

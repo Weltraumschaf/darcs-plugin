@@ -71,7 +71,11 @@
 
 ## 0.3.10
 
-* Fix NPE: Because of serialization issues with the main the changelog parse may be null on build time (issue #13).
+* Fix NPE: BEcause of serialization issues with the main the changelog parse may be null on build time (issue #13).
+
+## 0.3.11
+
+* Fix problem that old configuration files won't be loaded correctly from versions prior to 0.3.6.
 
 ## 0.4.0
 
