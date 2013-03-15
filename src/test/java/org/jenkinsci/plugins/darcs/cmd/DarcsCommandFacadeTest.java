@@ -39,14 +39,16 @@ public class DarcsCommandFacadeTest {
 
         LINUX_BIN("darcs_bin_linux_2.8"),
         MACOS_BIN("darcs_bin_macos_2.5");
-        private final String bin;
+        private final String name;
 
-        private Binary(final String bin) {
-            this.bin = bin;
+        private Binary(final String name) {
+            this.name = name;
         }
 
         File getBin() throws URISyntaxException {
-            return new File(getClass().getResource(FIXTURE_BASE + "/" + bin).toURI());
+            final File bin = new File(getClass().getResource(FIXTURE_BASE + "/" + name).toURI());
+            bin.setExecutable(true);
+            return bin;
         }
 
         static Binary determine() {
