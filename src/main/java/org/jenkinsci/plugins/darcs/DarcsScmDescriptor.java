@@ -14,20 +14,16 @@ package org.jenkinsci.plugins.darcs;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.Util;
-import hudson.XmlFile;
 import hudson.model.Hudson;
 import hudson.model.TaskListener;
-import hudson.scm.RepositoryBrowser;
 import hudson.scm.SCM;
 import hudson.scm.SCMDescriptor;
 import hudson.util.FormValidation;
+import hudson.util.XStream2;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.logging.Level;
-import static java.util.logging.Level.WARNING;
 import java.util.logging.Logger;
-import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.darcs.browsers.DarcsRepositoryBrowser;
 import org.kohsuke.stapler.QueryParameter;
@@ -74,52 +70,27 @@ public class DarcsScmDescriptor extends SCMDescriptor<DarcsScm> {
     /**
      * Own implementation of XML configuration loading to inject {@link Jenkins#XSTREAM2} for unmarshalling.
      *
-     * TODO Remove this, if it possible to inject XStream into parent implementation.
-     *      Since 1.494 Dexcriptor#getConfigFile() is not private anymore. override load()
-     *      and call getConfigFile().getXStream().addCompatibilityAlias()
-     *
-     * <code>
-     * public void load() {
-     *      getConfigFile().getXStream().addCompatibilityAlias("org.jenkinsci.plugins.darcs.DarcsScm$DescriptorImpl",
-     *                                                         DarcsScmDescriptor.class);
-     *      super.load();
-     * }
-     * </code>
-     *
-     * Since 1.507 override Dexcriptor#getConfigFile()
+     * TODO Since 1.507 override Dexcriptor#getConfigFile()
      *
      * <code>
      * public XmlFile getConfigFile() {
      *      return new new XmlFile(Jenkins.XSTREAM2, new File(Jenkins.getInstance().getRootDir(), getId() + ".xml"));
      * }
+     *
+     * in DarcsScm
+     * @Initializer(before = InitMilestone.PLUGINS_STARTED)
+     * public static void addAliases() {
+     *     // until version 0.3.6 the descriptor was inner class of DarcsScm
+     *     Jenkins.XSTREAM2.addCompatibilityAlias("org.jenkinsci.plugins.darcs.DarcsScm$DescriptorImpl",
+     *             DarcsScmDescriptor.class);
+     * }
      * </code>
      */
     @Override
     public void load() {
-        final XmlFile file = new XmlFile(Jenkins.XSTREAM2,
-                                         new File(Jenkins.getInstance().getRootDir(), getId() + ".xml"));
-        if (!file.exists()) {
-            return;
-        }
-
-        try {
-            file.unmarshal(this);
-        } catch (IOException e) {
-            LOGGER.log(Level.WARNING, "Failed to load " + file, e);
-        }
-
-        final Class<? extends RepositoryBrowser> rb = repositoryBrowser;
-        if (repositoryBrowser != rb) { // XStream may overwrite even the final field.
-            try {
-                final Field f = SCMDescriptor.class.getDeclaredField("repositoryBrowser");
-                f.setAccessible(true);
-                f.set(this, rb);
-            } catch (NoSuchFieldException e) {
-                LOGGER.log(WARNING, "Failed to overwrite the repositoryBrowser field", e);
-            } catch (IllegalAccessException e) {
-                LOGGER.log(WARNING, "Failed to overwrite the repositoryBrowser field", e);
-            }
-        }
+        ((XStream2) getConfigFile().getXStream()).addCompatibilityAlias(
+            "org.jenkinsci.plugins.darcs.DarcsScm$DescriptorImpl", DarcsScmDescriptor.class);
+        super.load();
     }
 
     /**
