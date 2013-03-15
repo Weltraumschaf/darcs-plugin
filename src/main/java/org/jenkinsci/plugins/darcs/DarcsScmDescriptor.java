@@ -75,6 +75,16 @@ public class DarcsScmDescriptor extends SCMDescriptor<DarcsScm> {
      * Own implementation of XML configuration loading to inject {@link Jenkins#XSTREAM2} for unmarshalling.
      *
      * TODO Remove this, if it possible to inject XStream into parent implementation.
+     *      Since 1.494 Dexcriptor#getConfigFile() is not private anymore. override load()
+     *      and call getConfigFile().getXStream().addCompatibilityAlias()
+     *
+     * <code>
+     * public void load() {
+     *      getConfigFile().getXStream().addCompatibilityAlias("org.jenkinsci.plugins.darcs.DarcsScm$DescriptorImpl",
+     *                                                         DarcsScmDescriptor.class);
+     *      super.load();
+     * }
+     * </code>
      */
     @Override
     public void load() {
