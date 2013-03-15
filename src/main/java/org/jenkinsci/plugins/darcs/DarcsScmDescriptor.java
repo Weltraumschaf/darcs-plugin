@@ -21,7 +21,6 @@ import hudson.scm.RepositoryBrowser;
 import hudson.scm.SCM;
 import hudson.scm.SCMDescriptor;
 import hudson.util.FormValidation;
-import hudson.util.XStream2;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
