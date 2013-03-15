@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pmd-cpd>
 <duplication lines="18" tokens="144">
-<file line="88" path="/Users/sxs/src/java/darcs-plugin/src/test/java/org/jenkinsci/plugins/darcs/DarcsChangeSetListTest.java"/>
-<file line="121" path="/Users/sxs/src/java/darcs-plugin/src/test/java/org/jenkinsci/plugins/darcs/DarcsChangeSetListTest.java"/>
+<file line="88" path="/Users/sxs/tmp/weltraumschaf/src/test/java/org/jenkinsci/plugins/darcs/DarcsChangeSetListTest.java"/>
+<file line="121" path="/Users/sxs/tmp/weltraumschaf/src/test/java/org/jenkinsci/plugins/darcs/DarcsChangeSetListTest.java"/>
 <codefragment>
 <![CDATA[
     public void testHashCode() {

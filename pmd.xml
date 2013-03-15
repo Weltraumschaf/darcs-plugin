@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="4.2.5" timestamp="2013-03-15T22:21:03.597">
-<file name="/Users/sxs/src/java/darcs-plugin/src/main/java/org/jenkinsci/plugins/darcs/DarcsChangeSet.java">
+<pmd version="4.2.5" timestamp="2013-03-15T23:41:15.321">
+<file name="/Users/sxs/tmp/weltraumschaf/src/main/java/org/jenkinsci/plugins/darcs/DarcsChangeSet.java">
 <violation beginline="312" endline="314" begincolumn="15" endcolumn="5" rule="UselessOverridingMethod" ruleset="Basic Rules" package="org.jenkinsci.plugins.darcs" class="DarcsChangeSet" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UselessOverridingMethod" priority="3">
 Overriding method merely calls super
-</violation>
-</file>
-<file name="/Users/sxs/src/java/darcs-plugin/src/main/java/org/jenkinsci/plugins/darcs/DarcsScmDescriptor.java">
-<violation beginline="24" endline="24" begincolumn="1" endcolumn="28" rule="UnusedImports" ruleset="Import Statement Rules" package="org.jenkinsci.plugins.darcs" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
-Avoid unused imports such as 'hudson.util.XStream2'
 </violation>
 </file>
 </pmd>

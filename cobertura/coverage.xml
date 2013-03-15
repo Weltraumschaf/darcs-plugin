@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
 
-<coverage line-rate="0.6061381074168798" branch-rate="0.6095617529880478" lines-covered="474" lines-valid="782" branches-covered="153" branches-valid="251" complexity="2.1542857142857144" version="1.9.4.1" timestamp="1363382443861">
+<coverage line-rate="0.6099744245524297" branch-rate="0.6175298804780877" lines-covered="477" lines-valid="782" branches-covered="155" branches-valid="251" complexity="2.1542857142857144" version="1.9.4.1" timestamp="1363387250830">
 	<sources>
 		<source>--source</source>
-		<source>/Users/sxs/src/java/darcs-plugin/src/main/java</source>
+		<source>/Users/sxs/tmp/weltraumschaf/src/main/java</source>
 	</sources>
 	<packages>
-		<package name="org.jenkinsci.plugins.darcs" line-rate="0.5532994923857868" branch-rate="0.5951219512195122" complexity="2.3801652892561984">
+		<package name="org.jenkinsci.plugins.darcs" line-rate="0.5583756345177665" branch-rate="0.6048780487804878" complexity="2.3801652892561984">
 			<classes>
 				<class name="org.jenkinsci.plugins.darcs.DarcsChangeLogParser" filename="org/jenkinsci/plugins/darcs/DarcsChangeLogParser.java" line-rate="0.9444444444444444" branch-rate="1.0" complexity="1.0">
 					<methods>
@@ -2015,182 +2015,182 @@
 						<line number="307" hits="0" branch="false"/>
 					</lines>
 				</class>
-				<class name="org.jenkinsci.plugins.darcs.DarcsScmDescriptor" filename="org/jenkinsci/plugins/darcs/DarcsScmDescriptor.java" line-rate="0.2903225806451613" branch-rate="0.16666666666666666" complexity="2.5">
+				<class name="org.jenkinsci.plugins.darcs.DarcsScmDescriptor" filename="org/jenkinsci/plugins/darcs/DarcsScmDescriptor.java" line-rate="0.3870967741935484" branch-rate="0.5" complexity="2.5">
 					<methods>
 						<method name="&lt;clinit&gt;" signature="()V" line-rate="1.0" branch-rate="1.0">
 							<lines>
-								<line number="51" hits="1" branch="false"/>
+								<line number="50" hits="1" branch="false"/>
 							</lines>
 						</method>
 						<method name="&lt;init&gt;" signature="()V" line-rate="1.0" branch-rate="1.0">
 							<lines>
+								<line number="70" hits="2" branch="false"/>
 								<line number="71" hits="2" branch="false"/>
 								<line number="72" hits="2" branch="false"/>
-								<line number="73" hits="2" branch="false"/>
 							</lines>
 						</method>
 						<method name="access$000" signature="()Ljava/util/logging/Logger;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="46" hits="0" branch="false"/>
+								<line number="45" hits="0" branch="false"/>
 							</lines>
 						</method>
-						<method name="configure" signature="(Lorg/kohsuke/stapler/StaplerRequest;Lnet/sf/json/JSONObject;)Z" line-rate="0.0" branch-rate="1.0">
+						<method name="configure" signature="(Lorg/kohsuke/stapler/StaplerRequest;Lnet/sf/json/JSONObject;)Z" line-rate="1.0" branch-rate="1.0">
 							<lines>
-								<line number="135" hits="0" branch="false"/>
-								<line number="136" hits="0" branch="false"/>
-								<line number="138" hits="0" branch="false"/>
+								<line number="144" hits="1" branch="false"/>
+								<line number="145" hits="1" branch="false"/>
+								<line number="147" hits="1" branch="false"/>
 							</lines>
 						</method>
 						<method name="doDarcsExeCheck" signature="(Ljava/lang/String;)Lhudson/util/FormValidation;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="148" hits="0" branch="false"/>
+								<line number="157" hits="0" branch="false"/>
 							</lines>
 						</method>
-						<method name="getDarcsExe" signature="()Ljava/lang/String;" line-rate="0.0" branch-rate="0.0">
+						<method name="getDarcsExe" signature="()Ljava/lang/String;" line-rate="1.0" branch-rate="1.0">
 							<lines>
-								<line number="123" hits="0" branch="true" condition-coverage="0% (0/2)">
+								<line number="132" hits="2" branch="true" condition-coverage="100% (2/2)">
 									<conditions>
-										<condition number="0" type="jump" coverage="0%"/>
+										<condition number="0" type="jump" coverage="100%"/>
 									</conditions>
 								</line>
 							</lines>
 						</method>
 						<method name="getDisplayName" signature="()Ljava/lang/String;" line-rate="1.0" branch-rate="1.0">
 							<lines>
-								<line number="114" hits="28" branch="false"/>
+								<line number="123" hits="27" branch="false"/>
 							</lines>
 						</method>
-						<method name="load" signature="()V" line-rate="0.2222222222222222" branch-rate="0.25">
+						<method name="load" signature="()V" line-rate="0.16666666666666666" branch-rate="0.25">
 							<lines>
-								<line number="82" hits="6" branch="false"/>
-								<line number="83" hits="6" branch="false"/>
-								<line number="85" hits="4" branch="true" condition-coverage="50% (1/2)">
+								<line number="91" hits="4" branch="false"/>
+								<line number="93" hits="4" branch="true" condition-coverage="50% (1/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="50%"/>
 									</conditions>
 								</line>
-								<line number="86" hits="4" branch="false"/>
-								<line number="90" hits="0" branch="false"/>
-								<line number="91" hits="0" branch="false"/>
-								<line number="92" hits="0" branch="false"/>
-								<line number="93" hits="0" branch="false"/>
-								<line number="95" hits="0" branch="true" condition-coverage="0% (0/2)">
-									<conditions>
-										<condition number="0" type="jump" coverage="0%"/>
-									</conditions>
-								</line>
-								<line number="97" hits="0" branch="false"/>
+								<line number="94" hits="4" branch="false"/>
 								<line number="98" hits="0" branch="false"/>
 								<line number="99" hits="0" branch="false"/>
 								<line number="100" hits="0" branch="false"/>
 								<line number="101" hits="0" branch="false"/>
-								<line number="102" hits="0" branch="false"/>
 								<line number="103" hits="0" branch="false"/>
-								<line number="104" hits="0" branch="false"/>
+								<line number="104" hits="0" branch="true" condition-coverage="0% (0/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="0%"/>
+									</conditions>
+								</line>
 								<line number="106" hits="0" branch="false"/>
+								<line number="107" hits="0" branch="false"/>
+								<line number="108" hits="0" branch="false"/>
+								<line number="109" hits="0" branch="false"/>
+								<line number="110" hits="0" branch="false"/>
+								<line number="111" hits="0" branch="false"/>
+								<line number="112" hits="0" branch="false"/>
+								<line number="113" hits="0" branch="false"/>
+								<line number="115" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="newInstance" signature="(Lorg/kohsuke/stapler/StaplerRequest;Lnet/sf/json/JSONObject;)Lhudson/model/Describable;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="45" hits="0" branch="false"/>
+								<line number="44" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="newInstance" signature="(Lorg/kohsuke/stapler/StaplerRequest;Lnet/sf/json/JSONObject;)Lhudson/scm/SCM;" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="130" hits="0" branch="false"/>
+								<line number="139" hits="0" branch="false"/>
 							</lines>
 						</method>
 					</methods>
 					<lines>
+						<line number="44" hits="0" branch="false"/>
 						<line number="45" hits="0" branch="false"/>
-						<line number="46" hits="0" branch="false"/>
-						<line number="51" hits="1" branch="false"/>
+						<line number="50" hits="1" branch="false"/>
+						<line number="70" hits="2" branch="false"/>
 						<line number="71" hits="2" branch="false"/>
 						<line number="72" hits="2" branch="false"/>
-						<line number="73" hits="2" branch="false"/>
-						<line number="82" hits="6" branch="false"/>
-						<line number="83" hits="6" branch="false"/>
-						<line number="85" hits="4" branch="true" condition-coverage="50% (1/2)">
+						<line number="91" hits="4" branch="false"/>
+						<line number="93" hits="4" branch="true" condition-coverage="50% (1/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="50%"/>
 							</conditions>
 						</line>
-						<line number="86" hits="4" branch="false"/>
-						<line number="90" hits="0" branch="false"/>
-						<line number="91" hits="0" branch="false"/>
-						<line number="92" hits="0" branch="false"/>
-						<line number="93" hits="0" branch="false"/>
-						<line number="95" hits="0" branch="true" condition-coverage="0% (0/2)">
-							<conditions>
-								<condition number="0" type="jump" coverage="0%"/>
-							</conditions>
-						</line>
-						<line number="97" hits="0" branch="false"/>
+						<line number="94" hits="4" branch="false"/>
 						<line number="98" hits="0" branch="false"/>
 						<line number="99" hits="0" branch="false"/>
 						<line number="100" hits="0" branch="false"/>
 						<line number="101" hits="0" branch="false"/>
-						<line number="102" hits="0" branch="false"/>
 						<line number="103" hits="0" branch="false"/>
-						<line number="104" hits="0" branch="false"/>
-						<line number="106" hits="0" branch="false"/>
-						<line number="114" hits="28" branch="false"/>
-						<line number="123" hits="0" branch="true" condition-coverage="0% (0/2)">
+						<line number="104" hits="0" branch="true" condition-coverage="0% (0/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="0%"/>
 							</conditions>
 						</line>
-						<line number="130" hits="0" branch="false"/>
-						<line number="135" hits="0" branch="false"/>
-						<line number="136" hits="0" branch="false"/>
-						<line number="138" hits="0" branch="false"/>
-						<line number="148" hits="0" branch="false"/>
+						<line number="106" hits="0" branch="false"/>
+						<line number="107" hits="0" branch="false"/>
+						<line number="108" hits="0" branch="false"/>
+						<line number="109" hits="0" branch="false"/>
+						<line number="110" hits="0" branch="false"/>
+						<line number="111" hits="0" branch="false"/>
+						<line number="112" hits="0" branch="false"/>
+						<line number="113" hits="0" branch="false"/>
+						<line number="115" hits="0" branch="false"/>
+						<line number="123" hits="27" branch="false"/>
+						<line number="132" hits="2" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="139" hits="0" branch="false"/>
+						<line number="144" hits="1" branch="false"/>
+						<line number="145" hits="1" branch="false"/>
+						<line number="147" hits="1" branch="false"/>
+						<line number="157" hits="0" branch="false"/>
 					</lines>
 				</class>
 				<class name="org.jenkinsci.plugins.darcs.DarcsScmDescriptor$1" filename="org/jenkinsci/plugins/darcs/DarcsScmDescriptor.java" line-rate="0.0" branch-rate="0.0" complexity="2.5">
 					<methods>
 						<method name="&lt;init&gt;" signature="(Lorg/jenkinsci/plugins/darcs/DarcsScmDescriptor;)V" line-rate="0.0" branch-rate="1.0">
 							<lines>
-								<line number="148" hits="0" branch="false"/>
+								<line number="157" hits="0" branch="false"/>
 							</lines>
 						</method>
 						<method name="validate" signature="(Ljava/io/File;)Lhudson/util/FormValidation;" line-rate="0.0" branch-rate="0.0">
 							<lines>
-								<line number="152" hits="0" branch="false"/>
-								<line number="153" hits="0" branch="false"/>
-								<line number="157" hits="0" branch="true" condition-coverage="0% (0/2)">
+								<line number="161" hits="0" branch="false"/>
+								<line number="162" hits="0" branch="false"/>
+								<line number="166" hits="0" branch="true" condition-coverage="0% (0/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="0%"/>
 									</conditions>
 								</line>
-								<line number="158" hits="0" branch="false"/>
-								<line number="160" hits="0" branch="false"/>
-								<line number="162" hits="0" branch="false"/>
-								<line number="164" hits="0" branch="false"/>
-								<line number="165" hits="0" branch="false"/>
 								<line number="167" hits="0" branch="false"/>
-								<line number="168" hits="0" branch="false"/>
-								<line number="170" hits="0" branch="false"/>
+								<line number="169" hits="0" branch="false"/>
+								<line number="171" hits="0" branch="false"/>
+								<line number="173" hits="0" branch="false"/>
+								<line number="174" hits="0" branch="false"/>
+								<line number="176" hits="0" branch="false"/>
+								<line number="177" hits="0" branch="false"/>
+								<line number="179" hits="0" branch="false"/>
 							</lines>
 						</method>
 					</methods>
 					<lines>
-						<line number="148" hits="0" branch="false"/>
-						<line number="152" hits="0" branch="false"/>
-						<line number="153" hits="0" branch="false"/>
-						<line number="157" hits="0" branch="true" condition-coverage="0% (0/2)">
+						<line number="157" hits="0" branch="false"/>
+						<line number="161" hits="0" branch="false"/>
+						<line number="162" hits="0" branch="false"/>
+						<line number="166" hits="0" branch="true" condition-coverage="0% (0/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="0%"/>
 							</conditions>
 						</line>
-						<line number="158" hits="0" branch="false"/>
-						<line number="160" hits="0" branch="false"/>
-						<line number="162" hits="0" branch="false"/>
-						<line number="164" hits="0" branch="false"/>
-						<line number="165" hits="0" branch="false"/>
 						<line number="167" hits="0" branch="false"/>
-						<line number="168" hits="0" branch="false"/>
-						<line number="170" hits="0" branch="false"/>
+						<line number="169" hits="0" branch="false"/>
+						<line number="171" hits="0" branch="false"/>
+						<line number="173" hits="0" branch="false"/>
+						<line number="174" hits="0" branch="false"/>
+						<line number="176" hits="0" branch="false"/>
+						<line number="177" hits="0" branch="false"/>
+						<line number="179" hits="0" branch="false"/>
 					</lines>
 				</class>
 				<class name="org.jenkinsci.plugins.darcs.DarcsXmlSanitizer" filename="org/jenkinsci/plugins/darcs/DarcsXmlSanitizer.java" line-rate="0.9318181818181818" branch-rate="0.75" complexity="5.857142857142857">
@@ -2886,7 +2886,7 @@
 						</method>
 						<method name="getDisplayName" signature="()Ljava/lang/String;" line-rate="1.0" branch-rate="1.0">
 							<lines>
-								<line number="104" hits="18" branch="false"/>
+								<line number="104" hits="16" branch="false"/>
 							</lines>
 						</method>
 						<method name="newInstance" signature="(Lorg/kohsuke/stapler/StaplerRequest;Lnet/sf/json/JSONObject;)Lhudson/model/Describable;" line-rate="0.0" branch-rate="1.0">
@@ -2904,7 +2904,7 @@
 						<line number="98" hits="0" branch="false"/>
 						<line number="99" hits="2" branch="false"/>
 						<line number="101" hits="1" branch="false"/>
-						<line number="104" hits="18" branch="false"/>
+						<line number="104" hits="16" branch="false"/>
 						<line number="119" hits="0" branch="false"/>
 						<line number="154" hits="0" branch="false"/>
 					</lines>
