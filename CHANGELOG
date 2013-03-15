@@ -82,3 +82,4 @@
 * Use refactored command abstraction.
 * Introduce command facade.
 * Extend command exception with return code.
+* Use core version 1.494.
