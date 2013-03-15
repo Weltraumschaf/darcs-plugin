@@ -85,6 +85,14 @@ public class DarcsScmDescriptor extends SCMDescriptor<DarcsScm> {
      *      super.load();
      * }
      * </code>
+     *
+     * Since 1.507 override Dexcriptor#getConfigFile()
+     *
+     * <code>
+     * public XmlFile getConfigFile() {
+     *      return new new XmlFile(Jenkins.XSTREAM2, new File(Jenkins.getInstance().getRootDir(), getId() + ".xml"));
+     * }
+     * </code>
      */
     @Override
     public void load() {
