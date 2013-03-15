@@ -78,8 +78,7 @@ public class DarcsScmDescriptor extends SCMDescriptor<DarcsScm> {
      * TODO Remove this, if it possible to inject XStream into parent implementation.
      */
     @Override
-    public final void load() {
-        final Class<? extends RepositoryBrowser> rb = repositoryBrowser;
+    public void load() {
         final XmlFile file = new XmlFile(Jenkins.XSTREAM2,
                                          new File(Jenkins.getInstance().getRootDir(), getId() + ".xml"));
         if (!file.exists()) {
@@ -92,6 +91,7 @@ public class DarcsScmDescriptor extends SCMDescriptor<DarcsScm> {
             LOGGER.log(Level.WARNING, "Failed to load " + file, e);
         }
 
+        final Class<? extends RepositoryBrowser> rb = repositoryBrowser;
         if (repositoryBrowser != rb) { // XStream may overwrite even the final field.
             try {
                 final Field f = SCMDescriptor.class.getDeclaredField("repositoryBrowser");
