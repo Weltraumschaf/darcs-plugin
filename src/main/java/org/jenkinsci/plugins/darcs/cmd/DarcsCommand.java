@@ -11,7 +11,6 @@
  */
 package org.jenkinsci.plugins.darcs.cmd;
 
-import hudson.Launcher.ProcStarter;
 import hudson.util.ArgumentListBuilder;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -35,7 +34,14 @@ class DarcsCommand {
     /**
      * Records STDERR of command.
      */
-    private final OutputStream err = new ByteArrayOutputStream();
+    private OutputStream err = new ByteArrayOutputStream();
+
+    /**
+     * Initializes command with empty {@link ArgumentListBuilder}.
+     */
+    DarcsCommand() {
+        this(new ArgumentListBuilder());
+    }
 
     /**
      * Default constructor.
@@ -64,7 +70,7 @@ class DarcsCommand {
      * @param proc used to join the command
      * @throws DarcsCommadException if command execution fails
      */
-    public void execute(final ProcStarter proc) throws DarcsCommadException {
+    public void execute(final DarcsProcStarter proc) throws DarcsCommadException {
         prepare(proc);
         int returnCode = 0;
         try {
@@ -76,7 +82,8 @@ class DarcsCommand {
         }
 
         if (0 != returnCode) {
-            throw new DarcsCommadException(String.format("Error on performing command: %s", args.toStringWithQuote()),
+            throw new DarcsCommadException(String.format("Error on performing command: '%s'! Return code %d.",
+                                                         args.toStringWithQuote(), returnCode),
                                            returnCode);
         }
     }
@@ -86,7 +93,7 @@ class DarcsCommand {
      *
      * @param proc proc starter to prepare
      */
-    void prepare(final ProcStarter proc) {
+    void prepare(final DarcsProcStarter proc) {
         proc.cmds(args);
         proc.stdout(out);
         proc.stderr(err);
@@ -117,6 +124,15 @@ class DarcsCommand {
      */
     public OutputStream getErr() {
         return err;
+    }
+
+    /**
+     * Set output stream for STDERR.
+     *
+     * @param err output stream
+     */
+    public void setErr(final OutputStream err) {
+        this.err = err;
     }
 
     /**

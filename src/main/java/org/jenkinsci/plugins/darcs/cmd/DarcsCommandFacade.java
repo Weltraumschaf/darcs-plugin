@@ -62,11 +62,11 @@ public final class DarcsCommandFacade {
      *
      * @return a new process starter object
      */
-    private ProcStarter createProcessStarter() {
+    private DarcsProcStarter createProcessStarter() {
         final ProcStarter proc = launcher.launch();
         proc.envs(envs);
         proc.pwd(workingDir);
-        return proc;
+        return new DarcsProcStarter(proc);
     }
 
     public String lastSummarizedChanges(final File repo, final int lastPatches) throws DarcsCommadException {
@@ -189,8 +189,7 @@ public final class DarcsCommandFacade {
         builder.from(from).repoDir(repo).all().verbose();
         final DarcsCommand cmd = builder.create();
         cmd.setOut(launcher.getListener().getLogger());
-        final ProcStarter proc = createProcessStarter();
-        proc.stdout(launcher.getListener());
+        final DarcsProcStarter proc = createProcessStarter();
         cmd.execute(proc);
     }
 
@@ -209,8 +208,8 @@ public final class DarcsCommandFacade {
         final DarcsGetBuilder builder = DarcsCommand.builder(darcsExe).get();
         builder.from(from).to(repo);
         final DarcsCommand cmd = builder.create();
-        final ProcStarter proc = createProcessStarter();
-        proc.stdout(launcher.getListener());
+        cmd.setOut(launcher.getListener().getLogger());
+        final DarcsProcStarter proc = createProcessStarter();
         cmd.execute(proc);
     }
 
