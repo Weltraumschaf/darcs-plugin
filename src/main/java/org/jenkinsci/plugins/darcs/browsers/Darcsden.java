@@ -107,7 +107,8 @@ public final class Darcsden extends DarcsRepositoryBrowser {
         }
 
         @Override
-        public DarcsWeb newInstance(final StaplerRequest req, final JSONObject formData) throws Descriptor.FormException {
+        public DarcsWeb newInstance(final StaplerRequest req, final JSONObject formData)
+            throws Descriptor.FormException {
             return req.bindParameters(DarcsWeb.class, "darcsden.darcs.");
         }
     }

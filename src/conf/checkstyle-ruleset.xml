@@ -206,6 +206,7 @@
         <module name="ParameterAssignment" />
         <module name="IllegalType">
             <property name="ignoredMethodNames" value="getInstance" />
+            <property name="legalAbstractClassNames" value="AbstractBuild" />
         </module>
         <module name="SuperFinalize" />
         <module name="SuperClone">

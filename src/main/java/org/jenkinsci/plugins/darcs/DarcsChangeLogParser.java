@@ -96,7 +96,17 @@ class DarcsChangeLogParser extends ChangeLogParser {
         return parse(null, new InputSource(input));
     }
 
-    private DarcsChangeSetList parse(final AbstractBuild build, final InputSource changeLog) throws IOException, SAXException {
+    /**
+     * @see #parse(hudson.model.AbstractBuild, java.io.File)
+     *
+     * @param build build associated with changelog
+     * @param changeLog chnagelog to parse
+     * @return change set list
+     * @throws IOException on read errors
+     * @throws SAXException on parse errors
+     */
+    private DarcsChangeSetList parse(final AbstractBuild build, final InputSource changeLog)
+        throws IOException, SAXException {
         final XMLReader xmlReader = XMLReaderFactory.createXMLReader();
         xmlReader.setContentHandler(handler);
         xmlReader.setErrorHandler(handler);
@@ -116,4 +126,5 @@ class DarcsChangeLogParser extends ChangeLogParser {
         final StringReader input = new StringReader(sanitizer.cleanse(changeLog.getBytes())); // TODO consider encoding
         return parse(null, new InputSource(input));
     }
+
 }

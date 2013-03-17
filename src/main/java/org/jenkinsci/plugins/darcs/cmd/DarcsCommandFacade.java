@@ -47,7 +47,8 @@ public final class DarcsCommandFacade {
      * @param darcsExe executable name
      * @param workingDir working dir for darcs command
      */
-    public DarcsCommandFacade(final Launcher launcher, final Map<String, String> envs, final String darcsExe, final FilePath workingDir) {
+    public DarcsCommandFacade(final Launcher launcher, final Map<String, String> envs, final String darcsExe,
+        final FilePath workingDir) {
         super();
         this.envs = envs;
         this.launcher = launcher;
@@ -67,6 +68,14 @@ public final class DarcsCommandFacade {
         return new DarcsProcStarter(proc);
     }
 
+    /**
+     * Return the summary XML from the last n patches.
+     *
+     * @param repo to get summary of
+     * @param lastPatches how many patches to summarize
+     * @return XML string
+     * @throws DarcsCommadException if command execution fails
+     */
     public String lastSummarizedChanges(final File repo, final int lastPatches) throws DarcsCommadException {
         return lastSummarizedChanges(repo.getAbsolutePath(), lastPatches);
     }
@@ -83,6 +92,13 @@ public final class DarcsCommandFacade {
         return getChanges(repo, true, lastPatches);
     }
 
+    /**
+     * Return the summary XML from all patches.
+     *
+     * @param repo to get summary of
+     * @return XML string
+     * @throws DarcsCommadException if command execution fails
+     */
     public String allSummarizedChanges(final File repo) throws DarcsCommadException {
         return allSummarizedChanges(repo.getAbsolutePath());
     }
@@ -98,6 +114,13 @@ public final class DarcsCommandFacade {
         return getChanges(repo, true);
     }
 
+    /**
+     * Return all changes as extended (not summarized) XML.
+     *
+     * @param repo to get summary of
+     * @return XML string
+     * @throws DarcsCommadException if command execution fails
+     */
     public String allChanges(final File repo) throws DarcsCommadException {
         return allChanges(repo.getAbsolutePath());
     }
@@ -134,7 +157,8 @@ public final class DarcsCommandFacade {
      * @return XML string
      * @throws DarcsCommadException if command execution fails
      */
-    private String getChanges(final String repo, final boolean summarize, final int lastPatches) throws DarcsCommadException {
+    private String getChanges(final String repo, final boolean summarize, final int lastPatches)
+        throws DarcsCommadException {
         final DarcsChangesBuilder builder = DarcsCommand.builder(darcsExe).changes();
         builder.repoDir(repo).xmlOutput();
 
@@ -151,6 +175,13 @@ public final class DarcsCommandFacade {
         return cmd.getOut().toString();
     }
 
+    /**
+     * Count all changes in a repository.
+     *
+     * @param repo to count changes of
+     * @return number of patches in repository
+     * @throws DarcsCommadException if command execution fails
+     */
     public int countChanges(final File repo) throws DarcsCommadException {
         return countChanges(repo.getAbsolutePath());
     }
@@ -171,6 +202,13 @@ public final class DarcsCommandFacade {
         return count.length() > 0 ? Integer.parseInt(count) : 0;
     }
 
+    /**
+     * Pull all patches from remote.
+     *
+     * @param repo to pull in
+     * @param from remote repository to pull from
+     * @throws DarcsCommadException if command execution fails
+     */
     public void pull(final File repo, final File from) throws DarcsCommadException {
         pull(repo.getAbsolutePath(), from.getAbsolutePath());
     }
@@ -191,6 +229,13 @@ public final class DarcsCommandFacade {
         cmd.execute(proc);
     }
 
+    /**
+     * Do a fresh checkout of a repository.
+     *
+     * @param repo where to checkout
+     * @param from from where to get the repository
+     * @throws DarcsCommadException if can't do checkout
+     */
     public void get(final File repo, final File from) throws DarcsCommadException {
         get(repo.getAbsolutePath(), from.getAbsolutePath());
     }

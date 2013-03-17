@@ -16,20 +16,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * creates test fixtures.
+ * Creates test fixtures.
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
-final class Helper {
+final class FixtureFactory {
 
     /**
      * Hidden because pure static helper class.
      */
-    private Helper() {
+    private FixtureFactory() {
         super();
     }
 
-    static DarcsChangeSet createChangeSet(String suffix) {
+    /**
+     * Creates a change set.
+     *
+     * @param suffix appended to the change set properties
+     * @return newly created change set
+     */
+    static DarcsChangeSet createChangeSet(final String suffix) {
         final DarcsChangeSet cs = new DarcsChangeSet();
         cs.setAuthor("author" + suffix);
         cs.setDate("date" + suffix);
@@ -40,11 +46,17 @@ final class Helper {
         return cs;
     }
 
-    static DarcsChangeSetList createChangeSetList(int count) {
+    /**
+     * Creates a change set list.
+     *
+     * @param count number of change sets in created list
+     * @return newly created list
+     */
+    static DarcsChangeSetList createChangeSetList(final int count) {
         final List<DarcsChangeSet> list = new ArrayList<DarcsChangeSet>();
 
         for (int i = 0; i < count; i++) {
-            final DarcsChangeSet cs = Helper.createChangeSet(Integer.toString(i));
+            final DarcsChangeSet cs = FixtureFactory.createChangeSet(Integer.toString(i));
             list.add(cs);
         }
 

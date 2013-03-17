@@ -31,7 +31,9 @@ public class DarcsXmlSanitizerTest {
 
     @Test
     public void cleanse_utf8() throws UnsupportedEncodingException {
+        //CHECKSTYLE:OFF
         final byte[] input = "foo <name>äöüÄÖÜß</name> bar <comment>äöüÄÖÜß</comment> foobar".getBytes("UTF-8");
+        //CHECKSTYLE:ON
         final String output = "foo <name>äöüÄÖÜß</name> bar <comment>äöüÄÖÜß</comment> foobar";
         final String result = sut.cleanse(input);
         assertEquals(output, result);
@@ -39,7 +41,9 @@ public class DarcsXmlSanitizerTest {
 
     @Test
     public void cleanse_iso8859_1() throws UnsupportedEncodingException {
+        //CHECKSTYLE:OFF
         final byte[] input = "foo <name>äöüÄÖÜß</name> bar <comment>äöüÄÖÜß</comment> foobar".getBytes("ISO-8859-1");
+        //CHECKSTYLE:ON
         final String output = "foo <name>äöüÄÖÜß</name> bar <comment>äöüÄÖÜß</comment> foobar";
         final String result = sut.cleanse(input);
         assertEquals(output, result);

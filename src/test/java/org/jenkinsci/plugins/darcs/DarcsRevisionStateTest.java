@@ -23,19 +23,19 @@ public class DarcsRevisionStateTest {
         DarcsChangeSetList csl;
         DarcsRevisionState sut;
 
-        csl = Helper.createChangeSetList(0);
+        csl = FixtureFactory.createChangeSetList(0);
         sut = new DarcsRevisionState(csl);
         assertEquals(csl.digest(), sut.toString());
 
-        csl = Helper.createChangeSetList(3);
+        csl = FixtureFactory.createChangeSetList(3);
         sut = new DarcsRevisionState(csl);
         assertEquals(csl.digest(), sut.toString());
     }
 
     @Test
     public void testEquals() {
-        final DarcsChangeSetList csl1 = Helper.createChangeSetList(3);
-        final DarcsChangeSetList csl2 = Helper.createChangeSetList(2);
+        final DarcsChangeSetList csl1 = FixtureFactory.createChangeSetList(3);
+        final DarcsChangeSetList csl2 = FixtureFactory.createChangeSetList(2);
         DarcsRevisionState sut1;
         DarcsRevisionState sut2;
 
@@ -54,11 +54,11 @@ public class DarcsRevisionStateTest {
         DarcsChangeSetList csl;
         DarcsRevisionState sut;
 
-        csl = Helper.createChangeSetList(0);
+        csl = FixtureFactory.createChangeSetList(0);
         sut = new DarcsRevisionState(csl);
         assertEquals(csl.hashCode(), sut.hashCode());
 
-        csl = Helper.createChangeSetList(3);
+        csl = FixtureFactory.createChangeSetList(3);
         sut = new DarcsRevisionState(csl);
         assertEquals(csl.hashCode(), sut.hashCode());
     }

@@ -82,7 +82,7 @@ public class DarcsScm extends SCM implements Serializable {
      *
      * @param source repository URL from which we pull
      */
-    public DarcsScm(final String source) throws SAXException {
+    public DarcsScm(final String source) {
         this(source, "", false, null);
     }
 
@@ -95,7 +95,8 @@ public class DarcsScm extends SCM implements Serializable {
      * @param browser the browser used to browse the repository
      */
     @DataBoundConstructor
-    public DarcsScm(final String source, final String localDir, final boolean clean, final DarcsRepositoryBrowser browser) {
+    public DarcsScm(final String source, final String localDir, final boolean clean,
+        final DarcsRepositoryBrowser browser) {
         super();
         this.source = source;
         this.clean = clean;
@@ -147,9 +148,13 @@ public class DarcsScm extends SCM implements Serializable {
 
     @Override
     public SCMRevisionState calcRevisionsFromBuild(final AbstractBuild<?, ?> build, final Launcher launcher,
-            final TaskListener listener) throws IOException, InterruptedException {
+        final TaskListener listener) throws IOException, InterruptedException {
         final FilePath localPath = createLocalPath(build.getWorkspace());
-        final DarcsRevisionState local = getRevisionState(launcher, listener, localPath.getRemote(), build.getWorkspace());
+        final DarcsRevisionState local = getRevisionState(
+            launcher,
+            listener,
+            localPath.getRemote(),
+            build.getWorkspace());
 
         if (null == local) {
             listener.getLogger().println(Messages.DarcsScm_gotNullAsRevisionState());
@@ -162,8 +167,8 @@ public class DarcsScm extends SCM implements Serializable {
 
     @Override
     protected PollingResult compareRemoteRevisionWith(final AbstractProject<?, ?> project, final Launcher launcher,
-            final FilePath workspace, final TaskListener listener, final SCMRevisionState baseline)
-            throws IOException, InterruptedException {
+        final FilePath workspace, final TaskListener listener, final SCMRevisionState baseline)
+        throws IOException, InterruptedException {
         final PrintStream logger = listener.getLogger();
         final SCMRevisionState localRevisionState;
 
@@ -232,7 +237,8 @@ public class DarcsScm extends SCM implements Serializable {
      * @return
      * @throws InterruptedException
      */
-    DarcsRevisionState getRevisionState(final Launcher launcher, final TaskListener listener, final String repo, final FilePath workspace)
+    DarcsRevisionState getRevisionState(final Launcher launcher, final TaskListener listener, final String repo,
+            final FilePath workspace)
             throws InterruptedException {
         final DarcsCommandFacade cmd;
 
@@ -240,9 +246,17 @@ public class DarcsScm extends SCM implements Serializable {
             /* Create a launcher on master
              * TODO better grab a launcher on 'any slave'
              */
-            cmd = new DarcsCommandFacade(new LocalLauncher(listener), EnvVars.masterEnvVars, getDescriptor().getDarcsExe(), workspace);
+            cmd = new DarcsCommandFacade(
+                new LocalLauncher(listener),
+                EnvVars.masterEnvVars,
+                getDescriptor().getDarcsExe(),
+                workspace);
         } else {
-            cmd = new DarcsCommandFacade(launcher, EnvVars.masterEnvVars, getDescriptor().getDarcsExe(), workspace);
+            cmd = new DarcsCommandFacade(
+                launcher,
+                EnvVars.masterEnvVars,
+                getDescriptor().getDarcsExe(),
+                workspace);
         }
 
         DarcsRevisionState rev = null;
@@ -274,7 +288,11 @@ public class DarcsScm extends SCM implements Serializable {
             return;
         }
 
-        final DarcsCommandFacade cmd = new DarcsCommandFacade(launcher, EnvVars.masterEnvVars, getDescriptor().getDarcsExe(), workspace.getParent());
+        final DarcsCommandFacade cmd = new DarcsCommandFacade(
+            launcher,
+            EnvVars.masterEnvVars,
+            getDescriptor().getDarcsExe(),
+            workspace.getParent());
         FileOutputStream fos = null;
 
         try {
@@ -325,7 +343,11 @@ public class DarcsScm extends SCM implements Serializable {
     private int countPatches(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace,
             final BuildListener listener) {
         try {
-            final DarcsCommandFacade cmd = new DarcsCommandFacade(launcher, build.getEnvironment(listener), getDescriptor().getDarcsExe(), workspace.getParent());
+            final DarcsCommandFacade cmd = new DarcsCommandFacade(
+                launcher,
+                build.getEnvironment(listener),
+                getDescriptor().getDarcsExe(),
+                workspace.getParent());
             final FilePath localPath = createLocalPath(workspace);
             return cmd.countChanges(localPath.getRemote());
         } catch (Exception e) {
@@ -353,7 +375,11 @@ public class DarcsScm extends SCM implements Serializable {
         LOGGER.info(Messages.DarcsScm_countOfPatchesPrePullingIs(preCnt));  // TODO consider using launchers log
 
         try {
-            final DarcsCommandFacade cmd = new DarcsCommandFacade(launcher, build.getEnvironment(listener), getDescriptor().getDarcsExe(), workspace.getParent());
+            final DarcsCommandFacade cmd = new DarcsCommandFacade(
+                launcher,
+                build.getEnvironment(listener),
+                getDescriptor().getDarcsExe(),
+                workspace.getParent());
             final FilePath localPath = createLocalPath(workspace);
             cmd.pull(localPath.getRemote(), source);
         } catch (Exception e) {
@@ -392,7 +418,10 @@ public class DarcsScm extends SCM implements Serializable {
         }
 
         try {
-            final DarcsCommandFacade cmd = new DarcsCommandFacade(launcher, build.getEnvironment(listener), getDescriptor().getDarcsExe(), workspace.getParent());
+            final DarcsCommandFacade cmd = new DarcsCommandFacade(
+                launcher, build.getEnvironment(listener),
+                getDescriptor().getDarcsExe(),
+                workspace.getParent());
             final FilePath localPath = createLocalPath(workspace);
             cmd.get(localPath.getRemote(), source);
         } catch (Exception e) {

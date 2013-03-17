@@ -26,27 +26,35 @@ import static org.junit.Assert.assertThat;
  */
 public class DarcsBaseCommandBuilderTest {
 
-    public @Rule ExpectedException thrown = ExpectedException.none();
+    //CHECKSTYLE:OFF
+    @Rule public ExpectedException thrown = ExpectedException.none();
+    //CHECKSTYLE:ON
 
     @Test
     public void constructorThrowsExceptionOnEmtpyExe() {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Command must not be empty!");
+        //CHECKSTYLE:OFF
         new DarcsBaseCommandBuilderStub("");
+        //CHECKSTYLE:ON
     }
 
     @Test
     public void constructorThrowsExceptionOnNullExe() {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Command must not be empty!");
+        //CHECKSTYLE:OFF
         new DarcsBaseCommandBuilderStub(null);
+        //CHECKSTYLE:ON
     }
 
     @Test
     public void constructorThrowsExceptionOnNullCommand() {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Command must not be null!");
+        //CHECKSTYLE:OFF
         new DarcsBaseCommandBuilderStub("foo", null);
+        //CHECKSTYLE:ON
     }
 
     @Test

@@ -31,9 +31,9 @@ public class DarcsChangeSetListTest {
         assertEquals(0, sut.size());
 
         final List<DarcsChangeSet> list = new ArrayList<DarcsChangeSet>();
-        list.add(Helper.createChangeSet("1"));
-        list.add(Helper.createChangeSet("2"));
-        list.add(Helper.createChangeSet("3"));
+        list.add(FixtureFactory.createChangeSet("1"));
+        list.add(FixtureFactory.createChangeSet("2"));
+        list.add(FixtureFactory.createChangeSet("3"));
         sut = new DarcsChangeSetList(list);
         assertFalse(sut.isEmptySet());
         assertEquals(3, sut.size());
@@ -45,9 +45,9 @@ public class DarcsChangeSetListTest {
         sut = new DarcsChangeSetList(new ArrayList<DarcsChangeSet>());
         assertEquals(Util.getDigestOf(""), sut.digest());
 
-        final DarcsChangeSet cs1 = Helper.createChangeSet("1");
-        final DarcsChangeSet cs2 = Helper.createChangeSet("2");
-        final DarcsChangeSet cs3 = Helper.createChangeSet("3");
+        final DarcsChangeSet cs1 = FixtureFactory.createChangeSet("1");
+        final DarcsChangeSet cs2 = FixtureFactory.createChangeSet("2");
+        final DarcsChangeSet cs3 = FixtureFactory.createChangeSet("3");
 
         final List<DarcsChangeSet> list = new ArrayList<DarcsChangeSet>();
         list.add(cs1);
@@ -60,9 +60,9 @@ public class DarcsChangeSetListTest {
 
     @Test
     public void testDigestOnOrderOfPatches() {
-        final DarcsChangeSet cs1 = Helper.createChangeSet("1");
-        final DarcsChangeSet cs2 = Helper.createChangeSet("2");
-        final DarcsChangeSet cs3 = Helper.createChangeSet("3");
+        final DarcsChangeSet cs1 = FixtureFactory.createChangeSet("1");
+        final DarcsChangeSet cs2 = FixtureFactory.createChangeSet("2");
+        final DarcsChangeSet cs3 = FixtureFactory.createChangeSet("3");
         final List<DarcsChangeSet> list1 = new ArrayList<DarcsChangeSet>();
         final List<DarcsChangeSet> list2 = new ArrayList<DarcsChangeSet>();
 
@@ -86,9 +86,9 @@ public class DarcsChangeSetListTest {
 
     @Test
     public void testEquals() {
-        final DarcsChangeSet cs1 = Helper.createChangeSet("1");
-        final DarcsChangeSet cs2 = Helper.createChangeSet("2");
-        final DarcsChangeSet cs3 = Helper.createChangeSet("3");
+        final DarcsChangeSet cs1 = FixtureFactory.createChangeSet("1");
+        final DarcsChangeSet cs2 = FixtureFactory.createChangeSet("2");
+        final DarcsChangeSet cs3 = FixtureFactory.createChangeSet("3");
         final List<DarcsChangeSet> list1 = new ArrayList<DarcsChangeSet>();
         final List<DarcsChangeSet> list2 = new ArrayList<DarcsChangeSet>();
         final List<DarcsChangeSet> list3 = new ArrayList<DarcsChangeSet>();
@@ -119,9 +119,9 @@ public class DarcsChangeSetListTest {
 
     @Test
     public void testHashCode() {
-        final DarcsChangeSet cs1 = Helper.createChangeSet("1");
-        final DarcsChangeSet cs2 = Helper.createChangeSet("2");
-        final DarcsChangeSet cs3 = Helper.createChangeSet("3");
+        final DarcsChangeSet cs1 = FixtureFactory.createChangeSet("1");
+        final DarcsChangeSet cs2 = FixtureFactory.createChangeSet("2");
+        final DarcsChangeSet cs3 = FixtureFactory.createChangeSet("3");
         final List<DarcsChangeSet> list1 = new ArrayList<DarcsChangeSet>();
         final List<DarcsChangeSet> list2 = new ArrayList<DarcsChangeSet>();
         final List<DarcsChangeSet> list3 = new ArrayList<DarcsChangeSet>();
@@ -156,7 +156,7 @@ public class DarcsChangeSetListTest {
         assertThat(sut1.toString(), is("DarcsChangeSetList{changeSets=[], digest=d41d8cd98f00b204e9800998ecf8427e}"));
 
         final List<DarcsChangeSet> list = new ArrayList<DarcsChangeSet>();
-        list.add(Helper.createChangeSet("1"));
+        list.add(FixtureFactory.createChangeSet("1"));
         final DarcsChangeSetList sut2 = new DarcsChangeSetList(list);
         assertThat(sut2.toString(), is("DarcsChangeSetList{changeSets=[DarcsChangeSet{added=[], author=author1, "
                 + "date=date1, deleted=[], hash=hash1, inverted=false, localDate=local_date1, modified=[], name=<NULL>"
