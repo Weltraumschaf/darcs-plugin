@@ -80,4 +80,13 @@ public class DarcsCommandTest {
         args = cmd.getArgs();
         assertThat(args.toList(), is(Arrays.asList("foo", "--version")));
     }
+
+    @Test
+    public void testToString() {
+        final ArgumentListBuilder args = new ArgumentListBuilder();
+        args.add("foo").add("bar").add("baz");
+        final DarcsCommand command = new DarcsCommand(args);
+        assertThat(command.toString(), is(args.toStringWithQuote()));
+    }
+
 }
