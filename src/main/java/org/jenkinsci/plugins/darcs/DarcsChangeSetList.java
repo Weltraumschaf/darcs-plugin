@@ -189,7 +189,7 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
         }
 
         final DarcsChangeSetList other = (DarcsChangeSetList) object;
-        return digest().equals(other.digest());
+        return DarcsObjects.equal(digest(), other.digest());
     }
 
     @Override
@@ -199,7 +199,10 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
 
     @Override
     public String toString() {
-        return String.format("DarcsChangeSetList{changeSets=%s, digest=%s}", changeSets, digest());
+        return DarcsObjects.toString("DarcsChangeSetList")
+            .add("changeSets", changeSets)
+            .add("digest", digest())
+            .toString();
     }
 
 }

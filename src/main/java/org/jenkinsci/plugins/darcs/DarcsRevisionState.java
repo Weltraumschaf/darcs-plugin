@@ -70,4 +70,5 @@ public class DarcsRevisionState extends SCMRevisionState {
     public int hashCode() {
         return changes.hashCode();
     }
+
 }
