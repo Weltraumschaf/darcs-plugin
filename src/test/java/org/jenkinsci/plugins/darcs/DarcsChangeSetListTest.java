@@ -158,8 +158,8 @@ public class DarcsChangeSetListTest {
         final List<DarcsChangeSet> list = new ArrayList<DarcsChangeSet>();
         list.add(Helper.createChangeSet("1"));
         final DarcsChangeSetList sut2 = new DarcsChangeSetList(list);
-        assertThat(sut2.toString(), is("DarcsChangeSetList{changeSets=[DarcsChangeSet{hash=hash1, name=null, "
-                + "author=author1, date=date1, localDate=local_date1, inverted=false, added=[], modified=[], deleted=[]"
+        assertThat(sut2.toString(), is("DarcsChangeSetList{changeSets=[DarcsChangeSet{added=[], author=author1, "
+                + "date=date1, deleted=[], hash=hash1, inverted=false, localDate=local_date1, modified=[], name=<NULL>"
                 + "}], digest=00c6ee2e21a7548de6260cf72c4f4b5b}"));
 
     }

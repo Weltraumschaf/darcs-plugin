@@ -24,7 +24,9 @@ import org.junit.rules.ExpectedException;
  */
 public class DarcsObjectsTest {
 
+    //CHECKSTYLE:OFF
     @Rule public ExpectedException thrown = ExpectedException.none();
+    //CHECKSTYLE:ONN
 
     @Test
     public void hashCodeNullObject() {

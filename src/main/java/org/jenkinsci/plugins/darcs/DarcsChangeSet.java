@@ -324,22 +324,22 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
 
     @Override
     public String toString() {
-        return "DarcsChangeSet{"
-                + "hash=" + hash
-                + ", name=" + name
-                + ", author=" + author
-                + ", date=" + date
-                + ", localDate=" + localDate
-                + ", inverted=" + inverted
-                + ", added=" + added
-                + ", modified=" + modified
-                + ", deleted=" + deleted
-                + '}';
+        return DarcsObjects.toString("DarcsChangeSet")
+            .add("hash", hash)
+            .add("name", name)
+            .add("author", author)
+            .add("date", date)
+            .add("localDate", localDate)
+            .add("inverted", inverted)
+            .add("added", added)
+            .add("modified", modified)
+            .add("deleted", deleted)
+            .toString();
     }
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(new Object[]{
+        return DarcsObjects.hashCode(
             added,
             author,
             comment,
@@ -349,8 +349,8 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
             inverted,
             localDate,
             modified,
-            name,
-        });
+            name
+        );
     }
 
     @Override
@@ -361,58 +361,47 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
 
         final DarcsChangeSet other = (DarcsChangeSet) obj;
 
-        if (!equal(added, other.added)) {
+        if (DarcsObjects.notEqual(added, other.added)) {
             return false;
         }
 
-        if (!equal(author, other.author)) {
+        if (DarcsObjects.notEqual(author, other.author)) {
             return false;
         }
 
-        if (!equal(comment, other.comment)) {
+        if (DarcsObjects.notEqual(comment, other.comment)) {
             return false;
         }
 
-        if (!equal(date, other.date)) {
+        if (DarcsObjects.notEqual(date, other.date)) {
             return false;
         }
 
-        if (!equal(deleted, other.deleted)) {
+        if (DarcsObjects.notEqual(deleted, other.deleted)) {
             return false;
         }
 
-        if (!equal(hash, other.hash)) {
+        if (DarcsObjects.notEqual(hash, other.hash)) {
             return false;
         }
 
-        if (!equal(localDate, other.localDate)) {
+        if (DarcsObjects.notEqual(localDate, other.localDate)) {
             return false;
         }
 
-        if (!equal(modified, other.modified)) {
+        if (DarcsObjects.notEqual(modified, other.modified)) {
             return false;
         }
 
-        if (!equal(inverted, other.inverted)) {
+        if (DarcsObjects.notEqual(inverted, other.inverted)) {
             return false;
         }
 
-        if (!equal(name, other.name)) {
+        if (DarcsObjects.notEqual(name, other.name)) {
             return false;
         }
 
         return true;
-    }
-
-    /**
-     * Helper which respects {@code null} values.
-     *
-     * @param a first object to compare
-     * @param b second object to compare
-     * @return {@code true} if a and b are equal, else {@code false}
-     */
-    private static boolean equal(final Object a, final Object b) {
-        return a == b || (a != null && a.equals(b));
     }
 
 }
