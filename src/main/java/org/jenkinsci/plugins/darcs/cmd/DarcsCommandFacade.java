@@ -18,8 +18,6 @@ import java.util.Map;
 /**
  * Facade for the Darcs command.
  *
- * TODO add method which checks if a given directory is a darcs repository (presence of _darcs folder.
- *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public final class DarcsCommandFacade {
@@ -213,18 +211,42 @@ public final class DarcsCommandFacade {
         cmd.execute(proc);
     }
 
-    public boolean isRepo(final File repo) {
-        return isRepo(repo.getAbsolutePath());
+    /**
+     * Determines if given repository is a Darcs repository.
+     *
+     * This is done by checking if in the given directory a subdirectory named "_darcs" exists.
+     *
+     * @param repository directory to check
+     * @return true if given directory is a repository, else false
+     */
+    public boolean isRepository(final File repository) {
+        if (!repository.exists()) {
+            return false;
+        }
+
+        if (!repository.isDirectory()) {
+            return false;
+        }
+
+        final File darcsDirectory = new File(repository, "_darcs");
+        return darcsDirectory.exists() && darcsDirectory.isDirectory();
     }
 
-    public boolean isRepo(final String repo) {
-        throw new UnsupportedOperationException("not implemented yet");
-    }
-
+    /**
+     * Returns short version string like `darcs --version`.
+     *
+     * @return version string
+     */
     public String version() {
         return version(false);
     }
 
+    /**
+     * Returns version of Darcs.
+     *
+     * @param exact whether to return short (`darcs --version`) version or exact version (`darcs --exact-version`).
+     * @return version string
+     */
     public String version(final boolean exact) {
         final DarcsCommandBuilder builder = DarcsCommand.builder(darcsExe);
 
