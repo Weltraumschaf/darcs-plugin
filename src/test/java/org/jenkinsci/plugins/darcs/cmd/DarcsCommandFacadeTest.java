@@ -37,18 +37,69 @@ public class DarcsCommandFacadeTest {
 
     private enum Binary {
 
-        LINUX_BIN("darcs_bin_linux_2.8"),
-        MACOS_BIN("darcs_bin_macos_2.5");
+        LINUX_BIN("darcs_bin_linux_2.8", "", ""),
+        MACOS_BIN("darcs_bin_macos_2.5", "2.5 (release)\n", "darcs compiled on Oct 31 2010, at 14:40:05\n"
+                + "\n"
+                + "Context:\n"
+                + "\n"
+                + "[TAG 2.5\n"
+                + "Reinier Lamers <tux_rocker@reinier.de>**20101024151805\n"
+                + " Ignore-this: 1561ce30bfb1950a440c03371e0e2f20\n"
+                + "] \n"
+                + "\n"
+                + "Compiled with:\n"
+                + "\n"
+                + "HTTP-4000.0.8\n"
+                + "array-0.3.0.1\n"
+                + "base-4.2.0.2\n"
+                + "bytestring-0.9.1.7\n"
+                + "containers-0.3.0.0\n"
+                + "directory-1.0.1.1\n"
+                + "extensible-exceptions-0.1.1.1\n"
+                + "filepath-1.1.0.4\n"
+                + "hashed-storage-0.5.2\n"
+                + "haskeline-0.6.2.2\n"
+                + "html-1.0.1.2\n"
+                + "mmap-0.5.6\n"
+                + "mtl-1.1.0.2\n"
+                + "network-2.2.1.5\n"
+                + "old-time-1.0.0.5\n"
+                + "parsec-2.1.0.1\n"
+                + "process-1.0.1.3\n"
+                + "random-1.0.0.2\n"
+                + "regex-compat-0.93.1\n"
+                + "tar-0.3.1.0\n"
+                + "terminfo-0.3.1.2\n"
+                + "text-0.7.2.1\n"
+                + "unix-2.4.0.2\n"
+                + "zlib-0.5.2.0\n"
+                + "HUnit-1.2.2.1\n"
+                + "QuickCheck-2.1.1.1\n"
+                + "test-framework-0.3.2\n"
+                + "test-framework-hunit-0.2.6\n"
+                + "test-framework-quickcheck2-0.2.7\n");
         private final String name;
+        private final String version;
+        private final String exactVersion;
 
-        private Binary(final String name) {
+        private Binary(final String name, final String version, final String exactVersion) {
             this.name = name;
+            this.version = version;
+            this.exactVersion = exactVersion;
         }
 
         File getBin() throws URISyntaxException {
             final File bin = new File(getClass().getResource(FIXTURE_BASE + "/" + name).toURI());
             bin.setExecutable(true);
             return bin;
+        }
+
+        public String getVersion() {
+            return version;
+        }
+
+        public String getExactVersion() {
+            return exactVersion;
         }
 
         static Binary determine() {
@@ -231,54 +282,14 @@ public class DarcsCommandFacadeTest {
     @Test
     public void version() {
         final DarcsCommandFacade sut = createSut();
-        assertThat(sut.version(), is("2.5 (release)\n"));
+        assertThat(sut.version(), is(Binary.determine().getVersion()));
     }
 
     @Test
     public void exactVersion() {
         final DarcsCommandFacade sut = createSut();
         //CHECKSTYLE:OFF
-        assertThat(sut.version(true), is(
-                "darcs compiled on Oct 31 2010, at 14:40:05\n"
-                + "\n"
-                + "Context:\n"
-                + "\n"
-                + "[TAG 2.5\n"
-                + "Reinier Lamers <tux_rocker@reinier.de>**20101024151805\n"
-                + " Ignore-this: 1561ce30bfb1950a440c03371e0e2f20\n"
-                + "] \n"
-                + "\n"
-                + "Compiled with:\n"
-                + "\n"
-                + "HTTP-4000.0.8\n"
-                + "array-0.3.0.1\n"
-                + "base-4.2.0.2\n"
-                + "bytestring-0.9.1.7\n"
-                + "containers-0.3.0.0\n"
-                + "directory-1.0.1.1\n"
-                + "extensible-exceptions-0.1.1.1\n"
-                + "filepath-1.1.0.4\n"
-                + "hashed-storage-0.5.2\n"
-                + "haskeline-0.6.2.2\n"
-                + "html-1.0.1.2\n"
-                + "mmap-0.5.6\n"
-                + "mtl-1.1.0.2\n"
-                + "network-2.2.1.5\n"
-                + "old-time-1.0.0.5\n"
-                + "parsec-2.1.0.1\n"
-                + "process-1.0.1.3\n"
-                + "random-1.0.0.2\n"
-                + "regex-compat-0.93.1\n"
-                + "tar-0.3.1.0\n"
-                + "terminfo-0.3.1.2\n"
-                + "text-0.7.2.1\n"
-                + "unix-2.4.0.2\n"
-                + "zlib-0.5.2.0\n"
-                + "HUnit-1.2.2.1\n"
-                + "QuickCheck-2.1.1.1\n"
-                + "test-framework-0.3.2\n"
-                + "test-framework-hunit-0.2.6\n"
-                + "test-framework-quickcheck2-0.2.7\n"));
+        assertThat(sut.version(true), is(Binary.determine().getExactVersion()));
         //CHECKSTYLE:ON
     }
 }
