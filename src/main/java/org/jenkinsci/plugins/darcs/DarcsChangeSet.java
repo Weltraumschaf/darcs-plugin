@@ -309,7 +309,7 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
     }
 
     @Override
-    protected void setParent(final ChangeLogSet parent) {
+    protected void setParent(final ChangeLogSet parent) { // NOPMD Needed w/ public access in DarcsChangeSetList.
         super.setParent(parent);
     }
 
