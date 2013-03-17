@@ -16,8 +16,6 @@ import hudson.FilePath;
 import hudson.FilePath.FileCallable;
 import hudson.Launcher;
 import hudson.Launcher.LocalLauncher;
-import hudson.init.InitMilestone;
-import hudson.init.Initializer;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
@@ -37,7 +35,6 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.logging.Logger;
-import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.xml.sax.SAXException;
 
@@ -155,11 +152,11 @@ public class DarcsScm extends SCM implements Serializable {
         final DarcsRevisionState local = getRevisionState(launcher, listener, localPath.getRemote(), build.getWorkspace());
 
         if (null == local) {
-            listener.getLogger().println(String.format("[poll] Got <null> as revision state."));
+            listener.getLogger().println(Messages.DarcsScm_gotNullAsRevisionState());
             return SCMRevisionState.NONE;
         }
 
-        listener.getLogger().println(String.format("[poll] Calculate revison from build %s.", local));
+        listener.getLogger().println(Messages.DarcsScm_calculateRevisionFromBuild(local));
         return local;
     }
 
@@ -179,10 +176,10 @@ public class DarcsScm extends SCM implements Serializable {
         }
 
         if (null != project && null != project.getLastBuild()) {
-            logger.println("[poll] Last Build : #" + project.getLastBuild().getNumber());
+            logger.println(Messages.DarcsScm_lastBuild(project.getLastBuild().getNumber()));
         } else {
             // If we've never been built before, well, gotta build!
-            logger.println("[poll] No previous build, so forcing an initial build.");
+            logger.println(Messages.DarcsScm_noPReviousBuild());
 
             return PollingResult.BUILD_NOW;
         }
@@ -190,29 +187,28 @@ public class DarcsScm extends SCM implements Serializable {
         final Change change;
         final DarcsRevisionState remoteRevisionState = getRevisionState(launcher, listener, source, workspace);
 
-        logger.printf("[poll] Current remote revision is %s. Local revision is %s.%n",
-                remoteRevisionState, localRevisionState);
+        logger.printf(Messages.DarcsScm_currentRemoteRevisionIsLocalIs(
+                remoteRevisionState, localRevisionState));
 
         if (SCMRevisionState.NONE.equals(localRevisionState)) {
-            logger.println("[poll] Does not have a local revision state.");
+            logger.println(Messages.DarcsScm_doesNotHaveLocalRevisionState());
             change = Change.SIGNIFICANT;
         } else if (localRevisionState.getClass() != DarcsRevisionState.class) {
             // appears that other instances of None occur - its not a singleton.
             // so do a (fugly) class check.
-            logger.println("[poll] local revision state is not of type darcs.");
+            logger.println(Messages.DarcsScm_localRevisionStateIsNotOfTypeDarcs());
             change = Change.SIGNIFICANT;
         } else if (null != remoteRevisionState && !remoteRevisionState.equals(localRevisionState)) {
-            logger.println("[poll] Local revision state differs from remote.");
+            logger.println(Messages.DarcsScm_localRevisionStateDiffersFromRemote());
 
             if (remoteRevisionState.getChanges().size()
                     < ((DarcsRevisionState) localRevisionState).getChanges().size()) {
                 final FilePath ws = project.getLastBuild().getWorkspace();
 
-                logger.printf("[poll] Remote repo has less patches than local: remote(%s) vs. local(%s). Will wipe "
-                        + "workspace %s...%n",
+                logger.println(Messages.DarcsScm_remoteRepoHasLessPatchesThanLocal(
                         remoteRevisionState.getChanges().size(),
                         ((DarcsRevisionState) localRevisionState).getChanges().size(),
-                        (null != ws) ? ws.getRemote() : "null");
+                        (null != ws) ? ws.getRemote() : "null"));
 
                 if (null != ws) {
                     ws.deleteRecursive();
@@ -255,7 +251,7 @@ public class DarcsScm extends SCM implements Serializable {
             final String changes = cmd.allChanges(repo);
             rev = new DarcsRevisionState(((DarcsChangeLogParser) createChangeLogParser()).parse(changes));
         } catch (Exception e) {
-            listener.getLogger().println(String.format("[warning] Failed to get revision state for repository: %s", repo));
+            listener.getLogger().println(Messages.DarcsScm_failedToGetRevisionState(repo));
         }
 
         return rev;
@@ -273,7 +269,7 @@ public class DarcsScm extends SCM implements Serializable {
     private void createChangeLog(final Launcher launcher, final int numPatches, final FilePath workspace,
             final File changeLog, final BuildListener listener) throws InterruptedException {
         if (0 == numPatches) {
-            LOGGER.info("Creating empty changelog.");
+            LOGGER.info(Messages.DarcsScm_createEmptyChangelog()); // TODO consider using launchers log
             createEmptyChangeLog(changeLog, listener, "changelog");
             return;
         }
@@ -289,7 +285,7 @@ public class DarcsScm extends SCM implements Serializable {
         } catch (Exception e) {
             final StringWriter w = new StringWriter();
             e.printStackTrace(new PrintWriter(w));
-            LOGGER.warning(String.format("Failed to get log from repository: %s", w));
+            LOGGER.warning(Messages.DarcsScm_failedToGetLogFromRepo(w)); // TODO consider using launchers log
         } finally {
             IOUtils.closeQuietly(fos);
         }
@@ -333,7 +329,7 @@ public class DarcsScm extends SCM implements Serializable {
             final FilePath localPath = createLocalPath(workspace);
             return cmd.countChanges(localPath.getRemote());
         } catch (Exception e) {
-            listener.error("Failed to count patches in workspace repo:%n", e.toString());
+            listener.error(Messages.DarcsScm_failedToCountPatchesInWorkspace(e));
             return 0;
         }
     }
@@ -352,21 +348,21 @@ public class DarcsScm extends SCM implements Serializable {
      */
     private boolean pullRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace,
             final BuildListener listener, final File changelogFile) throws InterruptedException, IOException {
-        LOGGER.info(String.format("Pulling repo from: %s", source));
+        LOGGER.info(Messages.DarcsScm_pullingRepoFrom(source));  // TODO consider using launchers log
         final int preCnt = countPatches(build, launcher, workspace, listener);
-        LOGGER.info(String.format("Count of patches pre pulling is %d", preCnt));
+        LOGGER.info(Messages.DarcsScm_countOfPatchesPrePullingIs(preCnt));  // TODO consider using launchers log
 
         try {
             final DarcsCommandFacade cmd = new DarcsCommandFacade(launcher, build.getEnvironment(listener), getDescriptor().getDarcsExe(), workspace.getParent());
             final FilePath localPath = createLocalPath(workspace);
             cmd.pull(localPath.getRemote(), source);
         } catch (Exception e) {
-            listener.error("Failed to pull: " + e.toString());
+            listener.error(Messages.DarcsScm_failedToPull(e));
             return false;
         }
 
         final int postCnt = countPatches(build, launcher, workspace, listener);
-        LOGGER.info(String.format("Count of patches post pulling is %d", preCnt));
+        LOGGER.info(Messages.DarcsScm_countOfPatchesPostPullingIs(preCnt));  // TODO consider using launchers log
         createChangeLog(launcher, postCnt - preCnt, workspace, changelogFile, listener);
 
         return true;
@@ -385,13 +381,13 @@ public class DarcsScm extends SCM implements Serializable {
      */
     private boolean getRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace,
             final BuildListener listener, final File changeLog) throws InterruptedException {
-        LOGGER.info(String.format("Getting repo from: %s", source));
+        LOGGER.info(Messages.DarcsScm_gettingRepoFrom(source));  // TODO consider using launchers log
 
         try {
             final FilePath localPath = createLocalPath(workspace);
             localPath.deleteRecursive();
         } catch (IOException e) {
-            e.printStackTrace(listener.error("Failed to clean the workspace"));
+            e.printStackTrace(listener.error(Messages.DarcsScm_failedToCleanTheWorkspace()));
             return false;
         }
 
@@ -400,7 +396,7 @@ public class DarcsScm extends SCM implements Serializable {
             final FilePath localPath = createLocalPath(workspace);
             cmd.get(localPath.getRemote(), source);
         } catch (Exception e) {
-            e.printStackTrace(listener.error("Failed to get repo from " + source));
+            e.printStackTrace(listener.error(Messages.DarcsScm_failedToGetRepoFrom(source)));
             return false;
         }
 
