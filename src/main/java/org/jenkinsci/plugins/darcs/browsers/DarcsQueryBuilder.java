@@ -21,7 +21,7 @@ final class DarcsQueryBuilder {
     /**
      * Types for queries.
      */
-    enum SeparatorType {
+    enum Separators {
         /**
          * Separates everything with slash, REST like.
          */
@@ -33,7 +33,13 @@ final class DarcsQueryBuilder {
         /**
          * Starts wit {@literal ?} and then separates with {@literal &}.
          */
-        AMPERSANDS;
+        AMPERSANDS,
+        /**
+         * Unsupported separator type.
+         *
+         * Used for testing.
+         */
+        UNSUPPORTED;
     }
 
     /**
@@ -43,14 +49,14 @@ final class DarcsQueryBuilder {
     /**
      * The separator type for the query.
      */
-    private final SeparatorType type;
+    private final Separators type;
 
     /**
      * Does not add a first string.
      *
      * @param t separator type
      */
-    DarcsQueryBuilder(final SeparatorType t) {
+    DarcsQueryBuilder(final Separators t) {
         this(t, null);
     }
 
@@ -60,7 +66,7 @@ final class DarcsQueryBuilder {
      * @param t separator type
      * @param s first string of query
      */
-    DarcsQueryBuilder(final SeparatorType t, final String s) {
+    DarcsQueryBuilder(final Separators t, final String s) {
         super();
         type = t;
         add(s);
@@ -71,7 +77,7 @@ final class DarcsQueryBuilder {
      *
      * @return type of separation
      */
-    public SeparatorType getType() {
+    public Separators getType() {
         return this.type;
     }
 
@@ -109,7 +115,7 @@ final class DarcsQueryBuilder {
 
                 break;
             default:
-                throw new IllegalStateException(String.format("Unsupported separator type %s", type));
+                throw new IllegalStateException(String.format("Unsupported separator type '%s'!", type));
         }
 
         buf.append(s);

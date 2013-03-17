@@ -51,7 +51,7 @@ public final class Darcsden extends DarcsRepositoryBrowser {
     public URL getChangeSetLink(final DarcsChangeSet changeSet) throws IOException {
         final String hash = changeSet.getHash();
         final String shortHash = hash.substring(0, hash.lastIndexOf('-'));
-        final DarcsQueryBuilder query = new DarcsQueryBuilder(DarcsQueryBuilder.SeparatorType.SLASHES);
+        final DarcsQueryBuilder query = new DarcsQueryBuilder(DarcsQueryBuilder.Separators.SLASHES);
         query.add("patch")
              .add(shortHash);
 

@@ -49,7 +49,7 @@ public class DarcsWeb extends DarcsRepositoryBrowser {
     }
 
     protected DarcsQueryBuilder createDefaultQuery() {
-        final DarcsQueryBuilder query = new DarcsQueryBuilder(DarcsQueryBuilder.SeparatorType.SEMICOLONS);
+        final DarcsQueryBuilder query = new DarcsQueryBuilder(DarcsQueryBuilder.Separators.SEMICOLONS);
         return query.add("r=" + repo);
     }
 
