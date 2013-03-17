@@ -64,7 +64,7 @@ public class DarcsCommadException extends RuntimeException {
      * @param thrwbl previous exception
      */
     public DarcsCommadException(final String string, final Throwable thrwbl) {
-        this(string, thrwbl, 0);
+        this(string, 0, thrwbl);
     }
 
     /**
@@ -74,7 +74,7 @@ public class DarcsCommadException extends RuntimeException {
      * @param thrwbl previous exception
      * @param returnCode return code of Darcs command
      */
-    public DarcsCommadException(final String string, final Throwable thrwbl, final int returnCode) {
+    public DarcsCommadException(final String string, final int returnCode, final Throwable thrwbl) {
         super(string, thrwbl);
         this.returnCode = returnCode;
     }
