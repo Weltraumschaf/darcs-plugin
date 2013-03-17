@@ -214,7 +214,7 @@ public class DarcsCommandFacadeTest {
     public void isRepository() throws IOException {
         final DarcsCommandFacade sut = createSut();
 
-        final File notExisting = new File("/foo/bar");
+        final File notExisting = new File("foobar");
         assertThat(sut.isRepository(notExisting), is(false));
 
         final File notAdirectory = tmpDir.newFile();
@@ -224,7 +224,7 @@ public class DarcsCommandFacadeTest {
         assertThat(sut.isRepository(directoryWithoutDarcsDir), is(false));
 
         final File directoryWithDarcsDir = tmpDir.newFolder();
-        new File(directoryWithDarcsDir, "_darcs").mkdir();
+        assertThat(new File(directoryWithDarcsDir, "_darcs").mkdir(), is(true));
         assertThat(sut.isRepository(directoryWithDarcsDir), is(true));
     }
 
