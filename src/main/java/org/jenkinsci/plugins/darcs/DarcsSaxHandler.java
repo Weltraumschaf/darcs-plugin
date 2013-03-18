@@ -359,7 +359,7 @@ class DarcsSaxHandler extends DefaultHandler {
      */
     static String stripIgnoreThisFromComment(final String comment) {
         if (comment.startsWith("Ignore-this:")) {
-            final int end = comment.indexOf("\n");
+            final int end = comment.indexOf('\n');
 
             if (-1 == end) {
                 return "";

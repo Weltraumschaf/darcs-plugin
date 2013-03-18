@@ -181,15 +181,7 @@ public class DarcsCommandFacadeTest {
     @Rule
     public TemporaryFolder tmpDir = new TemporaryFolder();
     //CHECKSTYLE:ON
-    private File repoArchive;
     private File darcsExe;
-
-    @Before
-    public void loadRepoArchive() throws URISyntaxException {
-        repoArchive = Repository.DIRTY_REPO.getArchive();
-        assertThat(repoArchive, is(notNullValue()));
-        assertThat(repoArchive.exists(), is(true));
-    }
 
     @Before
     public void loadDarcsExe() throws URISyntaxException {

@@ -20,6 +20,7 @@ import java.util.Comparator;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.logging.Logger;
 
 /**
  * List of change set that went into a particular build.
@@ -28,6 +29,10 @@ import java.security.NoSuchAlgorithmException;
  */
 public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
 
+    /**
+     * Logging facility.
+     */
+    private static final Logger LOGGER = Logger.getLogger(DarcsChangeSetList.class.getName());
     /**
      * Kind description string.
      */
@@ -161,7 +166,7 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
                 res.append(tmp);
             }
         } catch (NoSuchAlgorithmException ex) {
-            res.append("");
+            LOGGER.severe(ex.toString());
         }
 
         return res.toString();
