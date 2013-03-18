@@ -10,7 +10,6 @@
 package org.jenkinsci.plugins.darcs.browsers;
 
 import org.jenkinsci.plugins.darcs.DarcsChangeSet;
-import org.junit.Ignore;
 import java.net.URL;
 import java.net.MalformedURLException;
 import org.junit.Test;
