@@ -106,7 +106,7 @@ public class DarcsObjectsTest {
             DarcsObjects.toString("ClassName")
                         .add("number", 23)
                         .add("str", "foo")
-                        .add("bool", true)
+                        .add("bool", Boolean.TRUE)
                         .toString(),
             is("ClassName{bool=true, number=23, str=foo}")
         );
@@ -118,7 +118,7 @@ public class DarcsObjectsTest {
             DarcsObjects.toString("ClassName")
                         .add("number", 23)
                         .add("str", null)
-                        .add("bool", true)
+                        .add("bool", Boolean.TRUE)
                         .toString(),
             is("ClassName{bool=true, number=23, str=<NULL>}")
         );

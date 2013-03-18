@@ -26,7 +26,9 @@ import org.junit.rules.ExpectedException;
  */
 public class DarcsPullBuilderTest {
 
+    //CHECKSTYLE:OFF
     @Rule public ExpectedException thrown = ExpectedException.none();
+    //CHECKSTYLE:ON
     private final DarcsPullBuilder sut = new DarcsPullBuilder("foo");
 
     @Test

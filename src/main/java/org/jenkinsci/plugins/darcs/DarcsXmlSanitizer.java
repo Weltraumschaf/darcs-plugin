@@ -38,7 +38,13 @@ import java.util.List;
  */
 class DarcsXmlSanitizer {
 
+    /**
+     * Used characters.
+     */
     private static final List<String> ADDL_CHARSETS = Arrays.asList("ISO-8859-1", "UTF-16");
+    /**
+     * List of used decoders.
+     */
     private final List<CharsetDecoder> decoders = new ArrayList<CharsetDecoder>();
 
     /**
@@ -80,10 +86,10 @@ class DarcsXmlSanitizer {
     /**
      * Knuth-Morris-Pratt pattern matching algorithm.
      *
-     * @param data
-     * @param start
-     * @param pattern
-     * @return
+     * @param data data to inspect
+     * @param start start position
+     * @param pattern pattern to match
+     * @return found position
      */
     private static int positionBeforeNext(final byte[] data, final int start, final byte[] pattern) {
         final int[] failure = computeFailure(pattern);
@@ -109,11 +115,10 @@ class DarcsXmlSanitizer {
     }
 
     /**
-     *
-     * @param data
-     * @param start
-     * @param pattern
-     * @return
+     * @param data data to inspect
+     * @param start start position
+     * @param pattern pattern to match
+     * @return found position
      */
     private static int positionAfterNext(final byte[] data, final int start, final byte[] pattern) {
         int pos = positionBeforeNext(data, start, pattern);
@@ -128,8 +133,8 @@ class DarcsXmlSanitizer {
     /**
      * Computes the failure function using a bootstrapping process, where the pattern is matched against itself.
      *
-     * @param pattern
-     * @return
+     * @param pattern used pattern
+     * @return computed failure
      */
     private static int[] computeFailure(final byte[] pattern) {
         final int[] failure = new int[pattern.length];
@@ -153,8 +158,8 @@ class DarcsXmlSanitizer {
     /**
      * Cleanse the mixed encoding in the input byte array.
      *
-     * @param input
-     * @return
+     * @param input dirty input
+     * @return cleaned output
      */
     public String cleanse(final byte[] input) {
         final CharBuffer cb = CharBuffer.allocate(input.length);
@@ -230,14 +235,21 @@ class DarcsXmlSanitizer {
 
     /**
      * @see #cleanse(byte[])
-     * @param file
-     * @return
-     * @throws IOException
+     * @param file dirty input
+     * @return cleaned output
+     * @throws IOException if file IO errors happened
      */
     public String cleanse(final File file) throws IOException {
         return cleanse(readFile(file));
     }
 
+    /**
+     * Read a file into a byte array.
+     *
+     * @param file file to read
+     * @return read bytes
+     * @throws IOException if file IO errors happened
+     */
     private byte[] readFile(final File file) throws IOException {
         // Taken from www.exampledepot.com
         // Get the size of the file
@@ -261,6 +273,7 @@ class DarcsXmlSanitizer {
             is = new FileInputStream(file);
 
             int numRead = 0;
+            // FIXME move assignment out of loop condition. May be use Apache Commons IO Utils to read file.
             while (offset < bytes.length
                     && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
                 offset += numRead;
@@ -278,4 +291,5 @@ class DarcsXmlSanitizer {
 
         return bytes;
     }
+
 }

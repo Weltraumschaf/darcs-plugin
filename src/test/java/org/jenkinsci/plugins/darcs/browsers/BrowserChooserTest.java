@@ -28,19 +28,18 @@ import org.kohsuke.stapler.RequestImpl;
 import org.kohsuke.stapler.Stapler;
 import org.kohsuke.stapler.StaplerRequest;
 
-import org.mockito.Mockito;
+import static org.mockito.Mockito.*;
 
 /**
+ * FIXME Check the whole test class.
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class BrowserChooserTest {
 
-    private final Stapler stapler = Mockito.mock(Stapler.class);
-    private final HttpServletRequest servletRequest = Mockito.mock(HttpServletRequest.class);
-    @SuppressWarnings("unchecked")
-    private final StaplerRequest staplerRequest = new RequestImpl(stapler,
-                                                                  servletRequest,
+//    @SuppressWarnings("unchecked")
+    private final StaplerRequest staplerRequest = new RequestImpl(mock(Stapler.class),
+                                                                  mock(HttpServletRequest.class),
                                                                   Collections.EMPTY_LIST,
                                                                   null);
 
@@ -91,9 +90,7 @@ public class BrowserChooserTest {
             stream.close();
         }
 
-        final JSONObject json = (JSONObject) JSONSerializer.toJSON(scmString);
-
-        return json;
+        return (JSONObject) JSONSerializer.toJSON(scmString);
     }
 
     /**
@@ -101,9 +98,6 @@ public class BrowserChooserTest {
      * @return
      */
     DarcsRepositoryBrowser createBrowserFromJson(final JSONObject json) {
-        final DarcsRepositoryBrowser browser = staplerRequest.bindJSON(DarcsRepositoryBrowser.class,
-                                                                 json.getJSONObject("browser"));
-
-        return browser;
+        return staplerRequest.bindJSON(DarcsRepositoryBrowser.class, json.getJSONObject("browser"));
     }
 }

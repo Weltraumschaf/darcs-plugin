@@ -31,6 +31,9 @@ import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
 /**
+ * Repository browser for Darcsden.
+ *
+ * TODO Add URL to Darcsden.
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
@@ -40,15 +43,33 @@ public final class Darcsden extends DarcsRepositoryBrowser {
      * Serial version UID.
      */
     private static final long serialVersionUID = 1L;
-
+    /**
+     * Base URL of the DarcsWeb.
+     *
+     * FIXME make private
+     */
     public final URL url;
 
+    /**
+     * Dedicated constructor.
+     *
+     * @param url base URL to the Darcsden repository
+     * @throws MalformedURLException if malformed URL will result
+     */
     @DataBoundConstructor
     public Darcsden(final URL url) throws MalformedURLException {
+        super();
         this.url = new URL(Util.removeTrailingSlash(url.toString()));
     }
 
-    public URL getChangeSetLink(final DarcsChangeSet changeSet) throws IOException {
+    /**
+     * Get the change set URI.
+     *
+     * @param changeSet changes to get link for
+     * @return URL to the commit view
+     * @throws MalformedURLException if malformed URL will result
+     */
+    public URL getChangeSetLink(final DarcsChangeSet changeSet) throws MalformedURLException  {
         final String hash = changeSet.getHash();
         final String shortHash = hash.substring(0, hash.lastIndexOf('-'));
         final DarcsQueryBuilder query = new DarcsQueryBuilder(DarcsQueryBuilder.Separators.SLASHES);
@@ -58,7 +79,8 @@ public final class Darcsden extends DarcsRepositoryBrowser {
         return new URL(url + query.toString());
     }
 
-    public URL getFileDiffLink(final DarcsChangeSet changeSet, final String file) throws IOException {
+    @Override
+    public URL getFileDiffLink(final DarcsChangeSet changeSet, final String file) throws MalformedURLException {
         return null;
     }
 
@@ -68,21 +90,25 @@ public final class Darcsden extends DarcsRepositoryBrowser {
     @Extension
     public static class DescriptorImpl extends Descriptor<RepositoryBrowser<?>> {
 
+        /**
+         * Pattern to verify a Darcsden URL.
+         */
         private static final Pattern URI_PATTERN = Pattern.compile("http://darcsden.com/.+");
 
+        @Override
         public String getDisplayName() {
             return "Darcsden";
         }
 
         /**
-         * Validates the URL given in the config formular.
+         * Validates the URL given in the configuration form.
          *
          * @todo implement check.
          *
-         * @param value
-         * @return
-         * @throws IOException
-         * @throws ServletException
+         * @param value the given URL
+         * @return a form validation instance
+         * @throws IOException if URL can't be opened
+         * @throws ServletException if servlet encounters difficulty
          */
         public FormValidation doCheck(@QueryParameter final String value) throws IOException, ServletException {
 

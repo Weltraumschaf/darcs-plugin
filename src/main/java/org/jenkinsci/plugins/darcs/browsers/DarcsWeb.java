@@ -30,6 +30,10 @@ import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
 /**
+ * Repository browser for DarcsWeb.
+ *
+ * TODO Add URL to DarcsWeb.
+ * TODO make final
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
@@ -39,21 +43,49 @@ public class DarcsWeb extends DarcsRepositoryBrowser {
      * Serial version UID.
      */
     private static final long serialVersionUID = 1L;
+    /**
+     * Base URL of the DarcsWeb.
+     *
+     * FIXME make private
+     */
     public final URL url;
+    /**
+     * Name of the repository.
+     *
+     * FIXME make private
+     */
     public final String repo;
 
+    /**
+     * Dedicated constructor.
+     *
+     * @param url base URL to the DarcsWeb
+     * @param repo name of repository
+     */
     @DataBoundConstructor
-    public DarcsWeb(final URL url, final String repo) throws MalformedURLException {
+    public DarcsWeb(final URL url, final String repo) {
+        super();
         this.url  = url;
         this.repo = repo;
     }
 
-    protected DarcsQueryBuilder createDefaultQuery() {
+    /**
+     * Creates a query to get a repository.
+     *
+     * @return newly generated query builder
+     */
+    DarcsQueryBuilder createDefaultQuery() {
         final DarcsQueryBuilder query = new DarcsQueryBuilder(DarcsQueryBuilder.Separators.SEMICOLONS);
         return query.add("r=" + repo);
     }
 
-    protected DarcsQueryBuilder createDefaultQuery(final String action) {
+    /**
+     * Creates a query to get a repository and with an action.
+     *
+     * @param action action to perform
+     * @return newly generated query builder
+     */
+    DarcsQueryBuilder createDefaultQuery(final String action) {
         final DarcsQueryBuilder query = createDefaultQuery();
         return query.add("a=" + action);
     }
@@ -63,14 +95,13 @@ public class DarcsWeb extends DarcsRepositoryBrowser {
      *
      * Format: {@literal http://localhost/cgi-bin/darcsweb.cgi?r=REPO;a=commit;h=HASH}
      *
-     * @param changeSet
-     * @return
-     * @throws IOException
+     * @param changeSet changes to get link for
+     * @return URL to the commit view
+     * @throws MalformedURLException if malformed URL will result
      */
-    public URL getChangeSetLink(final DarcsChangeSet changeSet) throws IOException {
+    public URL getChangeSetLink(final DarcsChangeSet changeSet) throws MalformedURLException {
         final DarcsQueryBuilder query = createDefaultQuery("commit");
         query.add("h=" + changeSet.getHash());
-
         return new URL(url + query.toString());
     }
 
@@ -79,16 +110,16 @@ public class DarcsWeb extends DarcsRepositoryBrowser {
      *
      * Format: {@literal http://localhost/cgi-bin/darcsweb.cgi?r=REPO;a=filediff;h=HASH;f=FILE}
      *
-     * @param changeSet
-     * @param file
-     * @return
-     * @throws IOException
+     * @param changeSet changes to get diff link for
+     * @param file file to get diff link for
+     * @return URL to th diff view
+     * @throws MalformedURLException if malformed URL will result
      */
-    public URL getFileDiffLink(final DarcsChangeSet changeSet, final String file) throws IOException {
+    @Override
+    public URL getFileDiffLink(final DarcsChangeSet changeSet, final String file) throws MalformedURLException {
         final DarcsQueryBuilder query = createDefaultQuery("filediff");
         query.add("h=" + changeSet.getHash());
         query.add("f=" + file);
-
         return new URL(url + query.toString());
     }
 
@@ -98,21 +129,25 @@ public class DarcsWeb extends DarcsRepositoryBrowser {
     @Extension
     public static class DescriptorImpl extends Descriptor<RepositoryBrowser<?>> {
 
+        /**
+         * Pattern to verify a DarcsWeb base URL.
+         */
         private static final Pattern URI_PATTERN = Pattern.compile(".+/cgi-bin/darcsweb.cgi");
 
+        @Override
         public String getDisplayName() {
             return "Darcsweb";
         }
 
         /**
-         * Validates the URL given in the config formular.
+         * Validates the URL given in the configuration form.
          *
          * @todo implement check.
          *
-         * @param value
-         * @return
-         * @throws IOException
-         * @throws ServletException
+         * @param value the given URL
+         * @return a form validation instance
+         * @throws IOException if URL can't be opened
+         * @throws ServletException if servlet encounters difficulty
          */
         public FormValidation doCheck(@QueryParameter final String value) throws IOException, ServletException {
 
@@ -150,7 +185,7 @@ public class DarcsWeb extends DarcsRepositoryBrowser {
         }
 
         @Override
-        public DarcsWeb newInstance(StaplerRequest req, JSONObject formData) throws FormException {
+        public DarcsWeb newInstance(final StaplerRequest req, final JSONObject formData) throws FormException {
             return req.bindParameters(DarcsWeb.class, "darcsweb.darcs.");
         }
     }

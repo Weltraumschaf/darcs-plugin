@@ -25,8 +25,9 @@ import org.junit.rules.ExpectedException;
  */
 public class DarcsChangesBuilderTest {
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
+    //CHECKSTYLE:OFF
+    @Rule public ExpectedException thrown = ExpectedException.none();
+    //CHECKSTYLE:ON
     private final DarcsChangesBuilder sut = new DarcsChangesBuilder("foo");
 
     @Test

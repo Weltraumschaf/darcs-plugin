@@ -23,7 +23,17 @@ import hudson.util.ArgumentListBuilder;
  */
 final class DarcsCommandBuilder extends DarcsBaseCommandBuilder implements DarcsCommandCreator {
 
+    /**
+     * Whether to show version (`darcs --version`).
+     *
+     * If {@link #version} is {@value true}, then {@link #exactVersion} must be {@value false} and vv.
+     */
     private boolean version;
+    /**
+     * Whether to show exact version (`darcs --exact-version`).
+     *
+     * If {@link #version} is {@value true}, then {@link #exactVersion} must be {@value false} and vv.
+     */
     private boolean exactVersion;
 
     /**

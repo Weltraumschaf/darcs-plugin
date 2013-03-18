@@ -36,7 +36,6 @@ import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.logging.Logger;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.xml.sax.SAXException;
 
 /**
  * Darcs is a patch based distributed version control system.
@@ -231,15 +230,16 @@ public class DarcsScm extends SCM implements Serializable {
     /**
      * Calculates the revision state of a repository (local or remote).
      *
-     * @param launcher
-     * @param listener
-     * @param repo
-     * @return
-     * @throws InterruptedException
+     * @param launcher hides the difference between running programs locally vs remotely
+     * @param listener receives events that happen during some lengthy operation
+     * @param repo repository location in the workspace
+     * @param workspace the job workspace
+     * @return revision state object
+     * @throws InterruptedException if thread was interrupted
      */
     DarcsRevisionState getRevisionState(final Launcher launcher, final TaskListener listener, final String repo,
-            final FilePath workspace)
-            throws InterruptedException {
+        final FilePath workspace)
+        throws InterruptedException {
         final DarcsCommandFacade cmd;
 
         if (null == launcher) {
@@ -274,11 +274,12 @@ public class DarcsScm extends SCM implements Serializable {
     /**
      * Writes the change log of the last numPatches to the changeLog file.
      *
-     * @param launcher
-     * @param numPatches
-     * @param workspace
-     * @param changeLog
-     * @throws InterruptedException
+     * @param launcher hides the difference between running programs locally vs remotely
+     * @param numPatches number of patches
+     * @param workspace build workspace
+     * @param changeLog log of current changes
+     * @param listener receives events that happen during some lengthy operation
+     * @throws InterruptedException if thread was interrupted
      */
     private void createChangeLog(final Launcher launcher, final int numPatches, final FilePath workspace,
             final File changeLog, final BuildListener listener) throws InterruptedException {
@@ -332,13 +333,11 @@ public class DarcsScm extends SCM implements Serializable {
     /**
      * Counts the patches in a repository.
      *
-     * @param build
-     * @param launcher
-     * @param workspace
-     * @param listener
-     * @return
-     * @throws InterruptedException
-     * @throws IOException
+     * @param build associated build
+     * @param launcher hides the difference between running programs locally vs remotely
+     * @param workspace build workspace
+     * @param listener receives events that happen during some lengthy operation
+     * @return number of patches, if an error occurred on counting 0 is returned
      */
     private int countPatches(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace,
             final BuildListener listener) {
@@ -359,17 +358,16 @@ public class DarcsScm extends SCM implements Serializable {
     /**
      * Pulls all patches from a remote repository in the workspace repository.
      *
-     * @param build
-     * @param launcher
-     * @param workspace
-     * @param listener
-     * @param changelogFile
-     * @return boolean
-     * @throws InterruptedException
-     * @throws IOException
+     * @param build associated build
+     * @param launcher hides the difference between running programs locally vs remotely
+     * @param workspace build workspace
+     * @param listener receives events that happen during some lengthy operation
+     * @param changelogFile log of current changes
+     * @return {@value true } on success, else {@value false}
+     * @throws InterruptedException if thread was interrupted
      */
     private boolean pullRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace,
-            final BuildListener listener, final File changelogFile) throws InterruptedException, IOException {
+            final BuildListener listener, final File changelogFile) throws InterruptedException  {
         LOGGER.info(Messages.DarcsScm_pullingRepoFrom(source));  // TODO consider using launchers log
         final int preCnt = countPatches(build, launcher, workspace, listener);
         LOGGER.info(Messages.DarcsScm_countOfPatchesPrePullingIs(preCnt));  // TODO consider using launchers log
@@ -397,13 +395,13 @@ public class DarcsScm extends SCM implements Serializable {
     /**
      * Gets a fresh copy of a remote repository.
      *
-     * @param build
-     * @param launcher
-     * @param workspace
-     * @param listener
-     * @param changelogFile
-     * @return boolean
-     * @throws InterruptedException
+     * @param build associated build
+     * @param launcher hides the difference between running programs locally vs remotely
+     * @param workspace workspace of build
+     * @param listener receives events that happen during some lengthy operation
+     * @param changeLog log of current changes
+     * @return {@value true } on success, else {@value false}
+     * @throws InterruptedException if thread is interrupted
      */
     private boolean getRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace,
             final BuildListener listener, final File changeLog) throws InterruptedException {

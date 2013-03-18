@@ -10,9 +10,9 @@
 package org.jenkinsci.plugins.darcs.browsers;
 
 import org.jenkinsci.plugins.darcs.DarcsChangeSet;
-import java.io.IOException;
 import java.net.URL;
 import hudson.scm.RepositoryBrowser;
+import java.net.MalformedURLException;
 
 /**
  * Abstract implementation for Darcs repository browsers.
@@ -27,14 +27,15 @@ public abstract class DarcsRepositoryBrowser extends RepositoryBrowser<DarcsChan
     private static final long serialVersionUID = 1L;
 
     /**
-     * Determines the link to a single file under Perforce.
+     * Determines the link to a single file under Darcs.
      *
      * This page should display all the past revisions of this file, etc.
      *
-     * @param changeSet
-     * @param file
+     * @param changeSet changes to get diff link for
+     * @param file file to get diff link for
      * @return null if the browser doesn't have any suitable URL
-     * @throws IOException
+     * @throws MalformedURLException if malformed URL will result
      */
-    public abstract URL getFileDiffLink(DarcsChangeSet changeSet, String file) throws IOException;
+    public abstract URL getFileDiffLink(DarcsChangeSet changeSet, String file) throws MalformedURLException;
+
 }
