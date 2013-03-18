@@ -38,11 +38,9 @@ import java.util.logging.Logger;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
- * Darcs is a patch based distributed version control system.
+ * <a href="http://darcs.net/">Darcs</a> is a patch based distributed version control system.
  *
  * Contains the job configuration options as fields.
- *
- * @see http://darcs.net/
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  * @author Ralph Lange <Ralph.Lange@gmx.de>
@@ -77,7 +75,7 @@ public class DarcsScm extends SCM implements Serializable {
     /**
      * Convenience constructor.
      *
-     * Sets local directory to {@link #DEFAULT_LOCAL_DIR}, clean to {@code false} and browser to {@code null}.
+     * Sets local directory to {@code ""}, clean to {@code false} and browser to {@code null}.
      *
      * @param source repository URL from which we pull
      */
@@ -363,7 +361,7 @@ public class DarcsScm extends SCM implements Serializable {
      * @param workspace build workspace
      * @param listener receives events that happen during some lengthy operation
      * @param changelogFile log of current changes
-     * @return {@value true } on success, else {@value false}
+     * @return {@code true } on success, else {@code false}
      * @throws InterruptedException if thread was interrupted
      */
     private boolean pullRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace,
@@ -400,7 +398,7 @@ public class DarcsScm extends SCM implements Serializable {
      * @param workspace workspace of build
      * @param listener receives events that happen during some lengthy operation
      * @param changeLog log of current changes
-     * @return {@value true } on success, else {@value false}
+     * @return {@code true } on success, else {@code false}
      * @throws InterruptedException if thread is interrupted
      */
     private boolean getRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace,
@@ -443,7 +441,7 @@ public class DarcsScm extends SCM implements Serializable {
     /**
      * Creates a local path relative to the given base.
      *
-     * If {@link #localDir} is not {@link null} and not empty a relative path to the given base is created, else the
+     * If {@link #localDir} is not {@code null} and not empty a relative path to the given base is created, else the
      * base pat itself is returned. *
      *
      * @param base base of the local path

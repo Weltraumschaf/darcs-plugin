@@ -131,7 +131,7 @@ public final class DarcsWeb extends DarcsRepositoryBrowser {
         /**
          * Validates the URL given in the configuration form.
          *
-         * @todo implement check.
+         * TODO implement check.
          *
          * @param value the given URL
          * @return a form validation instance

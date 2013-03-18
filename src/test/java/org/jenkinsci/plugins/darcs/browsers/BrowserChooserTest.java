@@ -11,23 +11,17 @@
 package org.jenkinsci.plugins.darcs.browsers;
 
 import hudson.util.IOUtils;
-
 import org.junit.Ignore;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
-
 import javax.servlet.http.HttpServletRequest;
-
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 import org.junit.Test;
-
 import org.kohsuke.stapler.RequestImpl;
 import org.kohsuke.stapler.Stapler;
 import org.kohsuke.stapler.StaplerRequest;
-
 import static org.mockito.Mockito.*;
 
 /**
@@ -63,8 +57,8 @@ public class BrowserChooserTest {
      * specified as parameter.
      *
      * @param browserClass
-     * @return
-     * @throws IOException
+     * @return JSON object
+     * @throws IOException if IO error happened
      */
     JSONObject readJson(Class<? extends DarcsRepositoryBrowser> browserClass) throws IOException {
         final JSONObject json = readJson();
@@ -77,8 +71,8 @@ public class BrowserChooserTest {
     /**
      * Reads the request data from file scm.json.
      *
-     * @return
-     * @throws IOException
+     * @return JSON object
+     * @throws IOException if IO error happened
      */
     JSONObject readJson() throws IOException {
         final InputStream stream = this.getClass().getResourceAsStream("scm.json");
@@ -94,10 +88,11 @@ public class BrowserChooserTest {
     }
 
     /**
-     * @param json
-     * @return
+     * @param json JSON object
+     * @return repository browser
      */
     DarcsRepositoryBrowser createBrowserFromJson(final JSONObject json) {
         return staplerRequest.bindJSON(DarcsRepositoryBrowser.class, json.getJSONObject("browser"));
     }
+
 }

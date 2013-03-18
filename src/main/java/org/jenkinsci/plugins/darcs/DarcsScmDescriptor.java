@@ -68,7 +68,7 @@ public class DarcsScmDescriptor extends SCMDescriptor<DarcsScm> {
     }
 
     /**
-     * Own implementation of XML configuration loading to inject {@link Jenkins#XSTREAM2} for unmarshalling.
+     * Own implementation of XML configuration loading to inject {@link jenkins.model.Jenkins#XSTREAM2} for unmarshalling.
      *
      * TODO Since 1.507 override Dexcriptor#getConfigFile()
      *
@@ -78,7 +78,7 @@ public class DarcsScmDescriptor extends SCMDescriptor<DarcsScm> {
      * }
      *
      * in DarcsScm
-     * @Initializer(before = InitMilestone.PLUGINS_STARTED)
+     * &#064;Initializer(before = InitMilestone.PLUGINS_STARTED)
      * public static void addAliases() {
      *     // until version 0.3.6 the descriptor was inner class of DarcsScm
      *     Jenkins.XSTREAM2.addCompatibilityAlias("org.jenkinsci.plugins.darcs.DarcsScm$DescriptorImpl",

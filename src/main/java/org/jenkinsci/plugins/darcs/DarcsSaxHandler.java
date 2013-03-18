@@ -277,7 +277,7 @@ class DarcsSaxHandler extends DefaultHandler {
     /**
      * Recognizes the current scanned tag.
      *
-     * Logs a warning if unrecognizable tag occurred and set {@link #currentTag} to {@value null}.
+     * Logs a warning if unrecognizable tag occurred and set {@link #currentTag} to {@code null}.
      *
      * @param tagName scanned tag name
      */
@@ -394,7 +394,7 @@ class DarcsSaxHandler extends DefaultHandler {
      *
      * White spaces are not skipped if parsing the text of name and comment tags.
      *
-     * @return {@code false} if current tag is {@value DarcsChangelogTag#NAME} or {@value DarcsChangelogTag#COMMENT};
+     * @return {@code false} if current tag is {@link DarcsChangelogTag#NAME} or {@link DarcsChangelogTag#COMMENT};
      * else {@code false}
      */
     private boolean skipWhiteSpace() {

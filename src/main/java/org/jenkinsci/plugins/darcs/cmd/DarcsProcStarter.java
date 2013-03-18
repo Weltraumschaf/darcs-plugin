@@ -29,12 +29,12 @@ public class DarcsProcStarter {
     /**
      * Decorated object.
      *
-     * May be {@value null}.
+     * May be {@code null}.
      */
     private final ProcStarter proc;
 
     /**
-     * Initializes {@link #proc} with {@value null}.
+     * Initializes {@link #proc} with {@code null}.
      *
      * Objects instantiated with this constructor will doe nothing.
      */
@@ -53,7 +53,7 @@ public class DarcsProcStarter {
     }
 
     /**
-     * Delegates to {@link ProcStarter#cmds(hudson.util.ArgumentListBuilder)}, unless {@link #proc} is {@value null}.
+     * Delegates to {@link ProcStarter#cmds(hudson.util.ArgumentListBuilder)}, unless {@link #proc} is {@code null}.
      *
      * @param args command argument list
      * @return itself for method chaining
@@ -69,7 +69,7 @@ public class DarcsProcStarter {
     /**
      * Delegates to {@link ProcStarter#cmds(}, unless {@link #proc} is {@value null}.
      *
-     * @return returns list of strings, if {@link #proc} is {@value null} empty list
+     * @return returns list of strings, if {@link #proc} is {@code null} empty list
      */
     public List<String> cmds() {
         if (null != proc) {
@@ -80,7 +80,7 @@ public class DarcsProcStarter {
     }
 
     /**
-     * Delegates to {@link ProcStarter#stdout(java.io.OutputStream)}, unless {@link #proc} is {@value null}.
+     * Delegates to {@link ProcStarter#stdout(java.io.OutputStream)}, unless {@link #proc} is {@code null}.
      *
      * @param out stream for STDOUT
      * @return itself for method chaining
@@ -96,7 +96,7 @@ public class DarcsProcStarter {
     /**
      * Delegates to {@link ProcStarter#stdout()}, unless {@link #proc} is {@value null}.
      *
-     * @return output stream, or {@value null} if {@link #proc} is {@value null}
+     * @return output stream, or {@code null} if {@link #proc} is {@code null}
      */
     public OutputStream stdout() {
         if (null != proc) {
@@ -107,7 +107,7 @@ public class DarcsProcStarter {
     }
 
     /**
-     * Delegates to {@link ProcStarter#stderr(java.io.OutputStream)}, unless {@link #proc} is {@value null}.
+     * Delegates to {@link ProcStarter#stderr(java.io.OutputStream)}, unless {@link #proc} is {@code null}.
      *
      * @param err stream for STDERR
      * @return itself for method chaining
@@ -121,7 +121,7 @@ public class DarcsProcStarter {
     }
 
     /**
-     * Delegates to {@link ProcStarter#stderr()}, unless {@link #proc} is {@value null}.
+     * Delegates to {@link ProcStarter#stderr()}, unless {@link #proc} is {@code null}.
      *
      * @return output stream, or {@value null} if {@link #proc} is {@value null}
      */
