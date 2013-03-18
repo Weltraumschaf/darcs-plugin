@@ -7,103 +7,58 @@
  * this stuff. If we meet some day, and you think this stuff is worth it,
  * you can buy me a beer in return.
  */
-
 package org.jenkinsci.plugins.darcs.browsers;
 
 import org.jenkinsci.plugins.darcs.DarcsChangeSet;
-
 import org.junit.Ignore;
-
-import java.io.IOException;
 import java.net.URL;
 import java.net.MalformedURLException;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
+import org.junit.Before;
 
 /**
- *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsWebTest {
 
-    private static final String URL  = "http://www.foobar.com/";
+    private static final String URL = "http://www.foobar.com/";
     private static final String REPO = "arepo";
+    private DarcsWeb sut;
 
-    @Test
-    public void testCreateDefaultQuery() {
-        try {
-            final ExposingDarcsWeb sut = new ExposingDarcsWeb();
-            assertEquals("Query",
-                         "?r=" + sut.repo,
-                         sut.exposedCreateDefaultQuery().toString());
-        } catch (MalformedURLException e) {
-            fail("Can not create SUT!");
-        }
+    @Before
+    public void createSut() throws MalformedURLException {
+        sut = new DarcsWeb(new URL(URL), REPO);
     }
 
     @Test
-    public void testCreateDefaultQueryWithAction() {
-        try {
-            final ExposingDarcsWeb sut = new ExposingDarcsWeb();
-            assertEquals("Query",
-                         "?r=" + sut.repo + ";a=foobar",
-                         sut.exposedCreateDefaultQuery("foobar").toString());
-        } catch (MalformedURLException e) {
-            fail("Can not create SUT!");
-        }
+    public void createDefaultQuery() throws MalformedURLException {
+        assertThat(sut.createDefaultQuery().toString(), is("?r=" + REPO));
+
     }
 
     @Test
-    @Ignore("not ready yet")
-    public void testGetChangeSetLink() {
-        try {
-            final String         hash = "1234-the-commit-hash.gz";
-            final DarcsChangeSet cs   = new DarcsChangeSet();
-            final DarcsWeb       sut  = new DarcsWeb(new URL(URL), REPO);
+    public void createDefaultQueryWithAction() throws MalformedURLException {
+        assertThat(sut.createDefaultQuery("foobar").toString(), is("?r=" + REPO + ";a=foobar"));
 
-            cs.setHash(hash);
-            assertEquals("",
-                         URL + "?r=" + REPO + ";a=commit;h=" + hash,
-                         sut.getChangeSetLink(cs).toString());
-        } catch (MalformedURLException e) {
-            fail("Can not create SUT!");
-        } catch (IOException e) {
-            fail("Can not create URI!");
-        }
     }
 
     @Test
-    @Ignore("not ready yet")
-    public void testGetFileDiffLink() {
-        try {
-            final String         hash = "1234-the-commit-hash.gz";
-            final String         file = "a/file/name";
-            final DarcsChangeSet cs   = new DarcsChangeSet();
-            final DarcsWeb       sut  = new DarcsWeb(new URL(URL), REPO);
+    public void getChangeSetLink() throws MalformedURLException {
+        final DarcsChangeSet cs = new DarcsChangeSet();
+        cs.setHash("1234-the-commit-hash.gz");
+        assertThat(sut.getChangeSetLink(cs).toString(), is(URL + "?r=" + REPO + ";a=commit;h=" + cs.getHash()));
 
-            cs.setHash(hash);
-            assertEquals("",
-                         URL + "?r=" + REPO + ";a=filediff;h=" + hash + ";f=" + file,
-                         sut.getFileDiffLink(cs, file).toString());
-        } catch (MalformedURLException e) {
-            fail("Can not create SUT!");
-        } catch (IOException e) {
-            fail("Can not create URI!");
-        }
     }
 
-    private static class ExposingDarcsWeb extends DarcsWeb {
-        public ExposingDarcsWeb() throws MalformedURLException {
-            super(new URL(URL), REPO);
-        }
+    @Test
+    public void getFileDiffLink() throws MalformedURLException {
+        final String file = "a/file/name";
+        final DarcsChangeSet cs = new DarcsChangeSet();
+        cs.setHash("1234-the-commit-hash.gz");
+        assertThat(sut.getFileDiffLink(cs, file).toString(),
+                   is(URL + "?r=" + REPO + ";a=filediff;h=" + cs.getHash() + ";f=" + file));
 
-        public DarcsQueryBuilder exposedCreateDefaultQuery() {
-            return createDefaultQuery();
-        }
-
-        public DarcsQueryBuilder exposedCreateDefaultQuery(String action) {
-            return createDefaultQuery(action);
-        }
     }
-
 }

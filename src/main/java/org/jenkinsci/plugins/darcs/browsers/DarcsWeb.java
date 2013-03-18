@@ -10,34 +10,30 @@
 package org.jenkinsci.plugins.darcs.browsers;
 
 import org.jenkinsci.plugins.darcs.DarcsChangeSet;
-
 import java.io.IOException;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.util.regex.Pattern;
 import javax.servlet.ServletException;
-
 import hudson.Extension;
 import hudson.Util;
 import hudson.model.Descriptor;
 import hudson.scm.RepositoryBrowser;
 import hudson.util.FormValidation;
-
 import net.sf.json.JSONObject;
-
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
 /**
- * Repository browser for DarcsWeb.
+ * Repository browser for <a href="">DarcsWeb</a>.
  *
  * TODO Add URL to DarcsWeb.
  * TODO make final
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
-public class DarcsWeb extends DarcsRepositoryBrowser {
+public final class DarcsWeb extends DarcsRepositoryBrowser {
 
     /**
      * Serial version UID.
@@ -45,16 +41,12 @@ public class DarcsWeb extends DarcsRepositoryBrowser {
     private static final long serialVersionUID = 1L;
     /**
      * Base URL of the DarcsWeb.
-     *
-     * FIXME make private
      */
-    public final URL url;
+    private final URL url;
     /**
      * Name of the repository.
-     *
-     * FIXME make private
      */
-    public final String repo;
+    private final String repo;
 
     /**
      * Dedicated constructor.
