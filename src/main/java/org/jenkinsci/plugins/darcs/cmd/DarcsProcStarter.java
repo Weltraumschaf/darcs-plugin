@@ -81,7 +81,8 @@ public class DarcsProcStarter {
     }
 
     /**
-     * Delegates to {@link hudson.Launcher.ProcStarter#stdout(java.io.OutputStream)}, unless {@link #proc} is {@code null}.
+     * Delegates to {@link hudson.Launcher.ProcStarter#stdout(java.io.OutputStream)}, unless {@link #proc}
+     * is {@code null}.
      *
      * @param out stream for STDOUT
      * @return itself for method chaining
@@ -108,7 +109,8 @@ public class DarcsProcStarter {
     }
 
     /**
-     * Delegates to {@link hudson.Launcher.ProcStarter#stderr(java.io.OutputStream)}, unless {@link #proc} is {@code null}.
+     * Delegates to {@link hudson.Launcher.ProcStarter#stderr(java.io.OutputStream)}, unless {@link #proc}
+     * is {@code null}.
      *
      * @param err stream for STDERR
      * @return itself for method chaining
