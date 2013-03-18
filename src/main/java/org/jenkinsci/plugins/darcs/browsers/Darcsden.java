@@ -31,9 +31,7 @@ import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
 /**
- * Repository browser for Darcsden.
- *
- * TODO Add URL to Darcsden.
+ * Repository browser for <a href="http://darcsden.com/">Darcsden</a>.
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
@@ -45,10 +43,8 @@ public final class Darcsden extends DarcsRepositoryBrowser {
     private static final long serialVersionUID = 1L;
     /**
      * Base URL of the DarcsWeb.
-     *
-     * FIXME make private
      */
-    public final URL url;
+    private final URL url;
 
     /**
      * Dedicated constructor.
@@ -81,7 +77,8 @@ public final class Darcsden extends DarcsRepositoryBrowser {
 
     @Override
     public URL getFileDiffLink(final DarcsChangeSet changeSet, final String file) throws MalformedURLException {
-        return null;
+        final URL changestUrl = getChangeSetLink(changeSet);
+        return new URL(changestUrl.toString() + "#" + file);
     }
 
     /**

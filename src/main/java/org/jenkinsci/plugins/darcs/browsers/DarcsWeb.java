@@ -26,10 +26,7 @@ import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
 /**
- * Repository browser for <a href="">DarcsWeb</a>.
- *
- * TODO Add URL to DarcsWeb.
- * TODO make final
+ * Repository browser for <a href="http://blitiri.com.ar/p/darcsweb/">DarcsWeb</a>.
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */

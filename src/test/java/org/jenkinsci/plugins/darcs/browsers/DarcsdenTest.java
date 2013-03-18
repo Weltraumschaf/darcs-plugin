@@ -10,42 +10,38 @@
 package org.jenkinsci.plugins.darcs.browsers;
 
 import org.jenkinsci.plugins.darcs.DarcsChangeSet;
-
 import org.junit.Ignore;
-
-import java.io.IOException;
 import java.net.URL;
 import java.net.MalformedURLException;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Before;
+import static org.hamcrest.Matchers.*;
 
 /**
- *
- * @author sxs
+ * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsdenTest {
 
-    @Test
-    public void testGetChangeSetLink() {
-        try {
-            final String hash = "20110214201356-7677a-15b1d7313611ef85de46d8daf57123a365d5b800.gz";
-            final String url = "http://darcsden.com/Weltraumschaf/test";
-            final DarcsChangeSet cs = new DarcsChangeSet();
-            final Darcsden sut = new Darcsden(new URL(url));
+    private static final String URL = "http://darcsden.com/Weltraumschaf/test";
+    private Darcsden sut;
 
-            cs.setHash(hash);
-            assertEquals("",
-                    url + "/patch/20110214201356-7677a",
-                    sut.getChangeSetLink(cs).toString());
-        } catch (MalformedURLException e) {
-            fail("Can not create SUT!");
-        } catch (IOException e) {
-            fail("Can not create URI!");
-        }
+    @Before
+    public void createSut() throws MalformedURLException {
+        sut = new Darcsden(new URL(URL));
     }
 
     @Test
-    @Ignore("not ready yet")
-    public void testGetFileDiffLink() {
+    public void testGetChangeSetLink() throws MalformedURLException {
+        final DarcsChangeSet cs = new DarcsChangeSet();
+        cs.setHash("20110214201356-7677a-15b1d7313611ef85de46d8daf57123a365d5b800.gz");
+        assertThat(sut.getChangeSetLink(cs).toString(), is(URL + "/patch/20110214201356-7677a"));
+    }
+
+    @Test
+    public void testGetFileDiffLink() throws MalformedURLException {
+        final DarcsChangeSet cs = new DarcsChangeSet();
+        cs.setHash("20110214201356-7677a-15b1d7313611ef85de46d8daf57123a365d5b800.gz");
+        assertThat(sut.getFileDiffLink(cs, "Foo.java").toString(), is(URL + "/patch/20110214201356-7677a#Foo.java"));
     }
 }
