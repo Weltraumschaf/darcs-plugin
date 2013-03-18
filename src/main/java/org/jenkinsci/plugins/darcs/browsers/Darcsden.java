@@ -11,21 +11,17 @@
 package org.jenkinsci.plugins.darcs.browsers;
 
 import org.jenkinsci.plugins.darcs.DarcsChangeSet;
-
 import java.io.IOException;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.util.regex.Pattern;
 import javax.servlet.ServletException;
-
 import hudson.Extension;
 import hudson.Util;
 import hudson.model.Descriptor;
 import hudson.scm.RepositoryBrowser;
 import hudson.util.FormValidation;
-
 import net.sf.json.JSONObject;
-
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -100,7 +96,7 @@ public final class Darcsden extends DarcsRepositoryBrowser {
         /**
          * Validates the URL given in the configuration form.
          *
-         * @todo implement check.
+         * TODO implement check.
          *
          * @param value the given URL
          * @return a form validation instance
