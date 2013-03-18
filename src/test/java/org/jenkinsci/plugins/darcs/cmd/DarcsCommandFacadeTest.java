@@ -39,79 +39,79 @@ public class DarcsCommandFacadeTest {
     private enum Binary {
 
         LINUX_BIN("darcs_bin_linux_2.8", "2.8.0 (release)\n", "darcs compiled on Apr 25 2012, at 12:17:55\n"
-                + "\n"
-                + "Context:\n"
-                + "\n"
-                + "[TAG 2.8.0\n"
-                + "Florent Becker <florent.becker@ens-lyon.org>**20120422151242\n"
-                + " Ignore-this: 150f3335021c2b37bcd1572ff55f8654\n"
-                + "] \n"
-                + "\n"
-                + "Compiled with:\n"
-                + "\n"
-                + "array-0.3.0.2\n"
-                + "base-4.3.1.0\n"
-                + "bytestring-0.9.1.10\n"
-                + "containers-0.4.0.0\n"
-                + "directory-1.1.0.0\n"
-                + "extensible-exceptions-0.1.1.2\n"
-                + "filepath-1.2.0.0\n"
-                + "hashed-storage-0.5.7\n"
-                + "haskeline-0.6.4.0\n"
-                + "html-1.0.1.2\n"
-                + "mmap-0.5.7\n"
-                + "mtl-2.0.1.0\n"
-                + "old-time-1.0.0.6\n"
-                + "parsec-3.1.1\n"
-                + "process-1.0.1.5\n"
-                + "random-1.0.0.3\n"
-                + "regex-compat-0.95.1\n"
-                + "tar-0.3.1.0\n"
-                + "terminfo-0.3.1.3\n"
-                + "text-0.11.1.1\n"
-                + "unix-2.4.2.0\n"
-                + "vector-0.9\n"
-                + "zlib-0.5.3.1\n"),
+        + "\n"
+        + "Context:\n"
+        + "\n"
+        + "[TAG 2.8.0\n"
+        + "Florent Becker <florent.becker@ens-lyon.org>**20120422151242\n"
+        + " Ignore-this: 150f3335021c2b37bcd1572ff55f8654\n"
+        + "] \n"
+        + "\n"
+        + "Compiled with:\n"
+        + "\n"
+        + "array-0.3.0.2\n"
+        + "base-4.3.1.0\n"
+        + "bytestring-0.9.1.10\n"
+        + "containers-0.4.0.0\n"
+        + "directory-1.1.0.0\n"
+        + "extensible-exceptions-0.1.1.2\n"
+        + "filepath-1.2.0.0\n"
+        + "hashed-storage-0.5.7\n"
+        + "haskeline-0.6.4.0\n"
+        + "html-1.0.1.2\n"
+        + "mmap-0.5.7\n"
+        + "mtl-2.0.1.0\n"
+        + "old-time-1.0.0.6\n"
+        + "parsec-3.1.1\n"
+        + "process-1.0.1.5\n"
+        + "random-1.0.0.3\n"
+        + "regex-compat-0.95.1\n"
+        + "tar-0.3.1.0\n"
+        + "terminfo-0.3.1.3\n"
+        + "text-0.11.1.1\n"
+        + "unix-2.4.2.0\n"
+        + "vector-0.9\n"
+        + "zlib-0.5.3.1\n"),
         MACOS_BIN("darcs_bin_macos_2.5", "2.5 (release)\n", "darcs compiled on Oct 31 2010, at 14:40:05\n"
-                + "\n"
-                + "Context:\n"
-                + "\n"
-                + "[TAG 2.5\n"
-                + "Reinier Lamers <tux_rocker@reinier.de>**20101024151805\n"
-                + " Ignore-this: 1561ce30bfb1950a440c03371e0e2f20\n"
-                + "] \n"
-                + "\n"
-                + "Compiled with:\n"
-                + "\n"
-                + "HTTP-4000.0.8\n"
-                + "array-0.3.0.1\n"
-                + "base-4.2.0.2\n"
-                + "bytestring-0.9.1.7\n"
-                + "containers-0.3.0.0\n"
-                + "directory-1.0.1.1\n"
-                + "extensible-exceptions-0.1.1.1\n"
-                + "filepath-1.1.0.4\n"
-                + "hashed-storage-0.5.2\n"
-                + "haskeline-0.6.2.2\n"
-                + "html-1.0.1.2\n"
-                + "mmap-0.5.6\n"
-                + "mtl-1.1.0.2\n"
-                + "network-2.2.1.5\n"
-                + "old-time-1.0.0.5\n"
-                + "parsec-2.1.0.1\n"
-                + "process-1.0.1.3\n"
-                + "random-1.0.0.2\n"
-                + "regex-compat-0.93.1\n"
-                + "tar-0.3.1.0\n"
-                + "terminfo-0.3.1.2\n"
-                + "text-0.7.2.1\n"
-                + "unix-2.4.0.2\n"
-                + "zlib-0.5.2.0\n"
-                + "HUnit-1.2.2.1\n"
-                + "QuickCheck-2.1.1.1\n"
-                + "test-framework-0.3.2\n"
-                + "test-framework-hunit-0.2.6\n"
-                + "test-framework-quickcheck2-0.2.7\n");
+        + "\n"
+        + "Context:\n"
+        + "\n"
+        + "[TAG 2.5\n"
+        + "Reinier Lamers <tux_rocker@reinier.de>**20101024151805\n"
+        + " Ignore-this: 1561ce30bfb1950a440c03371e0e2f20\n"
+        + "] \n"
+        + "\n"
+        + "Compiled with:\n"
+        + "\n"
+        + "HTTP-4000.0.8\n"
+        + "array-0.3.0.1\n"
+        + "base-4.2.0.2\n"
+        + "bytestring-0.9.1.7\n"
+        + "containers-0.3.0.0\n"
+        + "directory-1.0.1.1\n"
+        + "extensible-exceptions-0.1.1.1\n"
+        + "filepath-1.1.0.4\n"
+        + "hashed-storage-0.5.2\n"
+        + "haskeline-0.6.2.2\n"
+        + "html-1.0.1.2\n"
+        + "mmap-0.5.6\n"
+        + "mtl-1.1.0.2\n"
+        + "network-2.2.1.5\n"
+        + "old-time-1.0.0.5\n"
+        + "parsec-2.1.0.1\n"
+        + "process-1.0.1.3\n"
+        + "random-1.0.0.2\n"
+        + "regex-compat-0.93.1\n"
+        + "tar-0.3.1.0\n"
+        + "terminfo-0.3.1.2\n"
+        + "text-0.7.2.1\n"
+        + "unix-2.4.0.2\n"
+        + "zlib-0.5.2.0\n"
+        + "HUnit-1.2.2.1\n"
+        + "QuickCheck-2.1.1.1\n"
+        + "test-framework-0.3.2\n"
+        + "test-framework-hunit-0.2.6\n"
+        + "test-framework-quickcheck2-0.2.7\n");
         private final String name;
         private final String version;
         private final String exactVersion;
@@ -152,6 +152,7 @@ public class DarcsCommandFacadeTest {
     private enum Repository {
 
         EMPTY("empty_repo"),
+        DIRTY_REPO("dirty_repo"),
         REPO("repo");
         private final String reponame;
 
@@ -185,7 +186,7 @@ public class DarcsCommandFacadeTest {
 
     @Before
     public void loadRepoArchive() throws URISyntaxException {
-        repoArchive = Repository.REPO.getArchive();
+        repoArchive = Repository.DIRTY_REPO.getArchive();
         assertThat(repoArchive, is(notNullValue()));
         assertThat(repoArchive.exists(), is(true));
     }
@@ -206,21 +207,117 @@ public class DarcsCommandFacadeTest {
     }
 
     @Test
-    @Ignore("not ready yet")
-    public void lastSummarizedChanges() throws URISyntaxException {
-        // TODO Implement test
+    public void lastSummarizedChanges_emptyRepo() throws URISyntaxException {
+        final DarcsCommandFacade sut = createSut();
+        final File repo = Repository.EMPTY.extractTo(tmpDir.getRoot());
+        assertThat(repo, is(notNullValue()));
+        assertThat(sut.lastSummarizedChanges(repo.getAbsolutePath(), 3), is("<changelog>\n</changelog>\n"));
     }
 
-    @Test @Ignore
-    public void allSummarizedChanges_repo() throws URISyntaxException, UnsupportedEncodingException {
-        // TODO Does not work with Java 1.6. Implement with clean encoded repo.
+    @Test
+    public void lastSummarizedChanges_repo() throws URISyntaxException {
         final DarcsCommandFacade sut = createSut();
         final File repo = Repository.REPO.extractTo(tmpDir.getRoot());
         assertThat(repo, is(notNullValue()));
         //CHECKSTYLE:OFF
-        assertThat(sut.allSummarizedChanges(repo.getAbsolutePath()).getBytes("MacRoman"), // Use bytes because of mixed encoding.
-            is("<changelog>\n<patch author='ich@weltraumschaf.de' date='20110224143546' local_date='Thu Feb 24 15:35:46 CET 2011' inverted='False' hash='20110224143546-7677a-359f8967374ac52adc87dedac6f4ad458a7b6446.gz'>\n\t<name>German Umlauts in ISO8859-15 encoding: ???????</name>\n\t<comment>Ignore-this: 7c74b888addef772a93a63b69a144836</comment>\n    <summary>\n    <modify_file>\n    Foo.java<removed_lines num='1'/><added_lines num='1'/>\n    </modify_file>\n    </summary>\n</patch>\n<patch author='ich@weltraumschaf.de' date='20110224141706' local_date='Thu Feb 24 15:17:06 CET 2011' inverted='False' hash='20110224141706-7677a-b79e15c79bd5776b3e669a7338e181b4bd303609.gz'>\n\t<name>German Umlauts in UTF-8 encoding: ??????????????</name>\n\t<comment>Ignore-this: 77565bbaae7ec954f242fd414ca70033</comment>\n    <summary>\n    <modify_file>\n    Foo.java<added_lines num='3'/>\n    </modify_file>\n    </summary>\n</patch>\n<patch author='ich@weltraumschaf.de' date='20110214203531' local_date='Mon Feb 14 21:35:31 CET 2011' inverted='False' hash='20110214203531-7677a-1b935a82ba6408ffa9add3642cb52f233ff4ef54.gz'>\n\t<name>Implemented toString()</name>\n\t<comment>Ignore-this: 7c0271b552e03728baa7d4f33cb545f9</comment>\n    <summary>\n    <modify_file>\n    Bar.java<added_lines num='5'/>\n    </modify_file>\n    <modify_file>\n    Baz.java<added_lines num='5'/>\n    </modify_file>\n    <modify_file>\n    Foo.java<added_lines num='5'/>\n    </modify_file>\n    </summary>\n</patch>\n<patch author='ich@weltraumschaf.de' date='20110214203417' local_date='Mon Feb 14 21:34:17 CET 2011' inverted='False' hash='20110214203417-7677a-261f33e2608d68f088f15b077f7dcde2cc18a4b7.gz'>\n\t<name>Implemented value in class Foo</name>\n\t<comment>Ignore-this: 79225cd08e4f7ec7dfc7a6cb4e7f5948</comment>\n    <summary>\n    <modify_file>\n    Foo.java<removed_lines num='1'/><added_lines num='9'/>\n    </modify_file>\n    </summary>\n</patch>\n<patch author='ich@weltraumschaf.de' date='20110214203402' local_date='Mon Feb 14 21:34:02 CET 2011' inverted='False' hash='20110214203402-7677a-5eb558d8bd3df5b8edfa005479d8ff1e8139abe0.gz'>\n\t<name>Implemented value in class Baz</name>\n\t<comment>Ignore-this: fd9e1a81cc792fd826a128794e92ba64</comment>\n    <summary>\n    <modify_file>\n    Baz.java<removed_lines num='1'/><added_lines num='9'/>\n    </modify_file>\n    </summary>\n</patch>\n<patch author='ich@weltraumschaf.de' date='20110214203334' local_date='Mon Feb 14 21:33:34 CET 2011' inverted='False' hash='20110214203334-7677a-3f9e4a67068618fcfde454c0c097d1f8b96301df.gz'>\n\t<name>Implemented value in class Bar</name>\n\t<comment>Ignore-this: 40e46e42b5023572d7e45607df47cab1</comment>\n    <summary>\n    <modify_file>\n    Bar.java<removed_lines num='2'/><added_lines num='10'/>\n    </modify_file>\n    </summary>\n</patch>\n<patch author='ich@weltraumschaf.de' date='20110214201649' local_date='Mon Feb 14 21:16:49 CET 2011' inverted='False' hash='20110214201649-7677a-9c3c62c42467fe20e75a9ab62e52441ef7cdc8ba.gz'>\n\t<name>Implemented class Foo</name>\n\t<comment>Ignore-this: 85d0cdf2679dfcab72469629d6a80945</comment>\n    <summary>\n    <modify_file>\n    Foo.java<added_lines num='7'/>\n    </modify_file>\n    </summary>\n</patch>\n<patch author='ich@weltraumschaf.de' date='20110214201618' local_date='Mon Feb 14 21:16:18 CET 2011' inverted='False' hash='20110214201618-7677a-631eee269c4a252d953fa2f61b1127874bbc57d4.gz'>\n\t<name>Implemented class Baz</name>\n\t<comment>Ignore-this: 751c6c8a858104b5b15833496fce9a2</comment>\n    <summary>\n    <modify_file>\n    Baz.java<added_lines num='7'/>\n    </modify_file>\n    </summary>\n</patch>\n<patch author='ich@weltraumschaf.de' date='20110214201544' local_date='Mon Feb 14 21:15:44 CET 2011' inverted='False' hash='20110214201544-7677a-1cd5bbbc18b5e78240a80c9d1576faaa63c9f7d7.gz'>\n\t<name>Implemented class Bar</name>\n\t<comment>Ignore-this: e2eb7de380585ad9e4cb9515d8b21621</comment>\n    <summary>\n    <modify_file>\n    Bar.java<added_lines num='7'/>\n    </modify_file>\n    </summary>\n</patch>\n<patch author='ich@weltraumschaf.de' date='20110214201356' local_date='Mon Feb 14 21:13:56 CET 2011' inverted='False' hash='20110214201356-7677a-15b1d7313611ef85de46d8daf57123a365d5b800.gz'>\n\t<name>inital files added</name>\n\t<comment>Ignore-this: 391a1ff64b0f64546446368f2d45fbc8</comment>\n    <summary>\n    <add_file>\n    Bar.java\n    </add_file>\n    <add_file>\n    Baz.java\n    </add_file>\n    <add_file>\n    Foo.java\n    </add_file>\n    </summary>\n</patch>\n</changelog>\n".getBytes("MacRoman")));
-            //CHECKSTYLE:ON
+        assertThat(sut.lastSummarizedChanges(repo.getAbsolutePath(), 3),
+                is("<changelog>\n"
+                + "<patch author='ich@weltraumschaf.de' date='20130318223954' local_date='Mon Mar 18 23:39:54 CET 2013' inverted='False' hash='20130318223954-7677a-c98dc9ccca9db155a9f707f441b1b17f1c2f6644.gz'>\n"
+                + "	<name>Add property baz to class Baz.</name>\n"
+                + "	<comment>Ignore-this: 4d6065691e6e1d5cb6573f1d457d535f</comment>\n"
+                + "    <summary>\n"
+                + "    <modify_file>\n"
+                + "    Baz.java<added_lines num='1'/>\n"
+                + "    </modify_file>\n"
+                + "    </summary>\n"
+                + "</patch>\n"
+                + "<patch author='ich@weltraumschaf.de' date='20130318223928' local_date='Mon Mar 18 23:39:28 CET 2013' inverted='False' hash='20130318223928-7677a-f55af47435c293ec7fd8bb9f590941245cea4dd0.gz'>\n"
+                + "	<name>Ad property bar to class Baz.</name>\n"
+                + "	<comment>Ignore-this: b1ef0a68930b6224bf7a1a8b5582305e</comment>\n"
+                + "    <summary>\n"
+                + "    <modify_file>\n"
+                + "    Baz.java<added_lines num='1'/>\n"
+                + "    </modify_file>\n"
+                + "    </summary>\n"
+                + "</patch>\n"
+                + "<patch author='ich@weltraumschaf.de' date='20130318223900' local_date='Mon Mar 18 23:39:00 CET 2013' inverted='False' hash='20130318223900-7677a-58b6e653111071d14c11173b549b568b93a51012.gz'>\n"
+                + "	<name>Implement class Baz.</name>\n"
+                + "	<comment>Ignore-this: 40d90f56559035790c098de502bf72b6</comment>\n"
+                + "    <summary>\n"
+                + "    <add_file>\n"
+                + "    Baz.java\n"
+                + "    </add_file>\n"
+                + "    </summary>\n"
+                + "</patch>\n"
+                + "</changelog>\n"));
+        //CHECKSTYLE:ON
+    }
+
+    @Test
+    public void allSummarizedChanges_repo() throws URISyntaxException, UnsupportedEncodingException {
+        final DarcsCommandFacade sut = createSut();
+        final File repo = Repository.REPO.extractTo(tmpDir.getRoot());
+        assertThat(repo, is(notNullValue()));
+        //CHECKSTYLE:OFF
+        assertThat(sut.allSummarizedChanges(repo.getAbsolutePath()),
+                is("<changelog>\n"
+                + "<patch author='ich@weltraumschaf.de' date='20130318223954' local_date='Mon Mar 18 23:39:54 CET 2013' inverted='False' hash='20130318223954-7677a-c98dc9ccca9db155a9f707f441b1b17f1c2f6644.gz'>\n"
+                + "	<name>Add property baz to class Baz.</name>\n"
+                + "	<comment>Ignore-this: 4d6065691e6e1d5cb6573f1d457d535f</comment>\n"
+                + "    <summary>\n"
+                + "    <modify_file>\n"
+                + "    Baz.java<added_lines num='1'/>\n"
+                + "    </modify_file>\n"
+                + "    </summary>\n"
+                + "</patch>\n"
+                + "<patch author='ich@weltraumschaf.de' date='20130318223928' local_date='Mon Mar 18 23:39:28 CET 2013' inverted='False' hash='20130318223928-7677a-f55af47435c293ec7fd8bb9f590941245cea4dd0.gz'>\n"
+                + "	<name>Ad property bar to class Baz.</name>\n"
+                + "	<comment>Ignore-this: b1ef0a68930b6224bf7a1a8b5582305e</comment>\n"
+                + "    <summary>\n"
+                + "    <modify_file>\n"
+                + "    Baz.java<added_lines num='1'/>\n"
+                + "    </modify_file>\n"
+                + "    </summary>\n"
+                + "</patch>\n"
+                + "<patch author='ich@weltraumschaf.de' date='20130318223900' local_date='Mon Mar 18 23:39:00 CET 2013' inverted='False' hash='20130318223900-7677a-58b6e653111071d14c11173b549b568b93a51012.gz'>\n"
+                + "	<name>Implement class Baz.</name>\n"
+                + "	<comment>Ignore-this: 40d90f56559035790c098de502bf72b6</comment>\n"
+                + "    <summary>\n"
+                + "    <add_file>\n"
+                + "    Baz.java\n"
+                + "    </add_file>\n"
+                + "    </summary>\n"
+                + "</patch>\n"
+                + "<patch author='ich@weltraumschaf.de' date='20130318223646' local_date='Mon Mar 18 23:36:46 CET 2013' inverted='False' hash='20130318223646-7677a-dd64aeefc518b37c804d949eec60e2701fabbac3.gz'>\n"
+                + "	<name>Implement class Bar.</name>\n"
+                + "	<comment>Ignore-this: a644b7768c5055c355f38015d4d38f0a</comment>\n"
+                + "    <summary>\n"
+                + "    <add_file>\n"
+                + "    Bar.java\n"
+                + "    </add_file>\n"
+                + "    </summary>\n"
+                + "</patch>\n"
+                + "<patch author='ich@weltraumschaf.de' date='20130318223419' local_date='Mon Mar 18 23:34:19 CET 2013' inverted='False' hash='20130318223419-7677a-f53a8f63dd1cb8409d576151c85855861107706f.gz'>\n"
+                + "	<name>Remove trailing spaces.</name>\n"
+                + "	<comment>Ignore-this: 2bb4eb18937d42a0386423251171e95a</comment>\n"
+                + "    <summary>\n"
+                + "    <modify_file>\n"
+                + "    Foo.java<removed_lines num='1'/><added_lines num='1'/>\n"
+                + "    </modify_file>\n"
+                + "    </summary>\n"
+                + "</patch>\n"
+                + "<patch author='ich@weltraumschaf.de' date='20130318223324' local_date='Mon Mar 18 23:33:24 CET 2013' inverted='False' hash='20130318223324-7677a-9301c1b55b25285c289ec2eb0a94ca94e508bc10.gz'>\n"
+                + "	<name>Add class Foo</name>\n"
+                + "	<comment>Ignore-this: be93c7e09542368df7ab1fbb4f80c044</comment>\n"
+                + "    <summary>\n"
+                + "    <add_file>\n"
+                + "    Foo.java\n"
+                + "    </add_file>\n"
+                + "    </summary>\n"
+                + "</patch>\n"
+                + "</changelog>\n"));
+        //CHECKSTYLE:ON
+
     }
 
     @Test
@@ -231,16 +328,40 @@ public class DarcsCommandFacadeTest {
         assertThat(sut.allChanges(repo.getAbsolutePath()), is("<changelog>\n</changelog>\n"));
     }
 
-    @Test @Ignore
+    @Test
     public void allChanges_repo() throws URISyntaxException, UnsupportedEncodingException {
-        // TODO Does not work with Java 1.6. Implement with clean encoded repo.
         final DarcsCommandFacade sut = createSut();
         final File repo = Repository.REPO.extractTo(tmpDir.getRoot());
         assertThat(repo, is(notNullValue()));
-        assertThat(sut.allChanges(repo.getAbsolutePath()).getBytes("MacRoman"), // Use bytes because of mixed encoding.
-            //CHECKSTYLE:OFF
-            is("<changelog>\n<patch author='ich@weltraumschaf.de' date='20110224143546' local_date='Thu Feb 24 15:35:46 CET 2011' inverted='False' hash='20110224143546-7677a-359f8967374ac52adc87dedac6f4ad458a7b6446.gz'>\n\t<name>German Umlauts in ISO8859-15 encoding: ???????</name>\n\t<comment>Ignore-this: 7c74b888addef772a93a63b69a144836</comment>\n</patch>\n<patch author='ich@weltraumschaf.de' date='20110224141706' local_date='Thu Feb 24 15:17:06 CET 2011' inverted='False' hash='20110224141706-7677a-b79e15c79bd5776b3e669a7338e181b4bd303609.gz'>\n\t<name>German Umlauts in UTF-8 encoding: ??????????????</name>\n\t<comment>Ignore-this: 77565bbaae7ec954f242fd414ca70033</comment>\n</patch>\n<patch author='ich@weltraumschaf.de' date='20110214203531' local_date='Mon Feb 14 21:35:31 CET 2011' inverted='False' hash='20110214203531-7677a-1b935a82ba6408ffa9add3642cb52f233ff4ef54.gz'>\n\t<name>Implemented toString()</name>\n\t<comment>Ignore-this: 7c0271b552e03728baa7d4f33cb545f9</comment>\n</patch>\n<patch author='ich@weltraumschaf.de' date='20110214203417' local_date='Mon Feb 14 21:34:17 CET 2011' inverted='False' hash='20110214203417-7677a-261f33e2608d68f088f15b077f7dcde2cc18a4b7.gz'>\n\t<name>Implemented value in class Foo</name>\n\t<comment>Ignore-this: 79225cd08e4f7ec7dfc7a6cb4e7f5948</comment>\n</patch>\n<patch author='ich@weltraumschaf.de' date='20110214203402' local_date='Mon Feb 14 21:34:02 CET 2011' inverted='False' hash='20110214203402-7677a-5eb558d8bd3df5b8edfa005479d8ff1e8139abe0.gz'>\n\t<name>Implemented value in class Baz</name>\n\t<comment>Ignore-this: fd9e1a81cc792fd826a128794e92ba64</comment>\n</patch>\n<patch author='ich@weltraumschaf.de' date='20110214203334' local_date='Mon Feb 14 21:33:34 CET 2011' inverted='False' hash='20110214203334-7677a-3f9e4a67068618fcfde454c0c097d1f8b96301df.gz'>\n\t<name>Implemented value in class Bar</name>\n\t<comment>Ignore-this: 40e46e42b5023572d7e45607df47cab1</comment>\n</patch>\n<patch author='ich@weltraumschaf.de' date='20110214201649' local_date='Mon Feb 14 21:16:49 CET 2011' inverted='False' hash='20110214201649-7677a-9c3c62c42467fe20e75a9ab62e52441ef7cdc8ba.gz'>\n\t<name>Implemented class Foo</name>\n\t<comment>Ignore-this: 85d0cdf2679dfcab72469629d6a80945</comment>\n</patch>\n<patch author='ich@weltraumschaf.de' date='20110214201618' local_date='Mon Feb 14 21:16:18 CET 2011' inverted='False' hash='20110214201618-7677a-631eee269c4a252d953fa2f61b1127874bbc57d4.gz'>\n\t<name>Implemented class Baz</name>\n\t<comment>Ignore-this: 751c6c8a858104b5b15833496fce9a2</comment>\n</patch>\n<patch author='ich@weltraumschaf.de' date='20110214201544' local_date='Mon Feb 14 21:15:44 CET 2011' inverted='False' hash='20110214201544-7677a-1cd5bbbc18b5e78240a80c9d1576faaa63c9f7d7.gz'>\n\t<name>Implemented class Bar</name>\n\t<comment>Ignore-this: e2eb7de380585ad9e4cb9515d8b21621</comment>\n</patch>\n<patch author='ich@weltraumschaf.de' date='20110214201356' local_date='Mon Feb 14 21:13:56 CET 2011' inverted='False' hash='20110214201356-7677a-15b1d7313611ef85de46d8daf57123a365d5b800.gz'>\n\t<name>inital files added</name>\n\t<comment>Ignore-this: 391a1ff64b0f64546446368f2d45fbc8</comment>\n</patch>\n</changelog>\n".getBytes("MacRoman")));
-            //CHECKSTYLE:ON
+        //CHECKSTYLE:OFF
+        assertThat(sut.allChanges(repo.getAbsolutePath()),
+                is("<changelog>\n"
+                + "<patch author='ich@weltraumschaf.de' date='20130318223954' local_date='Mon Mar 18 23:39:54 CET 2013' inverted='False' hash='20130318223954-7677a-c98dc9ccca9db155a9f707f441b1b17f1c2f6644.gz'>\n"
+                + "	<name>Add property baz to class Baz.</name>\n"
+                + "	<comment>Ignore-this: 4d6065691e6e1d5cb6573f1d457d535f</comment>\n"
+                + "</patch>\n"
+                + "<patch author='ich@weltraumschaf.de' date='20130318223928' local_date='Mon Mar 18 23:39:28 CET 2013' inverted='False' hash='20130318223928-7677a-f55af47435c293ec7fd8bb9f590941245cea4dd0.gz'>\n"
+                + "	<name>Ad property bar to class Baz.</name>\n"
+                + "	<comment>Ignore-this: b1ef0a68930b6224bf7a1a8b5582305e</comment>\n"
+                + "</patch>\n"
+                + "<patch author='ich@weltraumschaf.de' date='20130318223900' local_date='Mon Mar 18 23:39:00 CET 2013' inverted='False' hash='20130318223900-7677a-58b6e653111071d14c11173b549b568b93a51012.gz'>\n"
+                + "	<name>Implement class Baz.</name>\n"
+                + "	<comment>Ignore-this: 40d90f56559035790c098de502bf72b6</comment>\n"
+                + "</patch>\n"
+                + "<patch author='ich@weltraumschaf.de' date='20130318223646' local_date='Mon Mar 18 23:36:46 CET 2013' inverted='False' hash='20130318223646-7677a-dd64aeefc518b37c804d949eec60e2701fabbac3.gz'>\n"
+                + "	<name>Implement class Bar.</name>\n"
+                + "	<comment>Ignore-this: a644b7768c5055c355f38015d4d38f0a</comment>\n"
+                + "</patch>\n"
+                + "<patch author='ich@weltraumschaf.de' date='20130318223419' local_date='Mon Mar 18 23:34:19 CET 2013' inverted='False' hash='20130318223419-7677a-f53a8f63dd1cb8409d576151c85855861107706f.gz'>\n"
+                + "	<name>Remove trailing spaces.</name>\n"
+                + "	<comment>Ignore-this: 2bb4eb18937d42a0386423251171e95a</comment>\n"
+                + "</patch>\n"
+                + "<patch author='ich@weltraumschaf.de' date='20130318223324' local_date='Mon Mar 18 23:33:24 CET 2013' inverted='False' hash='20130318223324-7677a-9301c1b55b25285c289ec2eb0a94ca94e508bc10.gz'>\n"
+                + "	<name>Add class Foo</name>\n"
+                + "	<comment>Ignore-this: be93c7e09542368df7ab1fbb4f80c044</comment>\n"
+                + "</patch>\n"
+                + "</changelog>\n"));
+        //CHECKSTYLE:ON
     }
 
     @Test
@@ -256,7 +377,7 @@ public class DarcsCommandFacadeTest {
         final DarcsCommandFacade sut = createSut();
         final File repo = Repository.REPO.extractTo(tmpDir.getRoot());
         assertThat(repo, is(notNullValue()));
-        assertThat(sut.countChanges(repo.getAbsolutePath()), is(10));
+        assertThat(sut.countChanges(repo.getAbsolutePath()), is(6));
     }
 
     @Test
@@ -269,7 +390,13 @@ public class DarcsCommandFacadeTest {
 
     @Test
     @Ignore("not ready yet")
-    public void pull() {
+    public void pull_emptyRepo() {
+        // TODO Implement test
+    }
+
+    @Test
+    @Ignore("not ready yet")
+    public void pull_repo() {
         // TODO Implement test
     }
 
@@ -281,7 +408,8 @@ public class DarcsCommandFacadeTest {
         assertThat(repo, is(notNullValue()));
         final File desitnation = tmpDir.newFolder();
         sut.get(desitnation.getAbsolutePath(), repo.getAbsolutePath());
-        assertThat(sut.countChanges(desitnation.getAbsolutePath()), is(10)); // TODO chek if it is a darcs repo
+        assertThat(sut.isRepository(desitnation), is(true));
+        assertThat(sut.countChanges(desitnation.getAbsolutePath()), is(6));
     }
 
     @Test
@@ -292,6 +420,7 @@ public class DarcsCommandFacadeTest {
         assertThat(repo, is(notNullValue()));
         final File desitnation = tmpDir.newFolder();
         sut.get(desitnation.getAbsolutePath(), repo.getAbsolutePath());
+        assertThat(sut.isRepository(desitnation), is(true));
         assertThat(sut.countChanges(desitnation.getAbsolutePath()), is(0)); // TODO chek if it is a darcs repo
     }
 
