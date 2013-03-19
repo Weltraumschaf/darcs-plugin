@@ -11,7 +11,9 @@
  */
 package org.jenkinsci.plugins.darcs;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -72,10 +74,8 @@ public final class DarcsObjects {
      * Helper to generate {@link Object#toString()} representations.
      *
      * @param name name of class
-     * @return new instance of builder class
-     * //CHECKSTYLE:OFF
-     * @throws IllegalArgumentException if name is null
-     * //CHECKSTYLE:ON
+     * @return new instance of builder class //CHECKSTYLE:OFF
+     * @throws IllegalArgumentException if name is null //CHECKSTYLE:ON
      */
     public static ToStringHelper toString(final String name) {
         if (null == name) {
@@ -86,9 +86,19 @@ public final class DarcsObjects {
     }
 
     /**
+     * Creates helper to compare multiple properties if they are equal.
+     *
+     * @return new instance
+     */
+    public static ObjectsEuqilizer equalizer() {
+        return new ObjectsEuqilizer();
+    }
+
+    /**
      * Builder class to hold properties and generate string representation.
      */
     public static final class ToStringHelper {
+
         /**
          * Name of represented class.
          */
@@ -147,6 +157,88 @@ public final class DarcsObjects {
 
             return buffer.append('}').toString();
         }
+    }
 
+    /**
+     * Helper to compare a set of properties.
+     */
+    public static final class ObjectsEuqilizer {
+
+        /**
+         * List of compared properties.
+         */
+        private List<Entry<Object>> properties = new ArrayList<Entry<Object>>();
+
+        /**
+         * Use {@link DarcsObjects#equalizer()} to get instance.
+         */
+        private ObjectsEuqilizer() {
+            super();
+        }
+
+        /**
+         * Add two objects to compare them.
+         *
+         * @param a first comparable
+         * @param b second comparable
+         * @return itself for method chaining
+         */
+        public ObjectsEuqilizer add(final Object a, final Object b) {
+            properties.add(new Entry<Object>(a, b));
+            return this;
+        }
+
+        /**
+         * Iterates over all added entries and check for equality.
+         *
+         * @return {@code true} if all entries are equal, else {@code false}
+         */
+        public boolean isEqual() {
+            for (final Entry<Object> property : properties) {
+                if (!property.equals()) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /**
+         * Set of two properties compared to each other.
+         *
+         * @param <T> type of compared objects
+         */
+        private static final class Entry<T> {
+
+            /**
+             * First of compared set.
+             */
+            private final T a;
+            /**
+             * Second of compared set.
+             */
+            private final T b;
+
+            /**
+             * Initializes compare objects.
+             *
+             * @param a first comparable
+             * @param b second comparable
+             */
+            private Entry(final T a, final T b) {
+                super();
+                this.a = a;
+                this.b = b;
+            }
+
+            /**
+             * Checks if {@link #a} and {@link #b} are equal.
+             *
+             * @return same as {@link #a} and {@link #b} passed
+             * {@link DarcsObjects#equal(java.lang.Object, java.lang.Object)}
+             */
+            boolean equals() {
+                return equal(a, b);
+            }
+        }
     }
 }
