@@ -126,15 +126,15 @@ public class DarcsObjectsTest {
 
     @Test
     public void equalizer() {
-        assertThat(DarcsObjects.equalizer().isEqual(), is(true));
+        assertThat(DarcsObjects.equalizer().equals(), is(true));
         assertThat(DarcsObjects.equalizer()
                                .add("foo", "foo")
                                .add(23, 23)
-                               .isEqual(), is(true));
+                               .equals(), is(true));
         assertThat(DarcsObjects.equalizer()
                                .add("foo", "foo")
                                .add("foo", "bar")
                                .add(23, 23)
-                               .isEqual(), is(false));
+                               .equals(), is(false));
     }
 }

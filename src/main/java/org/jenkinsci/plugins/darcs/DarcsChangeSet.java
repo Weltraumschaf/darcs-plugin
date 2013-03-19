@@ -360,48 +360,18 @@ public class DarcsChangeSet extends ChangeLogSet.Entry {
         }
 
         final DarcsChangeSet other = (DarcsChangeSet) obj;
-
-        if (DarcsObjects.notEqual(added, other.added)) {
-            return false;
-        }
-
-        if (DarcsObjects.notEqual(author, other.author)) {
-            return false;
-        }
-
-        if (DarcsObjects.notEqual(comment, other.comment)) {
-            return false;
-        }
-
-        if (DarcsObjects.notEqual(date, other.date)) {
-            return false;
-        }
-
-        if (DarcsObjects.notEqual(deleted, other.deleted)) {
-            return false;
-        }
-
-        if (DarcsObjects.notEqual(hash, other.hash)) {
-            return false;
-        }
-
-        if (DarcsObjects.notEqual(localDate, other.localDate)) {
-            return false;
-        }
-
-        if (DarcsObjects.notEqual(modified, other.modified)) {
-            return false;
-        }
-
-        if (DarcsObjects.notEqual(inverted, other.inverted)) {
-            return false;
-        }
-
-        if (DarcsObjects.notEqual(name, other.name)) {
-            return false;
-        }
-
-        return true;
+        return DarcsObjects.equalizer()
+                           .add(added, other.added)
+                           .add(author, other.author)
+                           .add(comment, other.comment)
+                           .add(date, other.date)
+                           .add(deleted, other.deleted)
+                           .add(hash, other.hash)
+                           .add(localDate, other.localDate)
+                           .add(modified, other.modified)
+                           .add(inverted, other.inverted)
+                           .add(name, other.name)
+                           .equals();
     }
 
 }

@@ -193,7 +193,7 @@ public final class DarcsObjects {
          *
          * @return {@code true} if all entries are equal, else {@code false}
          */
-        public boolean isEqual() {
+        public boolean equals() {
             for (final Entry<Object> property : properties) {
                 if (!property.equals()) {
                     return false;
