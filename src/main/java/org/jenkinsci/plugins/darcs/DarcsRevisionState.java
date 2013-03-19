@@ -10,6 +10,7 @@
 package org.jenkinsci.plugins.darcs;
 
 import hudson.scm.SCMRevisionState;
+import org.apache.commons.lang.Validate;
 
 /**
  * Represents the revision state of a repository.
@@ -39,6 +40,7 @@ public class DarcsRevisionState extends SCMRevisionState {
      */
     public DarcsRevisionState(final DarcsChangeSetList changes) {
         super();
+        Validate.notNull(changes);
         this.changes = changes;
     }
 
