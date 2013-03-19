@@ -1,0 +1,26 @@
+<changelog>
+<patch author='ich@weltraumschaf.de' date='20130318223954' local_date='Mon Mar 18 23:39:54 CET 2013' inverted='False' hash='20130318223954-7677a-c98dc9ccca9db155a9f707f441b1b17f1c2f6644.gz'>
+	<name>Add property baz to class Baz.</name>
+	<comment>Ignore-this: 4d6065691e6e1d5cb6573f1d457d535f</comment>
+</patch>
+<patch author='ich@weltraumschaf.de' date='20130318223928' local_date='Mon Mar 18 23:39:28 CET 2013' inverted='False' hash='20130318223928-7677a-f55af47435c293ec7fd8bb9f590941245cea4dd0.gz'>
+	<name>Ad property bar to class Baz.</name>
+	<comment>Ignore-this: b1ef0a68930b6224bf7a1a8b5582305e</comment>
+</patch>
+<patch author='ich@weltraumschaf.de' date='20130318223900' local_date='Mon Mar 18 23:39:00 CET 2013' inverted='False' hash='20130318223900-7677a-58b6e653111071d14c11173b549b568b93a51012.gz'>
+	<name>Implement class Baz.</name>
+	<comment>Ignore-this: 40d90f56559035790c098de502bf72b6</comment>
+</patch>
+<patch author='ich@weltraumschaf.de' date='20130318223646' local_date='Mon Mar 18 23:36:46 CET 2013' inverted='False' hash='20130318223646-7677a-dd64aeefc518b37c804d949eec60e2701fabbac3.gz'>
+	<name>Implement class Bar.</name>
+	<comment>Ignore-this: a644b7768c5055c355f38015d4d38f0a</comment>
+</patch>
+<patch author='ich@weltraumschaf.de' date='20130318223419' local_date='Mon Mar 18 23:34:19 CET 2013' inverted='False' hash='20130318223419-7677a-f53a8f63dd1cb8409d576151c85855861107706f.gz'>
+	<name>Remove trailing spaces.</name>
+	<comment>Ignore-this: 2bb4eb18937d42a0386423251171e95a</comment>
+</patch>
+<patch author='ich@weltraumschaf.de' date='20130318223324' local_date='Mon Mar 18 23:33:24 CET 2013' inverted='False' hash='20130318223324-7677a-9301c1b55b25285c289ec2eb0a94ca94e508bc10.gz'>
+	<name>Add class Foo</name>
+	<comment>Ignore-this: be93c7e09542368df7ab1fbb4f80c044</comment>
+</patch>
+</changelog>

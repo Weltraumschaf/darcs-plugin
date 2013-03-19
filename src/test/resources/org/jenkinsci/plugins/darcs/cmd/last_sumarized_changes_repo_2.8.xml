@@ -1,0 +1,29 @@
+<changelog>
+<patch author='ich@weltraumschaf.de' date='20130318223954' local_date='Mon Mar 18 23:39:54 CET 2013' inverted='False' hash='20130318223954-7677a-c98dc9ccca9db155a9f707f441b1b17f1c2f6644'>
+	<name>Add property baz to class Baz.</name>
+	<comment>Ignore-this: 4d6065691e6e1d5cb6573f1d457d535f</comment>
+    <summary>
+    <modify_file>
+    Baz.java<added_lines num='1'/>
+    </modify_file>
+    </summary>
+</patch>
+<patch author='ich@weltraumschaf.de' date='20130318223928' local_date='Mon Mar 18 23:39:28 CET 2013' inverted='False' hash='20130318223928-7677a-f55af47435c293ec7fd8bb9f590941245cea4dd0'>
+	<name>Ad property bar to class Baz.</name>
+	<comment>Ignore-this: b1ef0a68930b6224bf7a1a8b5582305e</comment>
+    <summary>
+    <modify_file>
+    Baz.java<added_lines num='1'/>
+    </modify_file>
+    </summary>
+</patch>
+<patch author='ich@weltraumschaf.de' date='20130318223900' local_date='Mon Mar 18 23:39:00 CET 2013' inverted='False' hash='20130318223900-7677a-58b6e653111071d14c11173b549b568b93a51012'>
+	<name>Implement class Baz.</name>
+	<comment>Ignore-this: 40d90f56559035790c098de502bf72b6</comment>
+    <summary>
+    <add_file>
+    Baz.java
+    </add_file>
+    </summary>
+</patch>
+</changelog>
