@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.logging.Logger;
+import org.apache.commons.lang.Validate;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -53,12 +54,14 @@ class DarcsChangeLogParser extends ChangeLogParser {
      * Dedicated constructor.
      *
      * @param handler implementation of a SAX parser
-     * @param sani sanitize to clean comments
+     * @param sanitizer sanitize to clean comments
      */
-    public DarcsChangeLogParser(final DarcsSaxHandler handler, final DarcsXmlSanitizer sani) {
+    public DarcsChangeLogParser(final DarcsSaxHandler handler, final DarcsXmlSanitizer sanitizer) {
         super();
+        Validate.notNull(handler, "Handler must not be null!");
+        Validate.notNull(sanitizer, "Sanitizer must not be null!");
         this.handler = handler;
-        this.sanitizer = sani;
+        this.sanitizer = sanitizer;
     }
 
     /**

@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Logger;
+import org.apache.commons.lang.Validate;
 
 /**
  * List of change set that went into a particular build.
@@ -76,7 +77,7 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
     @SuppressWarnings("LeakingThisInConstructor") // because its' at the end od constructor
     public DarcsChangeSetList(final AbstractBuild build, final List<DarcsChangeSet> changes) {
         super(build);
-
+        Validate.notNull(changes);
         // we want the changesets allways in same order for digesting
         Collections.sort(changes, new Comparator<DarcsChangeSet>() {
             public int compare(DarcsChangeSet a, DarcsChangeSet b) {
@@ -86,7 +87,7 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
         changeSets = Collections.unmodifiableList(changes);
 
         for (final DarcsChangeSet log : changes) {
-            log.setParent(this);
+            log.setParent(this); // XXX Consider if necessary.
         }
     }
 
