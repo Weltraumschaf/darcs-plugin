@@ -68,7 +68,8 @@ public class DarcsScmDescriptor extends SCMDescriptor<DarcsScm> {
     }
 
     /**
-     * Own implementation of XML configuration loading to inject {@link jenkins.model.Jenkins#XSTREAM2} for unmarshalling.
+     * Own implementation of XML configuration loading to inject {@link jenkins.model.Jenkins#XSTREAM2}
+     * for unmarshalling.
      *
      * TODO Since 1.507 override Dexcriptor#getConfigFile()
      *
