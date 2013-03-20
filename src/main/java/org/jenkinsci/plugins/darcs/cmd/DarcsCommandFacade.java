@@ -243,13 +243,13 @@ public final class DarcsCommandFacade {
     /**
      * Do a fresh checkout of a repository.
      *
-     * @param repo where to checkout
+     * @param to where to checkout
      * @param from from where to get the repository
      * @throws DarcsCommadException if can't do checkout
      */
-    public void get(final String repo, final String from) throws DarcsCommadException {
+    public void get(final String to, final String from) throws DarcsCommadException {
         final DarcsGetBuilder builder = DarcsCommand.builder(darcsExe).get();
-        builder.from(from).to(repo);
+        builder.from(from).to(to);
         final DarcsCommand cmd = builder.create();
         cmd.setOut(launcher.getListener().getLogger());
         final DarcsProcStarter proc = createProcessStarter();

@@ -239,27 +239,25 @@ public class DarcsCommandFacadeTest {
     }
 
     @Test
-    @Ignore("not ready yet")
     public void get_repo() throws URISyntaxException, IOException {
         final DarcsCommandFacade sut = createSut();
         final File repo = Repository.REPO.extractTo(tmpDir.getRoot());
         assertThat(repo, is(notNullValue()));
-        final File desitnation = tmpDir.newFolder();
+        final File desitnation = new File(tmpDir.getRoot(), "checkout");
         sut.get(desitnation.getAbsolutePath(), repo.getAbsolutePath());
         assertThat(sut.isRepository(desitnation), is(true));
         assertThat(sut.countChanges(desitnation.getAbsolutePath()), is(6));
     }
 
     @Test
-    @Ignore("not ready yet")
     public void get_emptyRepo() throws URISyntaxException, IOException {
         final DarcsCommandFacade sut = createSut();
         final File repo = Repository.EMPTY.extractTo(tmpDir.getRoot());
         assertThat(repo, is(notNullValue()));
-        final File desitnation = tmpDir.newFolder();
+        final File desitnation = new File(tmpDir.getRoot(), "checkout");
         sut.get(desitnation.getAbsolutePath(), repo.getAbsolutePath());
         assertThat(sut.isRepository(desitnation), is(true));
-        assertThat(sut.countChanges(desitnation.getAbsolutePath()), is(0)); // TODO chek if it is a darcs repo
+        assertThat(sut.countChanges(desitnation.getAbsolutePath()), is(0));
     }
 
     @Test
