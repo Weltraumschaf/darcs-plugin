@@ -73,6 +73,15 @@ final class DarcsCommandBuilder extends DarcsBaseCommandBuilder implements Darcs
     }
 
     /**
+     * Create sub builder to build `darcs init` command.
+     *
+     * @return always new instance
+     */
+    public DarcsInitBuilder init() {
+        return new DarcsInitBuilder(getDarcsExe());
+    }
+
+    /**
      * Creates a command which executes `darcs --version`.
      *
      * @return itself

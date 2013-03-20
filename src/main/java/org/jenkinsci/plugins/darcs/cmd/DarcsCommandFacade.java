@@ -306,4 +306,24 @@ public final class DarcsCommandFacade {
         return cmd.getOut().toString();
     }
 
+    /**
+     * Initializes a directory as Darcs repository.
+     *
+     * @param directory where to initialize a repository
+     */
+    public void init(final File directory) {
+        init(directory.getAbsolutePath());
+    }
+
+    /**
+     * Initializes a directory as Darcs repository.
+     *
+     * @param directory where to initialize a repository
+     */
+    public void init(final String directory) {
+        DarcsCommand.builder(darcsExe)
+                    .init()
+                    .create()
+                    .execute(createProcessStarter());
+    }
 }
