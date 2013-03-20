@@ -25,7 +25,7 @@ import org.apache.commons.lang.Validate;
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
-class DarcsChangesBuilder extends DarcsBaseCommandBuilder implements DarcsCommandCreator {
+final class DarcsChangesBuilder extends DarcsBaseCommandBuilder implements DarcsCommandCreator {
 
     /**
      * Darcs subcommand.
