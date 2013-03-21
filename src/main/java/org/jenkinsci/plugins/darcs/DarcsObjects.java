@@ -67,7 +67,7 @@ public final class DarcsObjects {
      * @return {@code true} if a and b are equal, else {@code false}
      */
     public static boolean equal(final Object a, final Object b) {
-        return a == b || (a != null && a.equals(b));
+        return a == b || a != null && a.equals(b);
     }
 
     /**

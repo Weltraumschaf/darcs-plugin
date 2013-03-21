@@ -140,7 +140,7 @@ public final class DarcsWeb extends DarcsRepositoryBrowser {
          */
         public FormValidation doCheck(@QueryParameter final String value) throws IOException, ServletException {
 
-            return (new FormValidation.URLCheck() {
+            return new FormValidation.URLCheck() {
 
                 @Override
                 protected FormValidation check() throws IOException, ServletException {
@@ -170,7 +170,7 @@ public final class DarcsWeb extends DarcsRepositoryBrowser {
 
                     return FormValidation.ok();
                 }
-            }).check();
+            }.check();
         }
 
         @Override

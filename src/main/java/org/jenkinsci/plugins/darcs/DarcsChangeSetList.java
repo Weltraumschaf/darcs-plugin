@@ -158,7 +158,7 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
             final byte[] md5 = algorithm.digest();
 
             for (int i = 0; i < md5.length; i++) {
-                final String tmp = (Integer.toHexString(BYTE_MASK & md5[i]));
+                final String tmp = Integer.toHexString(BYTE_MASK & md5[i]);
 
                 if (tmp.length() == 1) {
                     res.append("0");
