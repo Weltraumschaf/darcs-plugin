@@ -205,12 +205,12 @@ public final class DarcsCommandFacade {
     /**
      * Pull all patches from remote.
      *
-     * @param repo to pull in
+     * @param destination to pull in
      * @param from remote repository to pull from
      * @throws DarcsCommadException if command execution fails
      */
-    public void pull(final File repo, final File from) throws DarcsCommadException {
-        pull(repo.getAbsolutePath(), from.getAbsolutePath());
+    public void pull(final File destination, final File from) throws DarcsCommadException {
+        pull(destination.getAbsolutePath(), from.getAbsolutePath());
     }
 
     /**

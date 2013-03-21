@@ -30,6 +30,11 @@ final class DarcsInitBuilder extends DarcsBaseCommandBuilder implements DarcsCom
     private static final String COMMAND = "init";
 
     /**
+     * Where to pull in.
+     */
+    private String repoDir = "";
+
+    /**
      * Initializes the {@link DarcsBaseCommandBuilder#command} with {@value #COMMAND}.
      *
      * @param darcsExe name of Darcs executable, e.g. "darcs" or "/usr/local/bin/darcs"
@@ -38,9 +43,30 @@ final class DarcsInitBuilder extends DarcsBaseCommandBuilder implements DarcsCom
         super(darcsExe, COMMAND);
     }
 
+    /**
+     * Directory where to initialize repository.
+     *
+     * @param directory path to repository
+     * @return the builder itself
+     * CHECKSTYLE:OFF
+     * @throws IllegalArgumentException if location is {@code null} or empty
+     * CHECKSTYLE:ON
+     */
+    public DarcsInitBuilder repoDir(final String directory) {
+        Validate.notEmpty(directory);
+        repoDir = directory;
+        return this;
+    }
+
     @Override
     public DarcsCommand create() {
-        return new DarcsCommand(createArgumentList());
+        final ArgumentListBuilder arguments = createArgumentList();
+
+        if (repoDir.length() > 0) {
+            arguments.add(String.format("--repo=%s", repoDir));
+        }
+
+        return new DarcsCommand(arguments);
     }
 
 }

@@ -227,15 +227,31 @@ public class DarcsCommandFacadeTest {
     }
 
     @Test
-    @Ignore("not ready yet")
-    public void pull_emptyRepo() {
-        // TODO Implement test
+    public void pull_repo() throws URISyntaxException, IOException {
+        final DarcsCommandFacade sut = createSut();
+        final File origin = Repository.REPO.extractTo(tmpDir.getRoot());
+        assertThat(origin, is(notNullValue()));
+        final File desitnation = tmpDir.newFolder();
+        sut.init(desitnation);
+        assertThat(sut.isRepository(desitnation), is(true));
+        assertThat(sut.countChanges(desitnation.getAbsolutePath()), is(0));
+        sut.pull(desitnation, origin);
+        assertThat(sut.isRepository(desitnation), is(true));
+        assertThat(sut.countChanges(desitnation.getAbsolutePath()), is(6));
     }
 
     @Test
-    @Ignore("not ready yet")
-    public void pull_repo() {
-        // TODO Implement test
+    public void pull_emptyRepo() throws URISyntaxException, IOException {
+        final DarcsCommandFacade sut = createSut();
+        final File origin = Repository.EMPTY.extractTo(tmpDir.getRoot());
+        assertThat(origin, is(notNullValue()));
+        final File desitnation = tmpDir.newFolder();
+        sut.init(desitnation);
+        assertThat(sut.isRepository(desitnation), is(true));
+        assertThat(sut.countChanges(desitnation.getAbsolutePath()), is(0));
+        sut.pull(desitnation, origin);
+        assertThat(sut.isRepository(desitnation), is(true));
+        assertThat(sut.countChanges(desitnation.getAbsolutePath()), is(0));
     }
 
     @Test
@@ -288,5 +304,13 @@ public class DarcsCommandFacadeTest {
     public void exactVersion() throws URISyntaxException, IOException {
         final DarcsCommandFacade sut = createSut();
         assertThat(sut.version(true), is(Binary.determine().getExactVersion()));
+    }
+
+    @Test
+    public void init() throws URISyntaxException {
+        final DarcsCommandFacade sut = createSut();
+        sut.init(tmpDir.getRoot());
+        assertThat(sut.isRepository(tmpDir.getRoot()), is(true));
+        assertThat(sut.countChanges(tmpDir.getRoot()), is(0));
     }
 }
