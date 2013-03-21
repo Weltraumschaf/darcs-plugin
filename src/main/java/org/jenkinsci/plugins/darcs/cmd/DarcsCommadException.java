@@ -16,7 +16,7 @@ package org.jenkinsci.plugins.darcs.cmd;
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
-public class DarcsCommadException extends RuntimeException {
+public class DarcsCommadException extends Exception {
 
     /**
      * Return code of Darcs command.

@@ -282,7 +282,7 @@ public final class DarcsCommandFacade {
      *
      * @return version string
      */
-    public String version() {
+    public String version() throws DarcsCommadException {
         return version(false);
     }
 
@@ -292,7 +292,7 @@ public final class DarcsCommandFacade {
      * @param exact whether to return short (`darcs --version`) version or exact version (`darcs --exact-version`).
      * @return version string
      */
-    public String version(final boolean exact) {
+    public String version(final boolean exact) throws DarcsCommadException {
         final DarcsCommandBuilder builder = DarcsCommand.builder(darcsExe);
 
         if (exact) {
@@ -311,7 +311,7 @@ public final class DarcsCommandFacade {
      *
      * @param directory where to initialize a repository
      */
-    public void init(final File directory) {
+    public void init(final File directory) throws DarcsCommadException {
         init(directory.getAbsolutePath());
     }
 
@@ -320,7 +320,7 @@ public final class DarcsCommandFacade {
      *
      * @param directory where to initialize a repository
      */
-    public void init(final String directory) {
+    public void init(final String directory) throws DarcsCommadException {
         DarcsCommand.builder(darcsExe)
                     .init()
                     .repoDir(directory)
