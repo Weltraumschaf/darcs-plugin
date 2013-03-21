@@ -57,7 +57,7 @@ public class DarcsCommandTest {
     }
 
     @Test
-    public void execute() throws IOException, InterruptedException {
+    public void execute() throws IOException, InterruptedException, DarcsCommadException {
         final DarcsCommand command = spy(new DarcsCommand());
         final DarcsProcStarter proc = mock(DarcsProcStarter.class);
         when(proc.join()).thenReturn(0);
@@ -67,7 +67,7 @@ public class DarcsCommandTest {
     }
 
     @Test
-    public void executeRethrowIOException() throws IOException, InterruptedException {
+    public void executeRethrowIOException() throws IOException, InterruptedException, DarcsCommadException {
         final DarcsCommand command = new DarcsCommand();
         final DarcsProcStarter proc = mock(DarcsProcStarter.class);
         stub(proc.join()).toThrow(new IOException("foobar"));
@@ -77,7 +77,7 @@ public class DarcsCommandTest {
     }
 
     @Test
-    public void executeRethrowInterruptedException() throws IOException, InterruptedException {
+    public void executeRethrowInterruptedException() throws IOException, InterruptedException, DarcsCommadException {
         final DarcsCommand command = new DarcsCommand();
         final DarcsProcStarter proc = mock(DarcsProcStarter.class);
         stub(proc.join()).toThrow(new InterruptedException("foobar"));
@@ -87,7 +87,7 @@ public class DarcsCommandTest {
     }
 
     @Test
-    public void executeThrowExceptionIfReturnCodeUnequalZero() throws IOException, InterruptedException {
+    public void executeThrowExceptionIfReturnCodeUnequalZero() throws IOException, InterruptedException, DarcsCommadException {
         final DarcsCommand command = new DarcsCommand();
         final DarcsProcStarter proc = mock(DarcsProcStarter.class);
         when(proc.join()).thenReturn(23);

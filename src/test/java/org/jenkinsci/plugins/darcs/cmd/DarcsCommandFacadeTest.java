@@ -154,7 +154,7 @@ public class DarcsCommandFacadeTest {
     }
 
     @Test
-    public void lastSummarizedChanges_emptyRepo() throws URISyntaxException {
+    public void lastSummarizedChanges_emptyRepo() throws URISyntaxException, DarcsCommadException {
         final DarcsCommandFacade sut = createSut();
         final File repo = Repository.EMPTY.extractTo(tmpDir.getRoot());
         assertThat(repo, is(notNullValue()));
@@ -162,7 +162,7 @@ public class DarcsCommandFacadeTest {
     }
 
     @Test
-    public void lastSummarizedChanges_repo() throws URISyntaxException, IOException {
+    public void lastSummarizedChanges_repo() throws URISyntaxException, IOException, DarcsCommadException {
         final DarcsCommandFacade sut = createSut();
         final Repository repo = Repository.REPO;
         final File extractedRepo = repo.extractTo(tmpDir.getRoot());
@@ -172,7 +172,7 @@ public class DarcsCommandFacadeTest {
     }
 
     @Test
-    public void allSummarizedChanges_repo() throws URISyntaxException, IOException {
+    public void allSummarizedChanges_repo() throws URISyntaxException, IOException, DarcsCommadException {
         final DarcsCommandFacade sut = createSut();
         final Repository repo = Repository.REPO;
         final File extractedRepo = repo.extractTo(tmpDir.getRoot());
@@ -183,7 +183,7 @@ public class DarcsCommandFacadeTest {
     }
 
     @Test
-    public void allSummarizedChanges_emptyRepo() throws URISyntaxException {
+    public void allSummarizedChanges_emptyRepo() throws URISyntaxException, DarcsCommadException {
         final DarcsCommandFacade sut = createSut();
         final File repo = Repository.EMPTY.extractTo(tmpDir.getRoot());
         assertThat(repo, is(notNullValue()));
@@ -191,7 +191,7 @@ public class DarcsCommandFacadeTest {
     }
 
     @Test
-    public void allChanges_repo() throws URISyntaxException, IOException {
+    public void allChanges_repo() throws URISyntaxException, IOException, DarcsCommadException {
         final DarcsCommandFacade sut = createSut();
         final Repository repo = Repository.REPO;
         final File extractedRepo = repo.extractTo(tmpDir.getRoot());
@@ -201,7 +201,7 @@ public class DarcsCommandFacadeTest {
     }
 
     @Test
-    public void allChanges_emptyRepo() throws URISyntaxException {
+    public void allChanges_emptyRepo() throws URISyntaxException, DarcsCommadException {
         final DarcsCommandFacade sut = createSut();
         final File repo = Repository.EMPTY.extractTo(tmpDir.getRoot());
         assertThat(repo, is(notNullValue()));
@@ -209,7 +209,7 @@ public class DarcsCommandFacadeTest {
     }
 
     @Test
-    public void countChanges_repo() throws URISyntaxException {
+    public void countChanges_repo() throws URISyntaxException, DarcsCommadException {
         final DarcsCommandFacade sut = createSut();
         final File repo = Repository.REPO.extractTo(tmpDir.getRoot());
         assertThat(repo, is(notNullValue()));
@@ -217,7 +217,7 @@ public class DarcsCommandFacadeTest {
     }
 
     @Test
-    public void countChanges_emptyRepo() throws URISyntaxException {
+    public void countChanges_emptyRepo() throws URISyntaxException, DarcsCommadException {
         final DarcsCommandFacade sut = createSut();
         final File repo = Repository.EMPTY.extractTo(tmpDir.getRoot());
         assertThat(repo, is(notNullValue()));
@@ -225,7 +225,7 @@ public class DarcsCommandFacadeTest {
     }
 
     @Test
-    public void pull_repo() throws URISyntaxException, IOException {
+    public void pull_repo() throws URISyntaxException, IOException, DarcsCommadException {
         final DarcsCommandFacade sut = createSut();
         final File origin = Repository.REPO.extractTo(tmpDir.getRoot());
         assertThat(origin, is(notNullValue()));
@@ -239,7 +239,7 @@ public class DarcsCommandFacadeTest {
     }
 
     @Test
-    public void pull_emptyRepo() throws URISyntaxException, IOException {
+    public void pull_emptyRepo() throws URISyntaxException, IOException, DarcsCommadException {
         final DarcsCommandFacade sut = createSut();
         final File origin = Repository.EMPTY.extractTo(tmpDir.getRoot());
         assertThat(origin, is(notNullValue()));
@@ -253,7 +253,7 @@ public class DarcsCommandFacadeTest {
     }
 
     @Test
-    public void get_repo() throws URISyntaxException, IOException {
+    public void get_repo() throws URISyntaxException, IOException, DarcsCommadException {
         final DarcsCommandFacade sut = createSut();
         final File repo = Repository.REPO.extractTo(tmpDir.getRoot());
         assertThat(repo, is(notNullValue()));
@@ -264,7 +264,7 @@ public class DarcsCommandFacadeTest {
     }
 
     @Test
-    public void get_emptyRepo() throws URISyntaxException, IOException {
+    public void get_emptyRepo() throws URISyntaxException, IOException, DarcsCommadException {
         final DarcsCommandFacade sut = createSut();
         final File repo = Repository.EMPTY.extractTo(tmpDir.getRoot());
         assertThat(repo, is(notNullValue()));
@@ -293,19 +293,19 @@ public class DarcsCommandFacadeTest {
     }
 
     @Test
-    public void version() throws URISyntaxException {
+    public void version() throws URISyntaxException, DarcsCommadException {
         final DarcsCommandFacade sut = createSut();
         assertThat(sut.version(), is(Binary.determine().getVersion()));
     }
 
     @Test
-    public void exactVersion() throws URISyntaxException, IOException {
+    public void exactVersion() throws URISyntaxException, IOException, DarcsCommadException {
         final DarcsCommandFacade sut = createSut();
         assertThat(sut.version(true), is(Binary.determine().getExactVersion()));
     }
 
     @Test
-    public void init() throws URISyntaxException {
+    public void init() throws URISyntaxException, DarcsCommadException {
         final DarcsCommandFacade sut = createSut();
         sut.init(tmpDir.getRoot());
         assertThat(sut.isRepository(tmpDir.getRoot()), is(true));
