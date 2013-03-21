@@ -323,6 +323,7 @@ public final class DarcsCommandFacade {
     public void init(final String directory) {
         DarcsCommand.builder(darcsExe)
                     .init()
+                    .repoDir(directory)
                     .create()
                     .execute(createProcessStarter());
     }

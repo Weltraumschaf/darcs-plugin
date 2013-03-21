@@ -231,13 +231,13 @@ public class DarcsCommandFacadeTest {
         final DarcsCommandFacade sut = createSut();
         final File origin = Repository.REPO.extractTo(tmpDir.getRoot());
         assertThat(origin, is(notNullValue()));
-        final File desitnation = tmpDir.newFolder();
+        final File desitnation = tmpDir.newFolder("destination");
         sut.init(desitnation);
         assertThat(sut.isRepository(desitnation), is(true));
-        assertThat(sut.countChanges(desitnation.getAbsolutePath()), is(0));
+        assertThat(sut.countChanges(desitnation), is(0));
         sut.pull(desitnation, origin);
         assertThat(sut.isRepository(desitnation), is(true));
-        assertThat(sut.countChanges(desitnation.getAbsolutePath()), is(6));
+        assertThat(sut.countChanges(desitnation), is(6));
     }
 
     @Test
@@ -245,13 +245,13 @@ public class DarcsCommandFacadeTest {
         final DarcsCommandFacade sut = createSut();
         final File origin = Repository.EMPTY.extractTo(tmpDir.getRoot());
         assertThat(origin, is(notNullValue()));
-        final File desitnation = tmpDir.newFolder();
+        final File desitnation = tmpDir.newFolder("destination");
         sut.init(desitnation);
         assertThat(sut.isRepository(desitnation), is(true));
-        assertThat(sut.countChanges(desitnation.getAbsolutePath()), is(0));
+        assertThat(sut.countChanges(desitnation), is(0));
         sut.pull(desitnation, origin);
         assertThat(sut.isRepository(desitnation), is(true));
-        assertThat(sut.countChanges(desitnation.getAbsolutePath()), is(0));
+        assertThat(sut.countChanges(desitnation), is(0));
     }
 
     @Test
