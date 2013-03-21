@@ -74,8 +74,10 @@ public final class DarcsObjects {
      * Helper to generate {@link Object#toString()} representations.
      *
      * @param name name of class
-     * @return new instance of builder class //CHECKSTYLE:OFF
-     * @throws IllegalArgumentException if name is null //CHECKSTYLE:ON
+     * @return new instance of builder class
+     * //CHECKSTYLE:OFF
+     * @throws IllegalArgumentException if name is null
+     * //CHECKSTYLE:ON
      */
     public static ToStringHelper toString(final String name) {
         if (null == name) {
