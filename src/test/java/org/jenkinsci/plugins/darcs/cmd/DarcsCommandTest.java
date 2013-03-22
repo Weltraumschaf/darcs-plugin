@@ -87,7 +87,8 @@ public class DarcsCommandTest {
     }
 
     @Test
-    public void executeThrowExceptionIfReturnCodeUnequalZero() throws IOException, InterruptedException, DarcsCommadException {
+    public void executeThrowExceptionIfReturnCodeUnequalZero() throws IOException, InterruptedException,
+        DarcsCommadException {
         final DarcsCommand command = new DarcsCommand();
         final DarcsProcStarter proc = mock(DarcsProcStarter.class);
         when(proc.join()).thenReturn(23);

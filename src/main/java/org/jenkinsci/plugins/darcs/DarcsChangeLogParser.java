@@ -11,7 +11,6 @@ package org.jenkinsci.plugins.darcs;
 
 import hudson.model.AbstractBuild;
 import hudson.scm.ChangeLogParser;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
