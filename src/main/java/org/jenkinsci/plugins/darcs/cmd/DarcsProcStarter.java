@@ -68,7 +68,7 @@ public class DarcsProcStarter {
     }
 
     /**
-     * Delegates to {@link hudson.Launcher.ProcStarter#cmds(}, unless {@link #proc} is {@value null}.
+     * Delegates to {@link hudson.Launcher.ProcStarter#cmds()}, unless {@link #proc} is {@code null}.
      *
      * @return returns list of strings, if {@link #proc} is {@code null} empty list
      */
@@ -96,7 +96,7 @@ public class DarcsProcStarter {
     }
 
     /**
-     * Delegates to {@link hudson.Launcher.ProcStarter#stdout()}, unless {@link #proc} is {@value null}.
+     * Delegates to {@link hudson.Launcher.ProcStarter#stdout()}, unless {@link #proc} is {@code null}.
      *
      * @return output stream, or {@code null} if {@link #proc} is {@code null}
      */
@@ -126,7 +126,7 @@ public class DarcsProcStarter {
     /**
      * Delegates to {@link hudson.Launcher.ProcStarter#stderr()}, unless {@link #proc} is {@code null}.
      *
-     * @return output stream, or {@value null} if {@link #proc} is {@value null}
+     * @return output stream, or {@code null} if {@link #proc} is {@code null}
      */
     public OutputStream stderr() {
         if (null != proc) {
@@ -139,7 +139,7 @@ public class DarcsProcStarter {
     /**
      * Delegates to {@link hudson.Launcher.ProcStarter#join()}, unless {@link #proc} is {@code null}.
      *
-     * @return process return code or {@value 0} if {@link #proc} is {@value null}
+     * @return process return code or {@code 0} if {@link #proc} is {@code null}
      * @throws IOException if IO error happened
      * @throws InterruptedException if thread was interrupted
      */
