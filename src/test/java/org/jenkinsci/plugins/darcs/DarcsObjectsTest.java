@@ -30,7 +30,8 @@ public class DarcsObjectsTest {
 
     @Test
     public void hashCodeNullObject() {
-        assertThat(DarcsObjects.hashCode(null), is(0));
+        final Object o = null;
+        assertThat(DarcsObjects.hashCode(o), is(0));
     }
 
     @Test
