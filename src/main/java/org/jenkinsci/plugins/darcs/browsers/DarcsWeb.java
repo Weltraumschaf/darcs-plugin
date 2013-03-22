@@ -54,7 +54,7 @@ public final class DarcsWeb extends DarcsRepositoryBrowser {
     @DataBoundConstructor
     public DarcsWeb(final URL url, final String repo) {
         super();
-        this.url  = url;
+        this.url = url;
         this.repo = repo;
     }
 
@@ -118,11 +118,6 @@ public final class DarcsWeb extends DarcsRepositoryBrowser {
     @Extension
     public static class DescriptorImpl extends Descriptor<RepositoryBrowser<?>> {
 
-        /**
-         * Pattern to verify a DarcsWeb base URL.
-         */
-        private static final Pattern URI_PATTERN = Pattern.compile(".+/cgi-bin/darcsweb.cgi");
-
         @Override
         public String getDisplayName() {
             return "Darcsweb";
@@ -131,51 +126,73 @@ public final class DarcsWeb extends DarcsRepositoryBrowser {
         /**
          * Validates the URL given in the configuration form.
          *
-         * TODO implement check.
-         *
          * @param value the given URL
          * @return a form validation instance
          * @throws IOException if URL can't be opened
          * @throws ServletException if servlet encounters difficulty
          */
         public FormValidation doCheck(@QueryParameter final String value) throws IOException, ServletException {
-
-            return new FormValidation.URLCheck() {
-
-                @Override
-                protected FormValidation check() throws IOException, ServletException {
-                    final String uri = Util.fixEmpty(value);
-
-                    if (null == uri) { // nothing entered yet
-                        return FormValidation.ok();
-                    }
-
-                    if (!uri.startsWith("http://") && ! uri.startsWith("https://")) {
-                        return FormValidation.errorWithMarkup("The URI should start either with <tt>http://</tt> or "
-                                + "<tt>https://</tt>!");
-                    }
-
-                    if (!URI_PATTERN.matcher(uri).matches()) {
-                        return FormValidation.errorWithMarkup("The URI should look like <tt>"
-                                + "http://.../cgi-bin/darcsweb.cgi</tt>!");
-                    }
-
-                    try {
-                        if (!findText(open(new URL(uri)), "Crece desde el pueblo el futuro / crece desde el pie")) {
-                            return FormValidation.error("This is a valid URI but it doesn't look like DarcsWeb!");
-                        }
-                    } catch (IOException e) {
-                        handleIOException(uri, e);
-                    }
-
-                    return FormValidation.ok();
-                }
-            }.check();
+            return new UriCheck(value).check();
         }
 
         @Override
         public DarcsWeb newInstance(final StaplerRequest req, final JSONObject formData) throws FormException {
             return req.bindParameters(DarcsWeb.class, "darcsweb.darcs.");
+        }
+    }
+
+    /**
+     * Checks an URI if it is a DarcsWeb URI.
+     */
+    static class UriCheck extends FormValidation.URLCheck {
+
+        /**
+         * Pattern to verify a DarcsWeb base URL.
+         */
+        private static final Pattern URI_PATTERN = Pattern.compile(".+/cgi-bin/darcsweb.cgi");
+
+        /**
+         * Value to check if it is a DarcsWeb URI.
+         */
+        private final String value;
+
+        /**
+         * Default constructor.
+         *
+         * @param value to check if it is a DarcsWeb URI.
+         */
+        public UriCheck(final String value) {
+            super();
+            this.value = value;
+        }
+
+        @Override
+        public FormValidation check() throws IOException, ServletException {
+            final String uri = Util.fixEmpty(value);
+
+            if (null == uri) { // nothing entered yet
+                return FormValidation.ok();
+            }
+
+            if (!uri.startsWith("http://") && !uri.startsWith("https://")) {
+                return FormValidation.errorWithMarkup(
+                    "The URI should start either with <tt>http://</tt> or <tt>https://</tt>!");
+            }
+
+            if (!URI_PATTERN.matcher(uri).matches()) {
+                return FormValidation.errorWithMarkup(
+                    "The URI should look like <tt>http://.../cgi-bin/darcsweb.cgi</tt>!");
+            }
+
+            try {
+                if (!findText(open(new URL(uri)), "Crece desde el pueblo el futuro / crece desde el pie")) {
+                    return FormValidation.error("This is a valid URI but it doesn't look like DarcsWeb!");
+                }
+            } catch (IOException e) {
+                handleIOException(uri, e);
+            }
+
+            return FormValidation.ok();
         }
     }
 

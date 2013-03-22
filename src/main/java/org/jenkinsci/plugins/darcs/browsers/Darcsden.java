@@ -7,7 +7,6 @@
  * this stuff. If we meet some day, and you think this stuff is worth it,
  * you can buy me a beer in return.
  */
-
 package org.jenkinsci.plugins.darcs.browsers;
 
 import org.jenkinsci.plugins.darcs.DarcsChangeSet;
@@ -61,12 +60,12 @@ public final class Darcsden extends DarcsRepositoryBrowser {
      * @return URL to the commit view
      * @throws MalformedURLException if malformed URL will result
      */
-    public URL getChangeSetLink(final DarcsChangeSet changeSet) throws MalformedURLException  {
+    public URL getChangeSetLink(final DarcsChangeSet changeSet) throws MalformedURLException {
         final String hash = changeSet.getHash();
         final String shortHash = hash.substring(0, hash.lastIndexOf('-'));
         final DarcsQueryBuilder query = new DarcsQueryBuilder(DarcsQueryBuilder.Separators.SLASHES);
         query.add("patch")
-             .add(shortHash);
+                .add(shortHash);
 
         return new URL(url + query.toString());
     }
@@ -82,11 +81,6 @@ public final class Darcsden extends DarcsRepositoryBrowser {
      */
     @Extension
     public static class DescriptorImpl extends Descriptor<RepositoryBrowser<?>> {
-
-        /**
-         * Pattern to verify a Darcsden URL.
-         */
-        private static final Pattern URI_PATTERN = Pattern.compile("http://darcsden.com/.+");
 
         @Override
         public String getDisplayName() {
@@ -104,31 +98,53 @@ public final class Darcsden extends DarcsRepositoryBrowser {
          * @throws ServletException if servlet encounters difficulty
          */
         public FormValidation doCheck(@QueryParameter final String value) throws IOException, ServletException {
-
-            return new FormValidation.URLCheck() {
-
-                @Override
-                protected FormValidation check() throws IOException, ServletException {
-                    final String uri = Util.fixEmpty(value);
-
-                    if (null == uri) { // nothing entered yet
-                        return FormValidation.ok();
-                    }
-
-                    if (!URI_PATTERN.matcher(uri).matches()) {
-                        return FormValidation.errorWithMarkup("The URI should look like "
-                                + "<tt>http://darcsden.com/...</tt>!");
-                    }
-
-                    return FormValidation.ok();
-                }
-            }.check();
+            return new UriCheck(value).check();
         }
 
         @Override
-        public DarcsWeb newInstance(final StaplerRequest req, final JSONObject formData)
-            throws Descriptor.FormException {
+        public DarcsWeb newInstance(final StaplerRequest req, final JSONObject formData) throws FormException {
             return req.bindParameters(DarcsWeb.class, "darcsden.darcs.");
+        }
+    }
+
+    /**
+     * Checks an URI if it is a Darcsden URI.
+     */
+    static class UriCheck extends FormValidation.URLCheck {
+
+        /**
+         * Pattern to verify a Darcsden URL.
+         */
+        private static final Pattern URI_PATTERN = Pattern.compile("http://darcsden.com/.+");
+
+        /**
+         * Value to check if it is a DarcsWeb URI.
+         */
+        private final String value;
+
+        /**
+         * Default constructor.
+         *
+         * @param value to check if it is a Darcsden URI.
+         */
+        public UriCheck(final String value) {
+            super();
+            this.value = value;
+        }
+
+        @Override
+        protected FormValidation check() throws IOException, ServletException {
+            final String uri = Util.fixEmpty(value);
+
+            if (null == uri) { // nothing entered yet
+                return FormValidation.ok();
+            }
+
+            if (!URI_PATTERN.matcher(uri).matches()) {
+                return FormValidation.errorWithMarkup("The URI should look like <tt>http://darcsden.com/...</tt>!");
+            }
+
+            return FormValidation.ok();
         }
     }
 
