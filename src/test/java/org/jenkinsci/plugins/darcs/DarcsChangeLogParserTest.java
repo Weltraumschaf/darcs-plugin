@@ -186,28 +186,4 @@ public class DarcsChangeLogParserTest {
         }
     }
 
-    @Test
-    public void parse_byteArray() throws SAXException, URISyntaxException, IOException {
-        final DarcsChangeLogParser sut = new DarcsChangeLogParser();
-        final URL resource = getClass().getResource("/org/jenkinsci/plugins/darcs/changes-summary.xml");
-        final FileInputStream fis = new FileInputStream(new File(resource.toURI()));
-        final ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        final byte[] buf = new byte[1024];
-
-        for (int readNum; (readNum = fis.read(buf)) != -1; ) {
-            bos.write(buf, 0, readNum);
-        }
-
-        fis.close();
-
-        final DarcsChangeSetList list = sut.parse(bos);
-        assertNotNull(list);
-        assertThat(list.size(), is(expected.size()));
-        final List<DarcsChangeSet> logs = list.getChangeSets();
-        assertThat(logs.size(), is(expected.size()));
-
-        for (int i = 0; i < expected.size(); ++i) {
-            assertThat(logs.get(i), is(equalTo(expected.get(i))));
-        }
-    }
 }

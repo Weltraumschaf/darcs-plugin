@@ -87,21 +87,6 @@ class DarcsChangeLogParser extends ChangeLogParser {
     /**
      * @see #parse(hudson.model.AbstractBuild, java.io.File)
      *
-     * @param changeLog stream to read XML from
-     * @return change set list w/ current build null
-     * @throws IOException on read errors
-     * @throws SAXException on parse errors
-     * @deprecated use {@link #parse(java.lang.String)} instead
-     */
-    @Deprecated
-    public DarcsChangeSetList parse(final ByteArrayOutputStream changeLog) throws IOException, SAXException {
-        final StringReader input = new StringReader(sanitizer.cleanse(changeLog.toByteArray()));
-        return parse(null, new InputSource(input));
-    }
-
-    /**
-     * @see #parse(hudson.model.AbstractBuild, java.io.File)
-     *
      * @param build build associated with changelog
      * @param changeLog chnagelog to parse
      * @return change set list
