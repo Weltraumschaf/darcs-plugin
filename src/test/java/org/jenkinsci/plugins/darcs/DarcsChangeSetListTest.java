@@ -43,7 +43,7 @@ public class DarcsChangeSetListTest {
     public void testDigest() {
         DarcsChangeSetList sut;
         sut = new DarcsChangeSetList(new ArrayList<DarcsChangeSet>());
-        assertEquals(Util.getDigestOf(""), sut.digest());
+        assertThat(sut.digest(), is("d41d8cd98f00b204e9800998ecf8427e"));
 
         final DarcsChangeSet cs1 = FixtureFactory.createChangeSet("1");
         final DarcsChangeSet cs2 = FixtureFactory.createChangeSet("2");
@@ -54,8 +54,7 @@ public class DarcsChangeSetListTest {
         list.add(cs2);
         list.add(cs3);
         sut = new DarcsChangeSetList(list);
-        assertEquals(Util.getDigestOf(cs1.getHash() + cs2.getHash() + cs3.getHash()),
-                     sut.digest());
+        assertThat(sut.digest(), is("20e0da2026fb244e6b7f120a15c7be5c"));
     }
 
     @Test

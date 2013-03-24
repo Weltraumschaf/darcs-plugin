@@ -9,6 +9,7 @@
  */
 package org.jenkinsci.plugins.darcs;
 
+import hudson.Util;
 import hudson.scm.ChangeLogSet;
 import hudson.model.AbstractBuild;
 
@@ -18,8 +19,6 @@ import java.util.List;
 import java.util.Collections;
 import java.util.Comparator;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.logging.Logger;
 import org.apache.commons.lang.Validate;
 
@@ -31,18 +30,9 @@ import org.apache.commons.lang.Validate;
 public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
 
     /**
-     * Logging facility.
-     */
-    private static final Logger LOGGER = Logger.getLogger(DarcsChangeSetList.class.getName());
-    /**
      * Kind description string.
      */
     private static final String KIND = "darcs";
-    /**
-     * Used to mask bytes.
-     */
-    private static final int BYTE_MASK = 0xFF;
-
     /**
      * Set of the changes.
      */
@@ -134,51 +124,26 @@ public class DarcsChangeSetList extends ChangeLogSet<DarcsChangeSet> {
     }
 
     /**
-     * Calculates md5 digest over all changesets darcs hashes.
+     * Calculates MD5 digest over all change sets Darcs hashes.
      *
-     * Inspired by http://www.stratos.me/2008/05/java-string-calculate-md5/
-     *
-     * @return md5 hashed string
+     * @return MD5 string
      */
     private String calcDigest() {
-        final StringBuilder res = new StringBuilder();
+        final StringBuilder buffer = new StringBuilder();
 
-        try {
-            final MessageDigest algorithm = MessageDigest.getInstance("MD5");
-            algorithm.reset();
-
-            if (isEmptySet()) {
-                algorithm.update("".getBytes());
-            } else {
-                for (final DarcsChangeSet cs : this) {
-                    algorithm.update(cs.getHash().getBytes());
-                }
-            }
-
-            final byte[] md5 = algorithm.digest();
-
-            for (int i = 0; i < md5.length; i++) {
-                final String tmp = Integer.toHexString(BYTE_MASK & md5[i]);
-
-                if (tmp.length() == 1) {
-                    res.append("0");
-                }
-
-                res.append(tmp);
-            }
-        } catch (NoSuchAlgorithmException ex) {
-            LOGGER.severe(ex.toString());
+        for (final DarcsChangeSet cs : changeSets) {
+            buffer.append(cs.getHash());
         }
 
-        return res.toString();
+        return Util.getDigestOf(buffer.toString());
     }
 
     /**
-     * Returns the digest for the whole change set.
+     * Returns the digest for the whole change set list.
      *
      * Lazy computes the digest one time.
      *
-     * @return md5 hashed digest
+     * @return MD5 hashed digest
      */
     public String digest() {
         if (null == digest) {
