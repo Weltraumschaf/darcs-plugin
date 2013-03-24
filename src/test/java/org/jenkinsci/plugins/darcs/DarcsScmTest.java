@@ -9,22 +9,58 @@
  */
 package org.jenkinsci.plugins.darcs;
 
-import hudson.model.TaskListener;
-import org.junit.Ignore;
+import hudson.scm.ChangeLogParser;
+import hudson.scm.RepositoryBrowser;
+import hudson.scm.SCMDescriptor;
+import java.net.MalformedURLException;
+import java.net.URL;
+import org.jenkinsci.plugins.darcs.browsers.DarcsWeb;
 import org.junit.Test;
-import org.xml.sax.SAXException;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 
 /**
- *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsScmTest {
 
     @Test
-    @Ignore("Incomplete!")
-    public void testGetRevisionState() throws SAXException, InterruptedException {
-        final DarcsScm sut = new DarcsScm("");
-        sut.getRevisionState(null, TaskListener.NULL, "", null);
+    public void initialization() throws MalformedURLException {
+        final RepositoryBrowser browser = new DarcsWeb(new URL("http://foo.com"), "");
+        final DarcsScm2 sut = new DarcsScm2("foo", "bar", true, browser);
+        assertThat(sut.getSource(), is("foo"));
+        assertThat(sut.getLocalDir(), is("bar"));
+        assertThat(sut.isClean(), is(true));
+        assertThat(sut.getBrowser(), is(sameInstance(browser)));
+    }
+
+    @Test
+    public void supportsPolling() {
+        final DarcsScm2 sut = new DarcsScm2("", "", false, mock(RepositoryBrowser.class));
+        assertThat(sut.supportsPolling(), is(false));
+    }
+
+    @Test
+    public void requiresWorkspaceForPolling() {
+        final DarcsScm2 sut = new DarcsScm2("", "", false, mock(RepositoryBrowser.class));
+        assertThat(sut.requiresWorkspaceForPolling(), is(false));
+    }
+
+    @Test
+    public void createChangeLogParser() {
+        final DarcsScm2 sut = new DarcsScm2("", "", false, mock(RepositoryBrowser.class));
+        final ChangeLogParser p1 = sut.createChangeLogParser();
+        assertThat(p1, is(not(nullValue())));
+        assertThat(p1, is(instanceOf(DarcsChangeLogParser.class)));
+        final ChangeLogParser p2 = sut.createChangeLogParser();
+        assertThat(p2, is(instanceOf(DarcsChangeLogParser.class)));
+        assertThat(p2, is(not(nullValue())));
+        assertThat(p1, is(not(sameInstance(p2))));
     }
 
 }

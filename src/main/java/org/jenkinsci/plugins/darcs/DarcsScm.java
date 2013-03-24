@@ -24,6 +24,7 @@ import hudson.remoting.VirtualChannel;
 import hudson.scm.ChangeLogParser;
 import hudson.scm.PollingResult;
 import hudson.scm.PollingResult.Change;
+import hudson.scm.RepositoryBrowser;
 import hudson.scm.SCM;
 import hudson.scm.SCMRevisionState;
 import hudson.util.IOUtils;
@@ -70,18 +71,7 @@ public class DarcsScm extends SCM implements Serializable {
     /**
      * Used repository browser.
      */
-    private final DarcsRepositoryBrowser browser;
-
-    /**
-     * Convenience constructor.
-     *
-     * Sets local directory to {@code ""}, clean to {@code false} and browser to {@code null}.
-     *
-     * @param source repository URL from which we pull
-     */
-    public DarcsScm(final String source) {
-        this(source, "", false, null);
-    }
+    private final RepositoryBrowser<DarcsChangeSet> browser;
 
     /**
      * Dedicated constructor.
@@ -92,8 +82,7 @@ public class DarcsScm extends SCM implements Serializable {
      * @param browser the browser used to browse the repository
      */
     @DataBoundConstructor
-    public DarcsScm(final String source, final String localDir, final boolean clean,
-        final DarcsRepositoryBrowser browser) {
+    public DarcsScm(final String source, final String localDir, final boolean clean, final RepositoryBrowser<DarcsChangeSet> browser) {
         super();
         this.source = source;
         this.clean = clean;
@@ -129,7 +118,7 @@ public class DarcsScm extends SCM implements Serializable {
     }
 
     @Override
-    public DarcsRepositoryBrowser getBrowser() {
+    public RepositoryBrowser<DarcsChangeSet> getBrowser() {
         return browser;
     }
 
