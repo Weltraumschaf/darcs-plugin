@@ -18,6 +18,7 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
 import hudson.model.TaskListener;
+import hudson.remoting.VirtualChannel;
 import hudson.scm.ChangeLogParser;
 import hudson.scm.PollingResult;
 import hudson.scm.RepositoryBrowser;
@@ -49,6 +50,8 @@ public class DarcsScm2  extends SCM implements Serializable {
     private final String source;
     /**
      * Local directory with repository.
+     *
+     * TODO Consider using {@link #getModuleRoot(hudson.FilePath, hudson.model.AbstractBuild)}.
      */
     private final String localDir;
     /**
@@ -121,6 +124,7 @@ public class DarcsScm2  extends SCM implements Serializable {
 
     @Override
     public boolean supportsPolling() {
+        // TODO Enable poling
         return false;
     }
 
@@ -141,7 +145,56 @@ public class DarcsScm2  extends SCM implements Serializable {
 
     @Override
     public boolean checkout(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener, final File changelogFile) throws IOException, InterruptedException {
-        throw new UnsupportedOperationException("Not implemented yet!");
+        final FilePath localPath = createLocalPath(workspace);
+
+        if (isClean()) {
+            wipeRepo(localPath);
+        }
+
+        if (existsRepo(localPath)) {
+            pullRepo(build, launcher, workspace, listener, changelogFile);
+        } else {
+            getRepo(build, launcher, workspace, listener, changelogFile);
+        }
+
+        return true; // In favor of indicating errors by AbortException always return true.
     }
 
+    /**
+     * Creates a local path relative to the given base.
+     *
+     * If {@link #localDir} is not {@code null} and not empty a relative path to the given base is created, else the
+     * base pat itself is returned. *
+     *
+     * @param base base of the local path
+     * @return local file path.
+     */
+    FilePath createLocalPath(final FilePath base) {
+        if (null != localDir && localDir.length() > 0) {
+            return new FilePath(base, localDir);
+        }
+
+        return base;
+    }
+
+    boolean existsRepo(final FilePath localPath) throws IOException, InterruptedException {
+        // TODO Use {@link DarcsCommandFacade#isRepository()}.
+        return localPath.act(new FilePath.FileCallable<Boolean>() {
+            public Boolean invoke(final File ws, final VirtualChannel channel) throws IOException {
+                return new File(ws, "_darcs").exists();
+            }
+        });
+    }
+
+    private void wipeRepo(final FilePath localPath) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    private void pullRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener, final File changelogFile) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    private void getRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener, final File changelogFile) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
