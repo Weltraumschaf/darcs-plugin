@@ -10,7 +10,6 @@
 package org.jenkinsci.plugins.darcs;
 
 import org.jenkinsci.plugins.darcs.cmd.DarcsCommandFacade;
-import org.jenkinsci.plugins.darcs.browsers.DarcsRepositoryBrowser;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.FilePath.FileCallable;

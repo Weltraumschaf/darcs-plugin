@@ -12,7 +12,6 @@ package org.jenkinsci.plugins.darcs;
 import static org.junit.Assert.*;
 import java.util.List;
 import java.util.ArrayList;
-import hudson.Util;
 import org.junit.Test;
 import static org.hamcrest.CoreMatchers.*;
 

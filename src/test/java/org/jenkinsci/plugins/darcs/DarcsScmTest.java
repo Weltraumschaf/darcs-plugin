@@ -11,7 +11,6 @@ package org.jenkinsci.plugins.darcs;
 
 import hudson.scm.ChangeLogParser;
 import hudson.scm.RepositoryBrowser;
-import hudson.scm.SCMDescriptor;
 import java.net.MalformedURLException;
 import java.net.URL;
 import org.jenkinsci.plugins.darcs.browsers.DarcsWeb;

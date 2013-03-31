@@ -130,7 +130,7 @@ public class DarcsScm2  extends SCM implements Serializable {
     }
 
     @Override
-    public SCMRevisionState calcRevisionsFromBuild(final AbstractBuild<?,?> build, final Launcher launcher, final TaskListener listener) throws IOException, InterruptedException {
+    public SCMRevisionState calcRevisionsFromBuild(final AbstractBuild<?, ?> build, final Launcher launcher, final TaskListener listener) throws IOException, InterruptedException {
         throw new UnsupportedOperationException("Not implemented yet!");
     }
 

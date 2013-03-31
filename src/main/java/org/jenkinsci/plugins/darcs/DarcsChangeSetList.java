@@ -12,14 +12,11 @@ package org.jenkinsci.plugins.darcs;
 import hudson.Util;
 import hudson.scm.ChangeLogSet;
 import hudson.model.AbstractBuild;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Collections;
 import java.util.Comparator;
-
-import java.util.logging.Logger;
 import org.apache.commons.lang.Validate;
 
 /**
