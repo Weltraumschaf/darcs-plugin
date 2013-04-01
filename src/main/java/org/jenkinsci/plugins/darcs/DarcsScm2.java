@@ -378,7 +378,9 @@ public class DarcsScm2  extends SCM implements Serializable {
      * @param listener receives events that happen during some lengthy operation
      * @return number of patches, if an error occurred on counting 0 is returned
      */
+    //CHECKSTYLE:OFF
     private int countPatches(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener) {
+    //CHECKSTYLE:ON
         try {
             final DarcsCommandFacade cmd = createCommand(build, launcher, workspace, listener);
             final FilePath localPath = createLocalPath(workspace);
@@ -389,22 +391,63 @@ public class DarcsScm2  extends SCM implements Serializable {
         }
     }
 
-    private DarcsCommandFacade createCommand(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener) throws IOException, InterruptedException {
-        return new DarcsCommandFacade(
-            launcher,
-            build.getEnvironment(listener),
-            getDescriptor().getDarcsExe(),
-            workspace.getParent());
+    /**
+     * Convenience method to create command facade.
+     *
+     * @param build associated build
+     * @param launcher hides the difference between running programs locally vs remotely
+     * @param workspace build workspace
+     * @param listener receives events that happen during some lengthy operation
+     * @return always returns new instance
+     * @throws AbortException if something went wrong
+     */
+    //CHECKSTYLE:OFF
+    private DarcsCommandFacade createCommand(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener) throws AbortException {
+    //CHECKSTYLE:ON
+        try {
+            return new DarcsCommandFacade(
+                launcher,
+                build.getEnvironment(listener),
+                getDescriptor().getDarcsExe(),
+                workspace.getParent());
+        } catch (IOException ex) {
+            abort("Can't create Darcs command!", ex);
+        } catch (InterruptedException ex) {
+            abort("Can't create Darcs command!", ex);
+        }
+
+        return null; // Never reached because abort() always throws AbortException.
     }
 
+    /**
+     * Logs a message with prefix {@link #LOG_PREFIX_INFO} to the listener.
+     *
+     * @param listener receives events that happen during some lengthy operation
+     * @param message log message
+     */
     void info(final TaskListener listener, final String message) {
         log(listener, LOG_PREFIX_INFO, message);
     }
 
+    /**
+     * Logs a message with prefix {@link #LOG_PREFIX_WARNING} to the listener.
+     *
+     * @param listener receives events that happen during some lengthy operation
+     * @param message log message
+     */
     void warning(final TaskListener listener, final String message) {
         log(listener, LOG_PREFIX_WARNING, message);
     }
 
+    /**
+     * Logs to the logger of the passed in listener.
+     *
+     * The message is preceded with the prefix and a colon: "prefix: message".
+     *
+     * @param listener receives events that happen during some lengthy operation
+     * @param prefix log prefix
+     * @param message log message
+     */
     void log(final TaskListener listener, final String prefix, final String message) {
         listener.getLogger().printf("%s: %s", prefix, message);
     }

@@ -212,22 +212,22 @@ public class DarcsScmTest {
     }
 
     @Test @Ignore
-    public void checkout_emptyWorkspace() {
+    public void checkout_emptyInWorkspace() {
 
     }
 
     @Test @Ignore
-    public void checkout_emptyWorkspaceWithClean() {
+    public void checkout_emptyInWorkspaceWithClean() {
 
     }
 
     @Test @Ignore
-    public void checkout_notEmptyWorkspace() {
+    public void checkout_notInEmptyWorkspace() {
 
     }
 
     @Test @Ignore
-    public void checkout_notEmptyWorkspaceWithClean() {
+    public void checkout_notInEmptyWorkspaceWithClean() {
 
     }
 
