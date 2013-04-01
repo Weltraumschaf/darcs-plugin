@@ -291,6 +291,29 @@ public class DarcsScm2  extends SCM implements Serializable {
     }
 
     /**
+     * Gets a fresh copy of a remote repository.
+     *
+     * @param build associated build
+     * @param launcher hides the difference between running programs locally vs remotely
+     * @param workspace workspace of build
+     * @param listener receives events that happen during some lengthy operation
+     * @param changelogFile log of current changes
+     * @throws AbortException if any error happened during execution
+     */
+    //CHECKSTYLE:OFF
+    private void getRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener, final File changelogFile) throws AbortException {
+    //CHECKSTYLE:ON
+        try {
+            final DarcsCommandFacade cmd = createCommand(build, launcher, workspace, listener);
+            final FilePath localPath = createLocalPath(workspace);
+            cmd.get(localPath.getRemote(), source);
+            createEmptyChangeLog(changelogFile, listener);
+        } catch (Exception ex) {
+            abort(Messages.DarcsScm_failedToGetRepoFrom(source), ex);
+        }
+    }
+
+    /**
      * Writes the change log of the last numPatches to the changeLog file.
      *
      * @param launcher hides the difference between running programs locally vs remotely
@@ -354,27 +377,6 @@ public class DarcsScm2  extends SCM implements Serializable {
         } catch (Exception e) {
             listener.error(Messages.DarcsScm_failedToCountPatchesInWorkspace(e));
             return 0;
-        }
-    }
-
-    /**
-     * Gets a fresh copy of a remote repository.
-     *
-     * @param build associated build
-     * @param launcher hides the difference between running programs locally vs remotely
-     * @param workspace workspace of build
-     * @param listener receives events that happen during some lengthy operation
-     * @param changelogFile log of current changes
-     * @throws AbortException if any error happened during execution
-     */
-    private void getRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener, final File changelogFile) throws AbortException {
-        try {
-            final DarcsCommandFacade cmd = createCommand(build, launcher, workspace, listener);
-            final FilePath localPath = createLocalPath(workspace);
-            cmd.get(localPath.getRemote(), source);
-            createEmptyChangeLog(changelogFile, listener);
-        } catch (Exception ex) {
-            abort(Messages.DarcsScm_failedToGetRepoFrom(source), ex);
         }
     }
 
