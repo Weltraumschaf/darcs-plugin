@@ -166,7 +166,7 @@ public final class DarcsScm2  extends SCM implements Serializable {
             getRepo(build, launcher, workspace, listener, changelogFile);
         }
 
-        return true; // In favor of indicating errors by AbortException always return true.
+        return true; // In favor of indicating errors by throwing AbortException always return true.
     }
 
     /**
