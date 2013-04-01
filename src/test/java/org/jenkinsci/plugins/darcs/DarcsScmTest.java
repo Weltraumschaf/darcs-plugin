@@ -9,13 +9,18 @@
  */
 package org.jenkinsci.plugins.darcs;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 import hudson.AbortException;
 import hudson.FilePath;
+import hudson.model.BuildListener;
 import hudson.model.TaskListener;
 import hudson.scm.ChangeLogParser;
 import hudson.scm.RepositoryBrowser;
+import hudson.util.IOUtils;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
 import org.junit.Test;
@@ -229,6 +234,17 @@ public class DarcsScmTest {
     @Test @Ignore
     public void createChangeLog() {
 
+    }
+
+    @Test
+    @SuppressWarnings("OBL_UNSATISFIED_OBLIGATION")
+    public void createEmptyChangeLog() throws IOException {
+        final File changelogFile = tmpDir.newFile();
+        final DarcsScm2 sut = createSut();
+        assertThat(sut.createEmptyChangeLog(changelogFile, mock(BuildListener.class)), is(true));
+        final InputStream in = new FileInputStream(changelogFile);
+        assertThat(IOUtils.toString(in), is("<changelog/>"));
+        IOUtils.closeQuietly(in);
     }
 
 }

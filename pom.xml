@@ -146,6 +146,11 @@
             <version>2.3</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>findbugs</groupId>
+            <artifactId>annotations</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 
     <build>
