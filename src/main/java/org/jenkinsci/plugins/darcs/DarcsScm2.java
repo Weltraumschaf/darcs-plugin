@@ -73,7 +73,9 @@ public final class DarcsScm2  extends SCM implements Serializable {
      * @param browser the browser used to browse the repository
      */
     @DataBoundConstructor
+    //CHECKSTYLE:OFF
     public DarcsScm2(final String source, final String localDir, final boolean clean, final RepositoryBrowser<DarcsChangeSet> browser) {
+    //CHECKSTYLE:ON
         super();
         this.source = source;
         this.clean = clean;
@@ -135,17 +137,23 @@ public final class DarcsScm2  extends SCM implements Serializable {
     }
 
     @Override
+    //CHECKSTYLE:OFF
     public SCMRevisionState calcRevisionsFromBuild(final AbstractBuild<?, ?> build, final Launcher launcher, final TaskListener listener) throws IOException, InterruptedException {
+    //CHECKSTYLE:ON
         throw new UnsupportedOperationException("Not implemented yet!");
     }
 
     @Override
+    //CHECKSTYLE:OFF
     protected PollingResult compareRemoteRevisionWith(final AbstractProject<?, ?> project, final Launcher launcher, final FilePath workspace, final TaskListener listener, final SCMRevisionState baseline) throws IOException, InterruptedException {
+    //CHECKSTYLE:ON
         throw new UnsupportedOperationException("Not implemented yet!");
     }
 
     @Override
+    //CHECKSTYLE:OFF
     public boolean checkout(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener, final File changelogFile) throws IOException, InterruptedException {
+    //CHECKSTYLE:ON
         final FilePath localPath = createLocalPath(workspace);
 
         if (isClean()) {
