@@ -49,9 +49,18 @@ public class DarcsScm2  extends SCM implements Serializable {
      * Serial version UID.
      */
     private static final long serialVersionUID = 4L;
+    /**
+     * Name of change log root tag.
+     */
     private static final String CHANGELOG_ROOT_TAG = "changelog";
-    private static final String INFO_PREFIX = "INFO";
-    private static final String WARNING_PREFIX = "WARNING";
+    /**
+     * Log prefix for info messages.
+     */
+    private static final String LOG_PREFIX_INFO = "INFO";
+    /**
+     * Log prefix for warning messages.
+     */
+    private static final String LOG_PREFIX_WARNING = "WARNING";
 
     /**
      * Source repository URL from which we pull.
@@ -389,11 +398,11 @@ public class DarcsScm2  extends SCM implements Serializable {
     }
 
     void info(final TaskListener listener, final String message) {
-        log(listener, INFO_PREFIX, message);
+        log(listener, LOG_PREFIX_INFO, message);
     }
 
     void warning(final TaskListener listener, final String message) {
-        log(listener, WARNING_PREFIX, message);
+        log(listener, LOG_PREFIX_WARNING, message);
     }
 
     void log(final TaskListener listener, final String prefix, final String message) {
