@@ -12,6 +12,7 @@
 
 package org.jenkinsci.plugins.darcs;
 
+import hudson.AbortException;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
@@ -37,7 +38,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  * @author Ralph Lange <Ralph.Lange@gmx.de>
  */
-public class DarcsScm2  extends SCM implements Serializable {
+public final class DarcsScm2  extends SCM implements Serializable {
 
     /**
      * Serial version UID.
@@ -148,7 +149,7 @@ public class DarcsScm2  extends SCM implements Serializable {
         final FilePath localPath = createLocalPath(workspace);
 
         if (isClean()) {
-            wipeRepo(localPath);
+            clean(localPath);
         }
 
         if (existsRepo(localPath)) {
@@ -177,8 +178,17 @@ public class DarcsScm2  extends SCM implements Serializable {
         return base;
     }
 
+    /**
+     * Checks if the given local path is a directory containing a Darcs repository.
+     *
+     * TODO Use {@link DarcsCommandFacade#isRepository()}.
+     *
+     * @param localPath local path to examine
+     * @return {@code true} if it is a Darcs repository, else {@code false}
+     * @throws IOException if I/O error happened
+     * @throws InterruptedException if thread was interrupted
+     */
     boolean existsRepo(final FilePath localPath) throws IOException, InterruptedException {
-        // TODO Use {@link DarcsCommandFacade#isRepository()}.
         return localPath.act(new FilePath.FileCallable<Boolean>() {
             public Boolean invoke(final File ws, final VirtualChannel channel) throws IOException {
                 return new File(ws, "_darcs").exists();
@@ -186,8 +196,53 @@ public class DarcsScm2  extends SCM implements Serializable {
         });
     }
 
-    private void wipeRepo(final FilePath localPath) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    /**
+     * Delete given file recursively.
+     *
+     * @param localPath file which will be deleted recursively.
+     * @throws AbortException if any error happened during operation
+     */
+    void clean(final FilePath localPath) throws AbortException {
+        try {
+            localPath.deleteRecursive();
+        } catch (IOException ex) {
+            abort(Messages.DarcsScm_failedToCleanTheWorkspace(), ex);
+        } catch (InterruptedException ex) {
+            abort(Messages.DarcsScm_failedToCleanTheWorkspace(), ex);
+        }
+    }
+
+    /**
+     * Throws {@link AbortException}.
+     *
+     * @param message for the exception
+     * @throws AbortException always thrown
+     */
+    void abort(final String message) throws AbortException {
+        abort(message, null);
+    }
+
+    /**
+     * Throws {@link AbortException}.
+     *
+     * @param message for the exception
+     * @param cause previous exception
+     * @throws AbortException always thrown
+     */
+    void abort(final String message, final Throwable cause) throws AbortException {
+        final StringBuilder extendedMessage = new StringBuilder(message);
+
+        if (null != cause && null != cause.getMessage() && cause.getMessage().length() > 0) {
+            extendedMessage.append(" (").append(cause.getMessage()).append(")");
+        }
+
+        final AbortException exception = new AbortException(extendedMessage.toString());
+
+        if (null != cause) {
+            exception.initCause(cause);
+        }
+
+        throw exception;
     }
 
     private void pullRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener, final File changelogFile) {
