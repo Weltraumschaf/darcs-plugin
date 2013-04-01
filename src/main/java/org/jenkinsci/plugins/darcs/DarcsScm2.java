@@ -25,9 +25,14 @@ import hudson.scm.PollingResult;
 import hudson.scm.RepositoryBrowser;
 import hudson.scm.SCM;
 import hudson.scm.SCMRevisionState;
+import hudson.util.IOUtils;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Serializable;
+import java.io.StringWriter;
+import org.jenkinsci.plugins.darcs.cmd.DarcsCommandFacade;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
@@ -38,12 +43,15 @@ import org.kohsuke.stapler.DataBoundConstructor;
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  * @author Ralph Lange <Ralph.Lange@gmx.de>
  */
-public final class DarcsScm2  extends SCM implements Serializable {
+public class DarcsScm2  extends SCM implements Serializable {
 
     /**
      * Serial version UID.
      */
     private static final long serialVersionUID = 4L;
+    private static final String CHANGELOG_ROOT_TAG = "changelog";
+    private static final String INFO_PREFIX = "INFO";
+    private static final String WARNING_PREFIX = "WARNING";
 
     /**
      * Source repository URL from which we pull.
@@ -253,11 +261,140 @@ public final class DarcsScm2  extends SCM implements Serializable {
         throw exception;
     }
 
-    private void pullRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener, final File changelogFile) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    /**
+     * Pulls all patches from a remote repository in the workspace repository.
+     *
+     * @param build associated build
+     * @param launcher hides the difference between running programs locally vs remotely
+     * @param workspace workspace of build
+     * @param listener receives events that happen during some lengthy operation
+     * @param changelogFile log of current changes
+     * @throws AbortException if any error happened during execution
+     */
+    //CHECKSTYLE:OFF
+    void pullRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener, final File changelogFile) throws AbortException {
+    //CHECKSTYLE:ON
+        try {
+            info(listener, Messages.DarcsScm_pullingRepoFrom(source));
+            final int preCnt = countPatches(build, launcher, workspace, listener);
+            info(listener, Messages.DarcsScm_countOfPatchesPrePullingIs(preCnt));
+            final DarcsCommandFacade cmd = createCommand(build, launcher, workspace, listener);
+            final FilePath localPath = createLocalPath(workspace);
+            cmd.pull(localPath.getRemote(), source);
+            final int postCnt = countPatches(build, launcher, workspace, listener);
+            info(listener, Messages.DarcsScm_countOfPatchesPostPullingIs(postCnt));
+            final int numPatches = postCnt - preCnt;
+            createChangeLog(build, launcher, numPatches, workspace, changelogFile, listener);
+        } catch (Exception e) {
+            listener.error(Messages.DarcsScm_failedToPull(e));
+        }
     }
 
-    private void getRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener, final File changelogFile) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    /**
+     * Writes the change log of the last numPatches to the changeLog file.
+     *
+     * @param launcher hides the difference between running programs locally vs remotely
+     * @param numPatches number of patches
+     * @param workspace build workspace
+     * @param changelogFile log of current changes
+     * @param listener receives events that happen during some lengthy operation
+     * @throws InterruptedException if thread was interrupted
+     */
+    //CHECKSTYLE:OFF
+    void createChangeLog(final AbstractBuild<?, ?> build, final Launcher launcher, final int numPatches, final FilePath workspace, final File changelogFile, final BuildListener listener) throws InterruptedException, IOException {
+    //CHECKSTYLE:ON
+        if (0 == numPatches) {
+            info(listener, "INFO: " + Messages.DarcsScm_createEmptyChangelog());
+            createEmptyChangeLog(changelogFile, listener);
+            return;
+        }
+
+        final DarcsCommandFacade cmd = createCommand(build, launcher, workspace, listener);
+        FileOutputStream fos = null;
+
+        try {
+            fos = new FileOutputStream(changelogFile);
+            final FilePath localPath = createLocalPath(workspace);
+            final String changes = cmd.lastSummarizedChanges(localPath.getRemote(), numPatches);
+            fos.write(changes.getBytes()); // XXX Consider encoding.
+        } catch (Exception e) {
+            final StringWriter w = new StringWriter();
+            e.printStackTrace(new PrintWriter(w));
+            warning(listener, Messages.DarcsScm_failedToGetLogFromRepo(w));
+        } finally {
+            IOUtils.closeQuietly(fos);
+        }
+    }
+
+    /**
+     * Creates an empty change log file with root tag of {@link #CHANGELOG_ROOT_TAG}.
+     *
+     * @param changelogFile created change log
+     * @param listener used for logging
+     * @return {@code true} on success, else {@code false}
+     */
+    boolean createEmptyChangeLog(final File changelogFile, final BuildListener listener) {
+        return createEmptyChangeLog(changelogFile, listener, CHANGELOG_ROOT_TAG);
+    }
+
+    /**
+     * Counts the patches in a repository.
+     *
+     * @param build associated build
+     * @param launcher hides the difference between running programs locally vs remotely
+     * @param workspace build workspace
+     * @param listener receives events that happen during some lengthy operation
+     * @return number of patches, if an error occurred on counting 0 is returned
+     */
+    private int countPatches(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener) {
+        try {
+            final DarcsCommandFacade cmd = createCommand(build, launcher, workspace, listener);
+            final FilePath localPath = createLocalPath(workspace);
+            return cmd.countChanges(localPath.getRemote());
+        } catch (Exception e) {
+            listener.error(Messages.DarcsScm_failedToCountPatchesInWorkspace(e));
+            return 0;
+        }
+    }
+
+    /**
+     * Gets a fresh copy of a remote repository.
+     *
+     * @param build associated build
+     * @param launcher hides the difference between running programs locally vs remotely
+     * @param workspace workspace of build
+     * @param listener receives events that happen during some lengthy operation
+     * @param changelogFile log of current changes
+     * @throws AbortException if any error happened during execution
+     */
+    private void getRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener, final File changelogFile) throws AbortException {
+        try {
+            final DarcsCommandFacade cmd = createCommand(build, launcher, workspace, listener);
+            final FilePath localPath = createLocalPath(workspace);
+            cmd.get(localPath.getRemote(), source);
+            createEmptyChangeLog(changelogFile, listener);
+        } catch (Exception ex) {
+            abort(Messages.DarcsScm_failedToGetRepoFrom(source), ex);
+        }
+    }
+
+    private DarcsCommandFacade createCommand(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener) throws IOException, InterruptedException {
+        return new DarcsCommandFacade(
+            launcher,
+            build.getEnvironment(listener),
+            getDescriptor().getDarcsExe(),
+            workspace.getParent());
+    }
+
+    void info(final TaskListener listener, final String message) {
+        log(listener, INFO_PREFIX, message);
+    }
+
+    void warning(final TaskListener listener, final String message) {
+        log(listener, WARNING_PREFIX, message);
+    }
+
+    void log(final TaskListener listener, final String prefix, final String message) {
+        listener.getLogger().printf("%s: %s", prefix, message);
     }
 }

@@ -11,10 +11,12 @@ package org.jenkinsci.plugins.darcs;
 
 import hudson.AbortException;
 import hudson.FilePath;
+import hudson.model.TaskListener;
 import hudson.scm.ChangeLogParser;
 import hudson.scm.RepositoryBrowser;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.MalformedURLException;
 import org.junit.Test;
 import static org.hamcrest.Matchers.is;
@@ -24,10 +26,11 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Sven Strittmatter <ich@weltraumschaf.de>
@@ -173,6 +176,59 @@ public class DarcsScmTest {
         final DarcsScm2 sut = createSut();
         sut.clean(localPath);
         assertThat(localPath.exists(), is(false));
+    }
+
+    @Test
+    public void info() {
+        final TaskListener listener = mock(TaskListener.class);
+        when(listener.getLogger()).thenReturn(mock(PrintStream.class));
+        final DarcsScm2 sut = spy(createSut());
+        sut.info(listener, "foobar");
+        verify(sut).log(listener, "INFO", "foobar");
+    }
+
+    @Test
+    public void warning() {
+        final TaskListener listener = mock(TaskListener.class);
+        when(listener.getLogger()).thenReturn(mock(PrintStream.class));
+        final DarcsScm2 sut = spy(createSut());
+        sut.warning(listener, "foobar");
+        verify(sut).log(listener, "WARNING", "foobar");
+    }
+
+    @Test
+    public void log() {
+        final TaskListener listener = mock(TaskListener.class);
+        final PrintStream stream = mock(PrintStream.class);
+        when(listener.getLogger()).thenReturn(stream);
+        final DarcsScm2 sut = createSut();
+        sut.log(listener, "foo", "bar");
+        verify(stream, times(1)).printf("%s: %s", "foo", "bar");
+    }
+
+    @Test @Ignore
+    public void checkout_emptyWorkspace() {
+
+    }
+
+    @Test @Ignore
+    public void checkout_emptyWorkspaceWithClean() {
+
+    }
+
+    @Test @Ignore
+    public void checkout_notEmptyWorkspace() {
+
+    }
+
+    @Test @Ignore
+    public void checkout_notEmptyWorkspaceWithClean() {
+
+    }
+
+    @Test @Ignore
+    public void createChangeLog() {
+
     }
 
 }
