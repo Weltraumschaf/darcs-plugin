@@ -17,124 +17,26 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import org.apache.commons.io.FileUtils;
-import org.codehaus.plexus.archiver.tar.TarGZipUnArchiver;
-import org.codehaus.plexus.logging.Logger;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import org.junit.Before;
-import static org.mockito.Mockito.mock;
 
 /**
- *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 public class DarcsCommandFacadeTest {
 
-    private static final String FIXTURE_BASE = "/org/jenkinsci/plugins/darcs/cmd";
-
-    private enum Binary {
-
-        LINUX_BIN("darcs_bin_linux_2.8", "2.8.0 (release)\n", "/exact_version_2.8"),
-        MACOS_BIN("darcs_bin_macos_2.5", "2.5 (release)\n", "/exact_version_2.5");
-        private final String name;
-        private final String version;
-        private final String exactVersion;
-
-        private Binary(final String name, final String version, final String exactVersion) {
-            this.name = name;
-            this.version = version;
-            this.exactVersion = exactVersion;
-        }
-
-        File getBin() throws URISyntaxException {
-            final File bin = new File(getClass().getResource(FIXTURE_BASE + "/" + name).toURI());
-            bin.setExecutable(true);
-            return bin;
-        }
-
-        String getShortVersion() {
-            return version.substring(0, 3);
-        }
-
-        String getVersion() {
-            return version;
-        }
-
-        String getExactVersion() throws URISyntaxException, IOException {
-            return readResource(FIXTURE_BASE + exactVersion);
-        }
-
-        static Binary determine() {
-            final String os = System.getProperty("os.name", "unknown").toLowerCase();
-
-            if (os.indexOf("linux") >= 0) {
-                return LINUX_BIN;
-            } else if (os.indexOf("mac os x") >= 0) {
-                return MACOS_BIN;
-            } else {
-                throw new IllegalArgumentException(String.format("Unsupported os '%s'!", os));
-            }
-        }
-    }
-
-    private enum Repository {
-
-        EMPTY("empty_repo"),
-        DIRTY_REPO("dirty_repo"),
-        REPO("repo");
-        private static final String FIXTURE_FORMAT = "%s/%s_%s_%s.xml";
-        private final String reponame;
-
-        private Repository(String filename) {
-            this.reponame = filename;
-        }
-
-        File getArchive() throws URISyntaxException {
-            return new File(getClass().getResource(FIXTURE_BASE + "/" + reponame + ".tar.gz").toURI());
-        }
-
-        String getReponame() {
-            return reponame;
-        }
-
-        File extractTo(final File destination) throws URISyntaxException {
-            final TarGZipUnArchiver ua = new TarGZipUnArchiver();
-            ua.enableLogging(mock(Logger.class));
-            ua.setSourceFile(getArchive());
-            ua.setDestDirectory(destination);
-            ua.extract();
-            return new File(destination, getReponame());
-        }
-
-        private String fixtureFile(final String file, final String version) {
-            return String.format(FIXTURE_FORMAT, FIXTURE_BASE, file, reponame, version);
-        }
-
-        String lastSummarizedChanges(final String version) throws URISyntaxException, IOException {
-            return readResource(fixtureFile("last_summarized_changes", version));
-        }
-
-        String allSummarizedChanges(final String version) throws URISyntaxException, IOException {
-            return readResource(fixtureFile("all_summarized_changes", version));
-        }
-
-        String allChanges(final String version) throws URISyntaxException, IOException {
-            return readResource(fixtureFile("all_changes", version));
-        }
-
-    }
     //CHECKSTYLE:OFF
-    @Rule
-    public TemporaryFolder tmpDir = new TemporaryFolder();
+    @Rule public TemporaryFolder tmpDir = new TemporaryFolder();
     //CHECKSTYLE:ON
-    private Binary darcsExe;
+    private DarcsBinary darcsExe;
 
     @Before
     public void loadDarcsExe() throws URISyntaxException {
-        darcsExe = Binary.determine();
+        darcsExe = DarcsBinary.determine();
         assertThat(darcsExe.getBin(), is(notNullValue()));
         assertThat(darcsExe.getBin().exists(), is(true));
     }
@@ -156,7 +58,7 @@ public class DarcsCommandFacadeTest {
     @Test
     public void lastSummarizedChanges_emptyRepo() throws URISyntaxException, DarcsCommadException {
         final DarcsCommandFacade sut = createSut();
-        final File repo = Repository.EMPTY.extractTo(tmpDir.getRoot());
+        final File repo = DarcsRepository.EMPTY.extractTo(tmpDir.getRoot());
         assertThat(repo, is(notNullValue()));
         assertThat(sut.lastSummarizedChanges(repo.getAbsolutePath(), 3), is("<changelog>\n</changelog>\n"));
     }
@@ -164,28 +66,28 @@ public class DarcsCommandFacadeTest {
     @Test
     public void lastSummarizedChanges_repo() throws URISyntaxException, IOException, DarcsCommadException {
         final DarcsCommandFacade sut = createSut();
-        final Repository repo = Repository.REPO;
+        final DarcsRepository repo = DarcsRepository.REPO;
         final File extractedRepo = repo.extractTo(tmpDir.getRoot());
         assertThat(extractedRepo, is(notNullValue()));
         assertThat(sut.lastSummarizedChanges(extractedRepo.getAbsolutePath(), 3),
-                is(repo.lastSummarizedChanges(darcsExe.getShortVersion())));
+                is(repo.lastSummarizedChanges(darcsExe.getVersion())));
     }
 
     @Test
     public void allSummarizedChanges_repo() throws URISyntaxException, IOException, DarcsCommadException {
         final DarcsCommandFacade sut = createSut();
-        final Repository repo = Repository.REPO;
+        final DarcsRepository repo = DarcsRepository.REPO;
         final File extractedRepo = repo.extractTo(tmpDir.getRoot());
         assertThat(extractedRepo, is(notNullValue()));
         assertThat(sut.allSummarizedChanges(extractedRepo.getAbsolutePath()),
-                is(repo.allSummarizedChanges(darcsExe.getShortVersion())));
+                is(repo.allSummarizedChanges(darcsExe.getVersion())));
 
     }
 
     @Test
     public void allSummarizedChanges_emptyRepo() throws URISyntaxException, DarcsCommadException {
         final DarcsCommandFacade sut = createSut();
-        final File repo = Repository.EMPTY.extractTo(tmpDir.getRoot());
+        final File repo = DarcsRepository.EMPTY.extractTo(tmpDir.getRoot());
         assertThat(repo, is(notNullValue()));
         assertThat(sut.allChanges(repo.getAbsolutePath()), is("<changelog>\n</changelog>\n"));
     }
@@ -193,17 +95,17 @@ public class DarcsCommandFacadeTest {
     @Test
     public void allChanges_repo() throws URISyntaxException, IOException, DarcsCommadException {
         final DarcsCommandFacade sut = createSut();
-        final Repository repo = Repository.REPO;
+        final DarcsRepository repo = DarcsRepository.REPO;
         final File extractedRepo = repo.extractTo(tmpDir.getRoot());
         assertThat(extractedRepo, is(notNullValue()));
         assertThat(sut.allChanges(extractedRepo.getAbsolutePath()),
-                is(repo.allChanges(darcsExe.getShortVersion())));
+                is(repo.allChanges(darcsExe.getVersion())));
     }
 
     @Test
     public void allChanges_emptyRepo() throws URISyntaxException, DarcsCommadException {
         final DarcsCommandFacade sut = createSut();
-        final File repo = Repository.EMPTY.extractTo(tmpDir.getRoot());
+        final File repo = DarcsRepository.EMPTY.extractTo(tmpDir.getRoot());
         assertThat(repo, is(notNullValue()));
         assertThat(sut.allChanges(repo.getAbsolutePath()), is("<changelog>\n</changelog>\n"));
     }
@@ -211,7 +113,7 @@ public class DarcsCommandFacadeTest {
     @Test
     public void countChanges_repo() throws URISyntaxException, DarcsCommadException {
         final DarcsCommandFacade sut = createSut();
-        final File repo = Repository.REPO.extractTo(tmpDir.getRoot());
+        final File repo = DarcsRepository.REPO.extractTo(tmpDir.getRoot());
         assertThat(repo, is(notNullValue()));
         assertThat(sut.countChanges(repo.getAbsolutePath()), is(6));
     }
@@ -219,7 +121,7 @@ public class DarcsCommandFacadeTest {
     @Test
     public void countChanges_emptyRepo() throws URISyntaxException, DarcsCommadException {
         final DarcsCommandFacade sut = createSut();
-        final File repo = Repository.EMPTY.extractTo(tmpDir.getRoot());
+        final File repo = DarcsRepository.EMPTY.extractTo(tmpDir.getRoot());
         assertThat(repo, is(notNullValue()));
         assertThat(sut.countChanges(repo.getAbsolutePath()), is(0));
     }
@@ -227,7 +129,7 @@ public class DarcsCommandFacadeTest {
     @Test
     public void pull_repo() throws URISyntaxException, IOException, DarcsCommadException {
         final DarcsCommandFacade sut = createSut();
-        final File origin = Repository.REPO.extractTo(tmpDir.getRoot());
+        final File origin = DarcsRepository.REPO.extractTo(tmpDir.getRoot());
         assertThat(origin, is(notNullValue()));
         final File desitnation = tmpDir.newFolder("destination");
         sut.init(desitnation);
@@ -241,7 +143,7 @@ public class DarcsCommandFacadeTest {
     @Test
     public void pull_emptyRepo() throws URISyntaxException, IOException, DarcsCommadException {
         final DarcsCommandFacade sut = createSut();
-        final File origin = Repository.EMPTY.extractTo(tmpDir.getRoot());
+        final File origin = DarcsRepository.EMPTY.extractTo(tmpDir.getRoot());
         assertThat(origin, is(notNullValue()));
         final File desitnation = tmpDir.newFolder("destination");
         sut.init(desitnation);
@@ -255,7 +157,7 @@ public class DarcsCommandFacadeTest {
     @Test
     public void get_repo() throws URISyntaxException, IOException, DarcsCommadException {
         final DarcsCommandFacade sut = createSut();
-        final File repo = Repository.REPO.extractTo(tmpDir.getRoot());
+        final File repo = DarcsRepository.REPO.extractTo(tmpDir.getRoot());
         assertThat(repo, is(notNullValue()));
         final File desitnation = new File(tmpDir.getRoot(), "checkout");
         sut.get(desitnation.getAbsolutePath(), repo.getAbsolutePath());
@@ -266,7 +168,7 @@ public class DarcsCommandFacadeTest {
     @Test
     public void get_emptyRepo() throws URISyntaxException, IOException, DarcsCommadException {
         final DarcsCommandFacade sut = createSut();
-        final File repo = Repository.EMPTY.extractTo(tmpDir.getRoot());
+        final File repo = DarcsRepository.EMPTY.extractTo(tmpDir.getRoot());
         assertThat(repo, is(notNullValue()));
         final File desitnation = new File(tmpDir.getRoot(), "checkout");
         sut.get(desitnation.getAbsolutePath(), repo.getAbsolutePath());
@@ -295,13 +197,13 @@ public class DarcsCommandFacadeTest {
     @Test
     public void version() throws URISyntaxException, DarcsCommadException {
         final DarcsCommandFacade sut = createSut();
-        assertThat(sut.version(), is(Binary.determine().getVersion()));
+        assertThat(sut.version(), is(DarcsBinary.determine().getVersion().getNormalVersion()));
     }
 
     @Test
     public void exactVersion() throws URISyntaxException, IOException, DarcsCommadException {
         final DarcsCommandFacade sut = createSut();
-        assertThat(sut.version(true), is(Binary.determine().getExactVersion()));
+        assertThat(sut.version(true), is(DarcsBinary.determine().getExactVersion()));
     }
 
     @Test
@@ -311,4 +213,5 @@ public class DarcsCommandFacadeTest {
         assertThat(sut.isRepository(tmpDir.getRoot()), is(true));
         assertThat(sut.countChanges(tmpDir.getRoot()), is(0));
     }
+
 }

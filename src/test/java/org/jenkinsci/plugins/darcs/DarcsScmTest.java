@@ -247,4 +247,10 @@ public class DarcsScmTest {
         IOUtils.closeQuietly(in);
     }
 
+    @Test @Ignore
+    public void pullRepo() {}
+
+    @Test @Ignore
+    public void getRepo() {}
+
 }
