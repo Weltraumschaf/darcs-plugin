@@ -37,8 +37,9 @@ public class DarcsCommandFacadeTest {
     @Before
     public void loadDarcsExe() throws URISyntaxException {
         darcsExe = DarcsBinary.determine();
-        assertThat(darcsExe.getBin(), is(notNullValue()));
-        assertThat(darcsExe.getBin().exists(), is(true));
+        final File bin = darcsExe.getBin();
+        assertThat(bin, is(notNullValue()));
+        assertThat(bin.exists(), is(true));
     }
 
     private DarcsCommandFacade createSut() throws URISyntaxException {

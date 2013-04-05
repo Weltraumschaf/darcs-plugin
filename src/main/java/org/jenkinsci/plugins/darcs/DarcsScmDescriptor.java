@@ -29,6 +29,7 @@ import org.jenkinsci.plugins.darcs.browsers.DarcsRepositoryBrowser;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.framework.io.ByteBuffer;
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 /**
  * Inner class of the SCM descriptor.
@@ -62,6 +63,7 @@ public class DarcsScmDescriptor extends SCMDescriptor<DarcsScm> {
     /**
      * Dedicated constructor.
      */
+    @SuppressWarnings("PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS")
     public DarcsScmDescriptor() {
         super(DarcsScm.class, DarcsRepositoryBrowser.class);
         load();

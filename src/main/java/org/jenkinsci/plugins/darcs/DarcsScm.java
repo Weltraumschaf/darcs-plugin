@@ -395,8 +395,9 @@ public class DarcsScm extends SCM implements Serializable {
      * @return {@code true } on success, else {@code false}
      * @throws InterruptedException if thread is interrupted
      */
-    private boolean getRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace,
-            final BuildListener listener, final File changeLog) throws InterruptedException {
+    //CHECKSTYLE:OFF
+    private boolean getRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener, final File changeLog) throws InterruptedException {
+    //CHECKSTYLE:ON
         LOGGER.info(Messages.DarcsScm_gettingRepoFrom(source));  // TODO consider using launchers log
 
         try {

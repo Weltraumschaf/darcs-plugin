@@ -24,6 +24,7 @@ import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 /**
  * Repository browser for <a href="http://blitiri.com.ar/p/darcsweb/">DarcsWeb</a>.
@@ -166,7 +167,7 @@ public final class DarcsWeb extends DarcsRepositoryBrowser {
             this.value = value;
         }
 
-        @Override
+        @Override @SuppressWarnings("SMII_STATIC_METHOD_INSTANCE_INVOCATION")
         public FormValidation check() throws IOException, ServletException {
             final String uri = Util.fixEmpty(value);
 

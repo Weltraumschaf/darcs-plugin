@@ -14,6 +14,7 @@ import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 /**
  *
@@ -207,7 +208,7 @@ public class DarcsChangeSetTest {
         assertThat(sut1.equals(new Object()), is(false));
     }
 
-    @Test
+    @Test @SuppressWarnings("PRMC_POSSIBLY_REDUNDANT_METHOD_CALLS")
     public void testHashCode() {
         final DarcsChangeSet sut1 = createSutWithPaths();
         final DarcsChangeSet sut2 = createSutWithPaths();
