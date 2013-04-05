@@ -80,8 +80,10 @@ public class DarcsScm extends SCM implements Serializable {
      * @param clean {@code true} cleans the workspace, {@code false} not
      * @param browser the browser used to browse the repository
      */
+    //CHECKSTYLE:OFF
     @DataBoundConstructor
     public DarcsScm(final String source, final String localDir, final boolean clean, final RepositoryBrowser<DarcsChangeSet> browser) {
+    //CHECKSTYLE:ON
         super();
         this.source = source;
         this.clean = clean;
@@ -131,9 +133,10 @@ public class DarcsScm extends SCM implements Serializable {
         return false;
     }
 
+    //CHECKSTYLE:OFF
     @Override
-    public SCMRevisionState calcRevisionsFromBuild(final AbstractBuild<?, ?> build, final Launcher launcher,
-        final TaskListener listener) throws IOException, InterruptedException {
+    public SCMRevisionState calcRevisionsFromBuild(final AbstractBuild<?, ?> build, final Launcher launcher, final TaskListener listener) throws IOException, InterruptedException {
+    //CHECKSTYLE:ON
         final FilePath localPath = createLocalPath(build.getWorkspace());
         final DarcsRevisionState local = getRevisionState(
             launcher,
@@ -150,10 +153,10 @@ public class DarcsScm extends SCM implements Serializable {
         return local;
     }
 
+    //CHECKSTYLE:OFF
     @Override
-    protected PollingResult compareRemoteRevisionWith(final AbstractProject<?, ?> project, final Launcher launcher,
-        final FilePath workspace, final TaskListener listener, final SCMRevisionState baseline)
-        throws IOException, InterruptedException {
+    protected PollingResult compareRemoteRevisionWith(final AbstractProject<?, ?> project, final Launcher launcher, final FilePath workspace, final TaskListener listener, final SCMRevisionState baseline) throws IOException, InterruptedException {
+    //CHECKSTYLE:ON
         final PrintStream logger = listener.getLogger();
         final SCMRevisionState localRevisionState;
 
@@ -296,9 +299,10 @@ public class DarcsScm extends SCM implements Serializable {
         }
     }
 
+    //CHECKSTYLE:OFF
     @Override
-    public boolean checkout(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace,
-            final BuildListener listener, final File changelogFile) throws IOException, InterruptedException {
+    public boolean checkout(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener, final File changelogFile) throws IOException, InterruptedException {
+    //CHECKSTYLE:ON
         final FilePath localPath = createLocalPath(workspace);
         final boolean existsRepoinWorkspace = localPath.act(new FileCallable<Boolean>() {
             private static final long serialVersionUID = 1L;
@@ -325,8 +329,9 @@ public class DarcsScm extends SCM implements Serializable {
      * @param listener receives events that happen during some lengthy operation
      * @return number of patches, if an error occurred on counting 0 is returned
      */
-    private int countPatches(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace,
-            final BuildListener listener) {
+    //CHECKSTYLE:OFF
+    private int countPatches(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener) {
+    //CHECKSTYLE:ON
         try {
             final DarcsCommandFacade cmd = new DarcsCommandFacade(
                 launcher,
@@ -352,8 +357,9 @@ public class DarcsScm extends SCM implements Serializable {
      * @return {@code true } on success, else {@code false}
      * @throws InterruptedException if thread was interrupted
      */
-    private boolean pullRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace,
-            final BuildListener listener, final File changelogFile) throws InterruptedException  {
+    //CHECKSTYLE:OFF
+    private boolean pullRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener, final File changelogFile) throws InterruptedException  {
+    //CHECKSTYLE:ON
         LOGGER.info(Messages.DarcsScm_pullingRepoFrom(source));  // TODO consider using launchers log
         final int preCnt = countPatches(build, launcher, workspace, listener);
         LOGGER.info(Messages.DarcsScm_countOfPatchesPrePullingIs(preCnt));  // TODO consider using launchers log

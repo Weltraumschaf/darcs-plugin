@@ -248,9 +248,11 @@ public class DarcsScmTest {
     }
 
     @Test @Ignore
-    public void pullRepo() {}
+    public void pullRepo() {
+    }
 
     @Test @Ignore
-    public void getRepo() {}
+    public void getRepo() {
+    }
 
 }

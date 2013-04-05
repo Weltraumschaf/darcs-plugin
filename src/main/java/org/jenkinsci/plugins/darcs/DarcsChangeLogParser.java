@@ -76,8 +76,9 @@ class DarcsChangeLogParser extends ChangeLogParser {
      * @throws SAXException on parse errors
      */
     @Override
-    public DarcsChangeSetList parse(final AbstractBuild build, final File changelogFile)
-        throws IOException, SAXException {
+    //CHECKSTYLE:OFF
+    public DarcsChangeSetList parse(final AbstractBuild build, final File changelogFile) throws IOException, SAXException {
+    //CHECKSTYLE:ON
         LOGGER.info(String.format("Parsing changelog file %s...", changelogFile.toString()));
         final StringReader input = new StringReader(sanitizer.cleanse(changelogFile));
         return parse(build, new InputSource(input));
@@ -92,8 +93,9 @@ class DarcsChangeLogParser extends ChangeLogParser {
      * @throws IOException on read errors
      * @throws SAXException on parse errors
      */
-    private DarcsChangeSetList parse(final AbstractBuild build, final InputSource changeLog)
-        throws IOException, SAXException {
+    //CHECKSTYLE:OFF
+    private DarcsChangeSetList parse(final AbstractBuild build, final InputSource changeLog) throws IOException, SAXException {
+    //CHECKSTYLE:ON
         final XMLReader xmlReader = XMLReaderFactory.createXMLReader();
         xmlReader.setContentHandler(handler);
         xmlReader.setErrorHandler(handler);
