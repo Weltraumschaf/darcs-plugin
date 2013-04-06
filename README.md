@@ -54,13 +54,12 @@ least [here][7] are some informations about how to host a Jenkins plugin.
 
 ## Todo
 
-- [ ] write tests for DarcsScm
-- [ ] write tests for BrowserChooser
-- [ ] write tests for repo browser
-- [ ] improve the change set index view
-- [ ] translate help texts
-- [x] update scenario https://wiki.jenkins-ci.org/display/JENKINS/Hint+on+retaining+backward+compatibility
-- [ ] reorganize stuff from webapp dir (help) into resources dir
+- write tests for DarcsScm
+- write tests for BrowserChooser
+- write tests for repo browser
+- improve the change set index view
+- translate help texts
+- reorganize stuff from webapp dir (help) into resources dir
 
 [1]: http://darcs.net/
 [2]: http://www.jenkins-ci.org/
