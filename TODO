@@ -1,7 +1,0 @@
-- write more unittests
-    - BrowserChooser
-- write more javadoc
-- improve the changeset index view
-- translate help texts
-- update scenario https://wiki.jenkins-ci.org/display/JENKINS/Hint+on+retaining+backward+compatibility
-- reorganize stuff from webapp dir (help) into resources dir
