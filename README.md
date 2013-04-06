@@ -14,23 +14,27 @@ As prerequisite you need [Apache Maven][4] installed.
 
 In your `~/.m2/settings.xml` you need the Jenkins tools plugin group:
 
-    <pluginGroups>
-        ...
-        <pluginGroup>org.jenkins-ci.tools</pluginGroup>
-        ...
-    </pluginGroups>
+```XML
+<pluginGroups>
+    ...
+    <pluginGroup>org.jenkins-ci.tools</pluginGroup>
+    ...
+</pluginGroups>
+```
 
 And for some backword compatibility a mirror:
 
-    <mirrors>
-        ...
-        <mirror>
-            <id>repo.jenkins-ci.org</id>
-            <url>http://repo.jenkins-ci.org/public/</url>
-            <mirrorOf>m.g.o-public</mirrorOf>
-        </mirror>
-        ...
-    </mirrors>
+```XML
+<mirrors>
+    ...
+    <mirror>
+        <id>repo.jenkins-ci.org</id>
+        <url>http://repo.jenkins-ci.org/public/</url>
+        <mirrorOf>m.g.o-public</mirrorOf>
+    </mirror>
+    ...
+</mirrors>
+```
 
 Clone this repo with:
 
