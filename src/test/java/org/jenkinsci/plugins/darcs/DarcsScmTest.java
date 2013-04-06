@@ -12,6 +12,8 @@ package org.jenkinsci.plugins.darcs;
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 import hudson.AbortException;
 import hudson.FilePath;
+import hudson.Launcher;
+import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.model.TaskListener;
 import hudson.scm.ChangeLogParser;
@@ -23,14 +25,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import org.junit.Test;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import org.jenkinsci.plugins.darcs.cmd.DarcsBinary;
+import org.jenkinsci.plugins.darcs.cmd.DarcsRepository;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
@@ -47,8 +55,33 @@ public class DarcsScmTest {
     @Rule public ExpectedException thrown = ExpectedException.none();
     //CHECKSTYLE:ON
 
+    public DarcsScmDescriptor createDescriptor() throws URISyntaxException {
+        final DarcsBinary darcsExe = DarcsBinary.determine();
+        final File bin = darcsExe.getBin();
+        assertThat(bin, is(notNullValue()));
+        assertThat(bin.exists(), is(true));
+
+        return new DarcsScmDescriptor() {
+
+            @Override
+            public void load() {
+                // Don't load anything from a in tests file.
+            }
+
+            @Override
+            public String getDarcsExe() {
+                return bin.getAbsolutePath();
+            }
+
+        };
+    }
+
     private DarcsScm2 createSut() {
-        return new DarcsScm2("", "", false, mock(RepositoryBrowser.class));
+        return createSut("");
+    }
+
+    private DarcsScm2 createSut(final String source) {
+        return new DarcsScm2(source, "", false, mock(RepositoryBrowser.class));
     }
 
     @Test
@@ -252,7 +285,19 @@ public class DarcsScmTest {
     }
 
     @Test @Ignore
-    public void getRepo() {
+    public void getRepo() throws IOException, URISyntaxException {
+        final DarcsRepository repo = DarcsRepository.REPO;
+        final File source = repo.extractTo(tmpDir.getRoot());
+        final DarcsScm2 sut = spy(createSut(source.getAbsolutePath()));
+        doReturn(createDescriptor()).when(sut).getDescriptor();
+        final File workspace = tmpDir.newFolder();
+        final File changeLogFile = tmpDir.newFile();
+        sut.getRepo(
+            mock(AbstractBuild.class),
+            mock(Launcher.class),
+            new FilePath(workspace),
+            mock(BuildListener.class),
+            changeLogFile);
     }
 
 }

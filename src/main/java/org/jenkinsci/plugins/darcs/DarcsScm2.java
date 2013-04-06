@@ -310,7 +310,7 @@ public class DarcsScm2  extends SCM implements Serializable {
      * @throws AbortException if any error happened during execution
      */
     //CHECKSTYLE:OFF
-    private void getRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener, final File changelogFile) throws AbortException {
+    void getRepo(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener, final File changelogFile) throws AbortException {
     //CHECKSTYLE:ON
         try {
             final DarcsCommandFacade cmd = createCommand(build, launcher, workspace, listener);
