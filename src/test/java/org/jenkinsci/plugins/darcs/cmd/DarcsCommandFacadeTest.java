@@ -16,7 +16,6 @@ import hudson.model.TaskListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.HashMap;
 import org.apache.commons.io.FileUtils;
 import org.junit.Rule;
 import org.junit.Test;
