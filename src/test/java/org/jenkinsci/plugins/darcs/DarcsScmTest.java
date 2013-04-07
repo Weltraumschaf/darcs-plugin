@@ -11,30 +11,30 @@ package org.jenkinsci.plugins.darcs;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 import hudson.AbortException;
+import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
+import hudson.model.StreamBuildListener;
 import hudson.model.TaskListener;
 import hudson.scm.ChangeLogParser;
 import hudson.scm.RepositoryBrowser;
 import hudson.util.IOUtils;
+import hudson.util.NullStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import org.junit.Test;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.sameInstance;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 import org.jenkinsci.plugins.darcs.cmd.DarcsBinary;
+import org.jenkinsci.plugins.darcs.cmd.DarcsCommadException;
+import org.jenkinsci.plugins.darcs.cmd.DarcsCommandFacade;
 import org.jenkinsci.plugins.darcs.cmd.DarcsRepository;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -51,18 +51,23 @@ import static org.mockito.Mockito.*;
 public class DarcsScmTest {
 
     //CHECKSTYLE:OFF
-    @Rule public TemporaryFolder tmpDir = new TemporaryFolder();
-    @Rule public ExpectedException thrown = ExpectedException.none();
+    @Rule
+    public TemporaryFolder tmpDir = new TemporaryFolder();
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
     //CHECKSTYLE:ON
 
-    public DarcsScmDescriptor createDescriptor() throws URISyntaxException {
+    private final DarcsBinary darcsExe = DarcsBinary.determine();
+
+    @Before public void createDarcsBinary() throws URISyntaxException {
         final DarcsBinary darcsExe = DarcsBinary.determine();
         final File bin = darcsExe.getBin();
         assertThat(bin, is(notNullValue()));
         assertThat(bin.exists(), is(true));
+    }
 
+    public DarcsScmDescriptor createDescriptor() throws URISyntaxException {
         return new DarcsScmDescriptor() {
-
             @Override
             public void load() {
                 // Don't load anything from a in tests file.
@@ -70,9 +75,12 @@ public class DarcsScmTest {
 
             @Override
             public String getDarcsExe() {
-                return bin.getAbsolutePath();
+                try {
+                    return darcsExe.getBin().getAbsolutePath();
+                } catch (URISyntaxException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
-
         };
     }
 
@@ -244,29 +252,29 @@ public class DarcsScmTest {
         verify(stream, times(1)).printf("%s: %s", "foo", "bar");
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void checkout_emptyInWorkspace() {
-
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void checkout_emptyInWorkspaceWithClean() {
-
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void checkout_notInEmptyWorkspace() {
-
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void checkout_notInEmptyWorkspaceWithClean() {
-
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void createChangeLog() {
-
     }
 
     @Test
@@ -280,24 +288,33 @@ public class DarcsScmTest {
         IOUtils.closeQuietly(in);
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void pullRepo() {
     }
 
-    @Test @Ignore
-    public void getRepo() throws IOException, URISyntaxException {
+    @Test
+    public void getRepo() throws IOException, URISyntaxException, DarcsCommadException {
         final DarcsRepository repo = DarcsRepository.REPO;
         final File source = repo.extractTo(tmpDir.getRoot());
         final DarcsScm2 sut = spy(createSut(source.getAbsolutePath()));
         doReturn(createDescriptor()).when(sut).getDescriptor();
-        final File workspace = tmpDir.newFolder();
+        final File workspace = new File(tmpDir.getRoot(), "workspace");
         final File changeLogFile = tmpDir.newFile();
+
         sut.getRepo(
             mock(AbstractBuild.class),
-            mock(Launcher.class),
+            new Launcher.LocalLauncher(TaskListener.NULL),
             new FilePath(workspace),
-            mock(BuildListener.class),
+            new StreamBuildListener(new NullStream()),
             changeLogFile);
+        final DarcsCommandFacade cmd = new DarcsCommandFacade(
+            new Launcher.LocalLauncher(TaskListener.NULL),
+            new EnvVars(),
+            darcsExe.getBin().getAbsolutePath(),
+            new FilePath(tmpDir.getRoot()));
+        assertThat(cmd.isRepository(workspace), is(true));
+        assertThat(cmd.allChanges(workspace), is(repo.allChanges(darcsExe.getVersion())));
+        assertThat(IOUtils.toString(new FileInputStream(changeLogFile)), is("<changelog/>"));
     }
-
 }
