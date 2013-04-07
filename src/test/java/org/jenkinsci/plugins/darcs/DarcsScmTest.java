@@ -253,23 +253,71 @@ public class DarcsScmTest {
     }
 
     @Test
-    @Ignore
-    public void checkout_emptyInWorkspace() {
+    public void checkout_emptyInWorkspace() throws IOException, InterruptedException {
+        final FilePath workspace = new FilePath(tmpDir.getRoot());
+        final AbstractBuild build = mock(AbstractBuild.class);
+        final Launcher.LocalLauncher launcher = new Launcher.LocalLauncher(TaskListener.NULL);
+        final StreamBuildListener listener = new StreamBuildListener(new NullStream());
+        final File changeLog = tmpDir.newFile();
+        final DarcsScm2 sut = spy(createSut());
+        doReturn(false).when(sut).isClean();
+        doReturn(false).when(sut).existsRepo(workspace);
+        doNothing().when(sut).getRepo(build, launcher, workspace, listener, changeLog);
+        assertThat(sut.checkout(build, launcher, workspace, listener, changeLog), is(true));
+        verify(sut, times(1)).createLocalPath(workspace);
+        verify(sut, times(0)).clean(workspace);
+        verify(sut, times(1)).getRepo(build, launcher, workspace, listener, changeLog);
     }
 
     @Test
-    @Ignore
-    public void checkout_emptyInWorkspaceWithClean() {
+    public void checkout_emptyInWorkspaceWithClean() throws IOException, InterruptedException {
+        final FilePath workspace = new FilePath(tmpDir.getRoot());
+        final AbstractBuild build = mock(AbstractBuild.class);
+        final Launcher.LocalLauncher launcher = new Launcher.LocalLauncher(TaskListener.NULL);
+        final StreamBuildListener listener = new StreamBuildListener(new NullStream());
+        final File changeLog = tmpDir.newFile();
+        final DarcsScm2 sut = spy(createSut());
+        doReturn(true).when(sut).isClean();
+        doReturn(false).when(sut).existsRepo(workspace);
+        doNothing().when(sut).getRepo(build, launcher, workspace, listener, changeLog);
+        assertThat(sut.checkout(build, launcher, workspace, listener, changeLog), is(true));
+        verify(sut, times(1)).createLocalPath(workspace);
+        verify(sut, times(1)).clean(workspace);
+        verify(sut, times(1)).getRepo(build, launcher, workspace, listener, changeLog);
     }
 
     @Test
-    @Ignore
-    public void checkout_notInEmptyWorkspace() {
+    public void checkout_notInEmptyWorkspace() throws IOException, InterruptedException {
+        final FilePath workspace = new FilePath(tmpDir.getRoot());
+        final AbstractBuild build = mock(AbstractBuild.class);
+        final Launcher.LocalLauncher launcher = new Launcher.LocalLauncher(TaskListener.NULL);
+        final StreamBuildListener listener = new StreamBuildListener(new NullStream());
+        final File changeLog = tmpDir.newFile();
+        final DarcsScm2 sut = spy(createSut());
+        doReturn(false).when(sut).isClean();
+        doReturn(true).when(sut).existsRepo(workspace);
+        doNothing().when(sut).getRepo(build, launcher, workspace, listener, changeLog);
+        assertThat(sut.checkout(build, launcher, workspace, listener, changeLog), is(true));
+        verify(sut, times(1)).createLocalPath(workspace);
+        verify(sut, times(0)).clean(workspace);
+        verify(sut, times(1)).pullRepo(build, launcher, workspace, listener, changeLog);
     }
 
     @Test
-    @Ignore
-    public void checkout_notInEmptyWorkspaceWithClean() {
+    public void checkout_notInEmptyWorkspaceWithClean() throws IOException, InterruptedException {
+        final FilePath workspace = new FilePath(tmpDir.getRoot());
+        final AbstractBuild build = mock(AbstractBuild.class);
+        final Launcher.LocalLauncher launcher = new Launcher.LocalLauncher(TaskListener.NULL);
+        final StreamBuildListener listener = new StreamBuildListener(new NullStream());
+        final File changeLog = tmpDir.newFile();
+        final DarcsScm2 sut = spy(createSut());
+        doReturn(true).when(sut).isClean();
+        doReturn(true).when(sut).existsRepo(workspace);
+        doNothing().when(sut).getRepo(build, launcher, workspace, listener, changeLog);
+        assertThat(sut.checkout(build, launcher, workspace, listener, changeLog), is(true));
+        verify(sut, times(1)).createLocalPath(workspace);
+        verify(sut, times(1)).clean(workspace);
+        verify(sut, times(1)).pullRepo(build, launcher, workspace, listener, changeLog);
     }
 
     @Test
