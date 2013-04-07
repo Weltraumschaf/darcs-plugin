@@ -289,8 +289,28 @@ public class DarcsScmTest {
     }
 
     @Test
-    @Ignore
-    public void pullRepo() {
+    public void pullRepo() throws URISyntaxException, IOException, DarcsCommadException {
+        final DarcsRepository repo = DarcsRepository.REPO;
+        final File source = repo.extractTo(tmpDir.getRoot());
+        final DarcsScm2 sut = spy(createSut(source.getAbsolutePath()));
+        doReturn(createDescriptor()).when(sut).getDescriptor();
+        final File workspace = DarcsRepository.EMPTY.extractTo(tmpDir.getRoot());
+        final File changeLogFile = tmpDir.newFile();
+
+        sut.pullRepo(
+            mock(AbstractBuild.class),
+            new Launcher.LocalLauncher(TaskListener.NULL),
+            new FilePath(workspace),
+            new StreamBuildListener(new NullStream()),
+            changeLogFile);
+        final DarcsCommandFacade cmd = new DarcsCommandFacade(
+            new Launcher.LocalLauncher(TaskListener.NULL),
+            new EnvVars(),
+            darcsExe.getBin().getAbsolutePath(),
+            new FilePath(tmpDir.getRoot()));
+        assertThat(cmd.allChanges(workspace), is(repo.allChanges(darcsExe.getVersion())));
+        assertThat(IOUtils.toString(new FileInputStream(changeLogFile)),
+                is(repo.allSummarizedChanges(darcsExe.getVersion())));
     }
 
     @Test
