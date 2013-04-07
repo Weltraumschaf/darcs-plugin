@@ -82,10 +82,8 @@ class DarcsCommand {
         }
 
         if (0 != returnCode) {
-            // TODO Add STDERR to message
             throw new DarcsCommadException(String.format("Error on performing command: '%s'! Return code %d.",
-                                                         args.toStringWithQuote(), returnCode),
-                                           returnCode);
+                                           args.toStringWithQuote(), returnCode), returnCode);
         }
     }
 
