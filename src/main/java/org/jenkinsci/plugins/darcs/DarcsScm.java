@@ -237,13 +237,13 @@ public class DarcsScm extends SCM implements Serializable {
              */
             cmd = new DarcsCommandFacade(
                 new LocalLauncher(listener),
-                EnvVars.masterEnvVars,
+                new EnvVars(EnvVars.masterEnvVars),
                 getDescriptor().getDarcsExe(),
                 workspace);
         } else {
             cmd = new DarcsCommandFacade(
                 launcher,
-                EnvVars.masterEnvVars,
+                new EnvVars(EnvVars.masterEnvVars),
                 getDescriptor().getDarcsExe(),
                 workspace);
         }
@@ -280,7 +280,7 @@ public class DarcsScm extends SCM implements Serializable {
 
         final DarcsCommandFacade cmd = new DarcsCommandFacade(
             launcher,
-            EnvVars.masterEnvVars,
+            new EnvVars(EnvVars.masterEnvVars),
             getDescriptor().getDarcsExe(),
             workspace.getParent());
         FileOutputStream fos = null;

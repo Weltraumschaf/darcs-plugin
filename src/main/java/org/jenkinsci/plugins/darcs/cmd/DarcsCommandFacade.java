@@ -9,11 +9,11 @@
  */
 package org.jenkinsci.plugins.darcs.cmd;
 
+import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Launcher.ProcStarter;
 import java.io.File;
-import java.util.Map;
 
 /**
  * Facade for the Darcs command.
@@ -33,7 +33,7 @@ public final class DarcsCommandFacade {
     /**
      * Environment variables.
      */
-    private final Map<String, String> envs;
+    private final EnvVars envs;
     /**
      * Working directory of Darcs command.
      */
@@ -47,7 +47,7 @@ public final class DarcsCommandFacade {
      * @param darcsExe executable name
      * @param workingDir working dir for darcs command
      */
-    public DarcsCommandFacade(final Launcher launcher, final Map<String, String> envs, final String darcsExe,
+    public DarcsCommandFacade(final Launcher launcher, final EnvVars envs, final String darcsExe,
         final FilePath workingDir) {
         super();
         this.envs = envs;

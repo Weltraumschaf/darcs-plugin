@@ -13,6 +13,7 @@
 package org.jenkinsci.plugins.darcs;
 
 import hudson.AbortException;
+import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
@@ -405,9 +406,14 @@ public class DarcsScm2  extends SCM implements Serializable {
     private DarcsCommandFacade createCommand(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace, final BuildListener listener) throws AbortException {
     //CHECKSTYLE:ON
         try {
+            EnvVars env = build.getEnvironment(listener);
+
+            if (null == env) {
+                env = new EnvVars();
+            }
+
             return new DarcsCommandFacade(
-                launcher,
-                build.getEnvironment(listener),
+                launcher, env,
                 getDescriptor().getDarcsExe(),
                 workspace.getParent());
         } catch (IOException ex) {

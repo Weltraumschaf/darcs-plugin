@@ -9,6 +9,7 @@
  */
 package org.jenkinsci.plugins.darcs.cmd;
 
+import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.TaskListener;
@@ -45,7 +46,7 @@ public class DarcsCommandFacadeTest {
     private DarcsCommandFacade createSut() throws URISyntaxException {
         return new DarcsCommandFacade(
                 new Launcher.LocalLauncher(TaskListener.NULL),
-                new HashMap<String, String>(),
+                new EnvVars(),
                 darcsExe.getBin().getAbsolutePath(),
                 new FilePath(tmpDir.getRoot()));
     }
