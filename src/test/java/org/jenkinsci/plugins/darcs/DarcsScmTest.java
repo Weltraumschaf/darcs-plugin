@@ -321,8 +321,21 @@ public class DarcsScmTest {
     }
 
     @Test
-    @Ignore
-    public void createChangeLog() {
+    public void createChangeLog() throws URISyntaxException, IOException, InterruptedException {
+        final DarcsRepository repo = DarcsRepository.REPO;
+        final File workspace = repo.extractTo(tmpDir.getRoot());
+        final File changeLogFile = tmpDir.newFile();
+        final DarcsScm2 sut = spy(createSut());
+        doReturn(createDescriptor()).when(sut).getDescriptor();
+        sut.createChangeLog(
+            mock(AbstractBuild.class),
+            new Launcher.LocalLauncher(TaskListener.NULL),
+            6,
+            new FilePath(workspace),
+            changeLogFile,
+            new StreamBuildListener(new NullStream()));
+        assertThat(IOUtils.toString(new FileInputStream(changeLogFile)),
+                is(repo.allSummarizedChanges(darcsExe.getVersion())));
     }
 
     @Test
