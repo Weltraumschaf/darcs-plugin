@@ -62,6 +62,14 @@
                 <role>Project developer</role>
             </roles>
         </developer>
+        <developer>
+            <id>iperminov</id>
+            <name>Ilya Perminov</name>
+            <email>iperminov@dwavesys.com</email>
+            <roles>
+                <role>Project developer</role>
+            </roles>
+        </developer>
     </developers>
 
     <licenses>
