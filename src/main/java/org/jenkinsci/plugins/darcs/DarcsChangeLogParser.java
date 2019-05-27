@@ -36,16 +36,20 @@ class DarcsChangeLogParser extends ChangeLogParser {
     private static final Logger LOGGER = Logger.getLogger(DarcsChangeLogParser.class.getName());
 
     /**
-     * Custom SAX Parser.
+     * Factory method for custom SAX parser.
+     *
+     * @return never {@code null}, always new instance
      */
-    protected DarcsSaxHandler makeHandler () {
+    private static DarcsSaxHandler makeHandler() {
         return new DarcsSaxHandler();
     }
 
     /**
-     * XML character encoding sanitizer.
+     * Factory method for  XML character encoding sanitizer.
+     *
+     * @return never {@code null}, always new instance
      */
-    protected DarcsXmlSanitizer makeSanitizer () {
+    private static DarcsXmlSanitizer makeSanitizer() {
         return new DarcsXmlSanitizer();
     }
 
@@ -77,7 +81,7 @@ class DarcsChangeLogParser extends ChangeLogParser {
      * @throws IOException on read errors
      * @throws SAXException on parse errors
      */
-    public DarcsChangeSetList parse(final ByteArrayOutputStream changeLog) throws IOException, SAXException {
+    DarcsChangeSetList parse(final ByteArrayOutputStream changeLog) throws IOException, SAXException {
         final StringReader input = new StringReader(makeSanitizer().cleanse(changeLog.toByteArray()));
         return parse(null, new InputSource(input));
     }
