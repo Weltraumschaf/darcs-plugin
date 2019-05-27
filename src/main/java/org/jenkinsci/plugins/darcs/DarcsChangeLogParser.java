@@ -26,6 +26,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  *
  * @author Sven Strittmatter <ich@weltraumschaf.de>
  * @author Ralph Lange <Ralph.Lange@gmx.de>
+ * @author Ilya Perminov <iperminov@dwavesys.com>
  */
 class DarcsChangeLogParser extends ChangeLogParser {
 
@@ -33,32 +34,19 @@ class DarcsChangeLogParser extends ChangeLogParser {
      * Logger facility.
      */
     private static final Logger LOGGER = Logger.getLogger(DarcsChangeLogParser.class.getName());
+
     /**
      * Custom SAX Parser.
      */
-    private final DarcsSaxHandler handler;
-    /**
-     * Sanitizes XML character encoding.
-     */
-    private final DarcsXmlSanitizer sanitizer;
-
-    /**
-     * Convenience constructor which initializes all dependencies.
-     */
-    public DarcsChangeLogParser() {
-        this(new DarcsSaxHandler(), new DarcsXmlSanitizer());
+    protected DarcsSaxHandler makeHandler () {
+        return new DarcsSaxHandler();
     }
 
     /**
-     * Dedicated constructor.
-     *
-     * @param handler implementation of a SAX parser
-     * @param sani sanitize to clean comments
+     * XML character encoding sanitizer.
      */
-    public DarcsChangeLogParser(final DarcsSaxHandler handler, final DarcsXmlSanitizer sani) {
-        super();
-        this.handler = handler;
-        this.sanitizer = sani;
+    protected DarcsXmlSanitizer makeSanitizer () {
+        return new DarcsXmlSanitizer();
     }
 
     /**
@@ -77,7 +65,7 @@ class DarcsChangeLogParser extends ChangeLogParser {
     public DarcsChangeSetList parse(final AbstractBuild build, final File changelogFile)
         throws IOException, SAXException {
         LOGGER.info(String.format("Parsing changelog file %s...", changelogFile.toString()));
-        final StringReader input = new StringReader(sanitizer.cleanse(changelogFile));
+        final StringReader input = new StringReader(makeSanitizer().cleanse(changelogFile));
         return parse(build, new InputSource(input));
     }
 
@@ -90,12 +78,13 @@ class DarcsChangeLogParser extends ChangeLogParser {
      * @throws SAXException on parse errors
      */
     public DarcsChangeSetList parse(final ByteArrayOutputStream changeLog) throws IOException, SAXException {
-        final StringReader input = new StringReader(sanitizer.cleanse(changeLog.toByteArray()));
+        final StringReader input = new StringReader(makeSanitizer().cleanse(changeLog.toByteArray()));
         return parse(null, new InputSource(input));
     }
 
     private DarcsChangeSetList parse(final AbstractBuild build, final InputSource changeLog) throws IOException, SAXException {
         final XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+        final DarcsSaxHandler handler = makeHandler();
         xmlReader.setContentHandler(handler);
         xmlReader.setErrorHandler(handler);
         xmlReader.parse(changeLog);

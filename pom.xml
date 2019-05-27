@@ -8,7 +8,7 @@
     </parent>
 
     <artifactId>darcs</artifactId>
-    <version>0.3.11</version>
+    <version>0.3.12-SNAPSHOT</version>
     <packaging>hpi</packaging>
 
     <name>Jenkins Darcs plugin</name>
@@ -58,6 +58,14 @@
         <developer>
             <id>mk219533</id>
             <name>Marcel Kolodziejczyk</name>
+            <roles>
+                <role>Project developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>iperminov</id>
+            <name>Ilya Perminov</name>
+            <email>iperminov@dwavesys.com</email>
             <roles>
                 <role>Project developer</role>
             </roles>
