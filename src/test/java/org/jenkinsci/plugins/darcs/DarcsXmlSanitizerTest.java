@@ -57,4 +57,60 @@ public class DarcsXmlSanitizerTest {
         assertEquals(output, result);
     }
 
+    @Test
+    public void replaceInvalidChars() {
+
+    }
+
+    @Test
+    public void replaceInvalidChar_validCharacters() {
+        assertEquals(' ', sut.replaceInvalidChar(' '));
+        assertEquals('a', sut.replaceInvalidChar('a'));
+        assertEquals('b', sut.replaceInvalidChar('b'));
+        assertEquals('c', sut.replaceInvalidChar('c'));
+        assertEquals('z', sut.replaceInvalidChar('z'));
+        assertEquals('A', sut.replaceInvalidChar('A'));
+        assertEquals('ñ', sut.replaceInvalidChar('ñ'));
+        assertEquals('Ï', sut.replaceInvalidChar('Ï'));
+    }
+
+    @Test
+    public void replaceInvalidChar_validControlCharacters() {
+        assertEquals('\t', sut.replaceInvalidChar('\t'));
+        assertEquals('\n', sut.replaceInvalidChar('\n'));
+        assertEquals('\r', sut.replaceInvalidChar('\r'));
+    }
+
+    @Test
+    public void replaceInvalidChar_invalidControlCharacters() {
+        assertEquals('�', sut.replaceInvalidChar((char) 0x00));
+        assertEquals('�', sut.replaceInvalidChar((char) 0x01));
+        assertEquals('�', sut.replaceInvalidChar((char) 0x02));
+        assertEquals('�', sut.replaceInvalidChar((char) 0x03));
+        assertEquals('�', sut.replaceInvalidChar((char) 0x04));
+        assertEquals('�', sut.replaceInvalidChar((char) 0x05));
+        assertEquals('�', sut.replaceInvalidChar((char) 0x06));
+        assertEquals('�', sut.replaceInvalidChar((char) 0x07));
+        assertEquals('�', sut.replaceInvalidChar((char) 0x08));
+        assertEquals('�', sut.replaceInvalidChar((char) 0x0B));
+        assertEquals('�', sut.replaceInvalidChar((char) 0x0C));
+        assertEquals('�', sut.replaceInvalidChar((char) 0x0E));
+        assertEquals('�', sut.replaceInvalidChar((char) 0x0F));
+        assertEquals('�', sut.replaceInvalidChar((char) 0x10));
+        assertEquals('�', sut.replaceInvalidChar((char) 0x11));
+        assertEquals('�', sut.replaceInvalidChar((char) 0x12));
+        assertEquals('�', sut.replaceInvalidChar((char) 0x13));
+        assertEquals('�', sut.replaceInvalidChar((char) 0x14));
+        assertEquals('�', sut.replaceInvalidChar((char) 0x15));
+        assertEquals('�', sut.replaceInvalidChar((char) 0x16));
+        assertEquals('�', sut.replaceInvalidChar((char) 0x17));
+        assertEquals('�', sut.replaceInvalidChar((char) 0x18));
+        assertEquals('�', sut.replaceInvalidChar((char) 0x19));
+        assertEquals('�', sut.replaceInvalidChar((char) 0x1A));
+        assertEquals('�', sut.replaceInvalidChar((char) 0x1B));
+        assertEquals('�', sut.replaceInvalidChar((char) 0x1C));
+        assertEquals('�', sut.replaceInvalidChar((char) 0x1D));
+        assertEquals('�', sut.replaceInvalidChar((char) 0x1E));
+        assertEquals('�', sut.replaceInvalidChar((char) 0x1F));
+    }
 }
