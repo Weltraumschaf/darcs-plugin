@@ -225,7 +225,22 @@ class DarcsXmlSanitizer {
         }
 
         cb.flip();
-        return cb.toString();
+        return replaceInvalidChars(cb.toString());
+    }
+
+    /**
+     * Replace invalid XML characters to spaces.
+     *
+     * @param s
+     * @return
+     */
+    private String replaceInvalidChars(String s) {
+        StringBuilder res = new StringBuilder(s.length());
+        for(int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            res.append((c >= 0x20 || c == 0x09 || c == 0x0A || c == 0x0D) ? c : ' ');
+        }
+        return res.toString();
     }
 
     /**
