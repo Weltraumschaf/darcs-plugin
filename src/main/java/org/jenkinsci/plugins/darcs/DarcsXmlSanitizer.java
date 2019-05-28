@@ -238,11 +238,14 @@ class DarcsXmlSanitizer {
         final StringBuilder res = new StringBuilder(s.length());
 
         for(int i = 0; i < s.length(); i++) {
-            final char c = s.charAt(i);
-            res.append((c >= 0x20 || c == 0x09 || c == 0x0A || c == 0x0D) ? c : ' ');
+            res.append(replaceInvalidChar(s.charAt(i)));
         }
 
         return res.toString();
+    }
+
+    private char replaceInvalidChar(final char c) {
+        return (c >= 0x20 || c == 0x09 || c == 0x0A || c == 0x0D) ? c : ' ';
     }
 
     /**
