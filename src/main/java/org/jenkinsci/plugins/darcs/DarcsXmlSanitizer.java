@@ -35,10 +35,27 @@ import java.util.List;
  * the encoding is consistent.
  *
  * @author Ralph Lange <Ralph.Lange@gmx.de>
+ * @author Ilya Perminov <iperminov@dwavesys.com>
+ * @author Sven Strittmatter <ich@weltraumschaf.de>
  */
 class DarcsXmlSanitizer {
 
     private static final List<String> ADDL_CHARSETS = Arrays.asList("ISO-8859-1", "UTF-16");
+    /**
+     * <a href="https://en.wikipedia.org/wiki/Specials_(Unicode_block">Common replacement character</a> used to
+     * identified unknown or invalid encoded characters.
+     */
+    private static final char REPLACEMENT_CHAR = '�';
+    /**
+     * In ASCII the space character.
+     * <p>
+     * All characters below this are control characters usually invalid in XML. UTF-8 is full compatible to UTF-8.
+     * </p>
+     */
+    private static final int LAST_ASCII_CONTROL_CHAR = 0x20;
+    private static final int HORIZONTAL_TAB_CHAR = 0x09;
+    private static final int NEW_LINE_CHAR = 0x0A;
+    private static final int CARRIAGE_RETURN_CHAR = 0x0D;
     private final List<CharsetDecoder> decoders = new ArrayList<CharsetDecoder>();
 
     /**
@@ -46,18 +63,18 @@ class DarcsXmlSanitizer {
      */
     private enum State {
 
-        /**
-         * Outside a name or comment tag.
-         */
-        OUTSIDE,
-        /**
-         * Inside a name tag.
-         */
-        IN_NAME,
-        /**
-         * Inside a comment tag.
-         */
-        IN_COMMENT;
+            /**
+             * Outside a name or comment tag.
+             */
+            OUTSIDE,
+            /**
+             * Inside a name tag.
+             */
+            IN_NAME,
+            /**
+             * Inside a comment tag.
+             */
+            IN_COMMENT;
     };
 
     /**
@@ -73,8 +90,8 @@ class DarcsXmlSanitizer {
 
         // last resort: UTF-8 with replacement
         decoders.add(Charset.forName("UTF-8").newDecoder()
-                .onMalformedInput(CodingErrorAction.REPLACE)
-                .onUnmappableCharacter(CodingErrorAction.REPLACE));
+            .onMalformedInput(CodingErrorAction.REPLACE)
+            .onUnmappableCharacter(CodingErrorAction.REPLACE));
     }
 
     /**
@@ -228,13 +245,7 @@ class DarcsXmlSanitizer {
         return replaceInvalidChars(cb.toString());
     }
 
-    /**
-     * Replace invalid XML characters to spaces.
-     *
-     * @param s
-     * @return
-     */
-    private String replaceInvalidChars(final String s) {
+    String replaceInvalidChars(final String s) {
         final StringBuilder res = new StringBuilder(s.length());
 
         for(int i = 0; i < s.length(); i++) {
@@ -244,8 +255,10 @@ class DarcsXmlSanitizer {
         return res.toString();
     }
 
-    private char replaceInvalidChar(final char c) {
-        return (c >= 0x20 || c == 0x09 || c == 0x0A || c == 0x0D) ? c : ' ';
+    char replaceInvalidChar(final char c) {
+        return (c >= LAST_ASCII_CONTROL_CHAR || c == HORIZONTAL_TAB_CHAR || c == NEW_LINE_CHAR || c == CARRIAGE_RETURN_CHAR)
+            ? c
+            : REPLACEMENT_CHAR;
     }
 
     /**
@@ -282,7 +295,7 @@ class DarcsXmlSanitizer {
 
             int numRead = 0;
             while (offset < bytes.length
-                    && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
+                && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
                 offset += numRead;
             }
         } finally {
