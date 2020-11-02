@@ -38,7 +38,7 @@ Clone this repo with:
 
 To compile the source change into the repo and type:
 
-    $ mvn instal
+    $ mvn install
 
 For running the plugin from the repo locally type:
 
